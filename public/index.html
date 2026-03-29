@@ -1062,7 +1062,16 @@ async function runOracleSession(input) {
   if (data1.error === 'FREE_LIMIT_REACHED') { showPaywall(); return null; }
   if (data1.error) throw new Error(data1.error);
   const text1 = data1.candidates?.[0]?.content?.parts?.[0]?.text || '';
-  const rawText = data1.candidates?.[0]?.content?.parts?.[0]?.text || '';
+  // data1 is the raw /api/ask response which passes through the Gemini response
+  let rawText = '';
+  if (data1.candidates) {
+    rawText = data1.candidates?.[0]?.content?.parts?.[0]?.text || '';
+  } else if (typeof data1 === 'string') {
+    rawText = data1;
+  } else {
+    rawText = JSON.stringify(data1);
+  }
+  // Find JSON object in the text
   const jsonStart = rawText.indexOf('{');
   const jsonEnd = rawText.lastIndexOf('}');
   if (jsonStart === -1 || jsonEnd === -1) throw new Error('No JSON in response: ' + rawText.slice(0,100));
@@ -1070,10 +1079,16 @@ async function runOracleSession(input) {
   try {
     selection = JSON.parse(rawText.slice(jsonStart, jsonEnd + 1));
   } catch(e) {
-    throw new Error('JSON parse failed: ' + rawText.slice(jsonStart, jsonStart+200));
+    // Try to extract just the philosopher key with regex
+    const match = rawText.match(/"philosopher"\s*:\s*"([^"]+)"/);
+    if (match) {
+      selection = { philosopher: match[1] };
+    } else {
+      throw new Error('Parse failed: ' + rawText.slice(0,150));
+    }
   }
   const pickedKey = selection.philosopher;
-  if (!FRAMEWORKS[pickedKey]) throw new Error('Invalid key "' + pickedKey + '" — raw: ' + rawText.slice(0,100));
+  if (!FRAMEWORKS[pickedKey]) throw new Error('Invalid key: ' + pickedKey);
 
   // Show reveal
   const fw = FRAMEWORKS[pickedKey];
