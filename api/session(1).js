@@ -1,0 +1,39 @@
+export default async function handler(req, res) {
+  const { session_id } = req.query;
+  if (!session_id) return res.status(400).json({ error: 'Missing session_id' });
+
+  const REDIS_URL = process.env.UPSTASH_REDIS_REST_URL;
+  const REDIS_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN;
+
+  try {
+    const response = await fetch(
+      `https://api.stripe.com/v1/checkout/sessions/${session_id}`,
+      { headers: { Authorization: `Bearer ${process.env.STRIPE_SECRET_KEY}` } }
+    );
+    const session = await response.json();
+    if (session.error) throw new Error(session.error.message);
+
+    if (session.payment_status !== 'paid') {
+      return res.status(200).json({ success: false });
+    }
+
+    // Add 15 credits keyed by Stripe customer ID or session ID
+    const userId = session.customer || session.id;
+    const creditKey = `phantum:credits:user:${userId}`;
+
+    // Get existing credits and add 15
+    const existRes = await fetch(`${REDIS_URL}/get/${encodeURIComponent(creditKey)}`, {
+      headers: { Authorization: `Bearer ${REDIS_TOKEN}` }
+    });
+    const existData = await existRes.json();
+    const existing = parseInt(existData.result || '0', 10);
+
+    await fetch(`${REDIS_URL}/set/${encodeURIComponent(creditKey)}/${existing + 10}`, {
+      headers: { Authorization: `Bearer ${REDIS_TOKEN}` }
+    });
+
+    res.status(200).json({ success: true, userId, credits: existing + 10 });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
