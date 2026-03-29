@@ -1,59 +1,66 @@
-const FREE_LIMIT = 3;
-
-async function redisCommand(url, token, command) {
-  const res = await fetch(`${url}/${command.join('/')}`, {
+async function redisGet(url, token, key) {
+  const res = await fetch(`${url}/get/${encodeURIComponent(key)}`, {
     headers: { Authorization: `Bearer ${token}` }
+  });
+  const data = await res.json();
+  return data.result;
+}
+
+async function redisDecr(url, token, key) {
+  const res = await fetch(`${url}/decr/${encodeURIComponent(key)}`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  const data = await res.json();
+  return data.result;
+}
+
+async function redisPipeline(url, token, commands) {
+  const res = await fetch(`${url}/pipeline`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify(commands)
   });
   return res.json();
 }
 
-async function checkSubscription(customerId) {
-  if (!customerId) return false;
-  const res = await fetch(
-    `https://api.stripe.com/v1/subscriptions?customer=${customerId}&status=active&limit=1`,
-    { headers: { Authorization: `Bearer ${process.env.STRIPE_SECRET_KEY}` } }
-  );
-  const data = await res.json();
-  return data.data && data.data.length > 0;
+function getNextMidnightUnix() {
+  const now = new Date();
+  const midnight = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1));
+  return Math.floor(midnight.getTime() / 1000);
 }
 
 export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const { input, systemPrompt, customerId } = req.body;
-
-  if (!input || !systemPrompt) {
-    return res.status(400).json({ error: 'Missing input or systemPrompt' });
-  }
+  const { input, systemPrompt, userId } = req.body;
+  if (!input || !systemPrompt) return res.status(400).json({ error: 'Missing input or systemPrompt' });
 
   const REDIS_URL = process.env.UPSTASH_REDIS_REST_URL;
   const REDIS_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN;
+  const ip = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || 'unknown';
+  const today = new Date().toISOString().slice(0, 10);
 
-  // Check subscription first
-  const isPremium = await checkSubscription(customerId);
+  // Check paid credits
+  const creditKey = userId ? `phantum:credits:user:${userId}` : `phantum:credits:ip:${ip}`;
+  const credits = parseInt(await redisGet(REDIS_URL, REDIS_TOKEN, creditKey) || '0', 10);
 
-  if (!isPremium) {
-    // Rate limit by IP
-    const ip = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || 'unknown';
-    const today = new Date().toISOString().slice(0, 10);
-    const key = `phantum:count:${ip}:${today}`;
+  let creditsRemaining = null;
 
-    const countRes = await redisCommand(REDIS_URL, REDIS_TOKEN, ['GET', key]);
-    const count = parseInt(countRes.result || '0', 10);
+  if (credits > 0) {
+    creditsRemaining = await redisDecr(REDIS_URL, REDIS_TOKEN, creditKey);
+  } else {
+    // Free daily limit
+    const freeKey = `phantum:free:${ip}:${today}`;
+    const freeCount = parseInt(await redisGet(REDIS_URL, REDIS_TOKEN, freeKey) || '0', 10);
 
-    if (count >= FREE_LIMIT) {
-      return res.status(429).json({
-        error: 'FREE_LIMIT_REACHED',
-        message: 'You have used your 3 free readings for today.',
-        upgradeUrl: '/api/checkout'
-      });
+    if (freeCount >= 1) {
+      return res.status(429).json({ error: 'FREE_LIMIT_REACHED' });
     }
 
-    // Increment counter, expire at midnight
-    await redisCommand(REDIS_URL, REDIS_TOKEN, ['INCR', key]);
-    await redisCommand(REDIS_URL, REDIS_TOKEN, ['EXPIREAT', key, getNextMidnightUnix()]);
+    await redisPipeline(REDIS_URL, REDIS_TOKEN, [
+      ['INCR', freeKey],
+      ['EXPIREAT', freeKey, getNextMidnightUnix()]
+    ]);
   }
 
   try {
@@ -69,18 +76,10 @@ export default async function handler(req, res) {
         })
       }
     );
-
     const data = await response.json();
     if (data.error) return res.status(500).json({ error: data.error.message });
-
-    res.status(200).json(data);
+    res.status(200).json({ ...data, creditsRemaining });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
-}
-
-function getNextMidnightUnix() {
-  const now = new Date();
-  const midnight = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1));
-  return Math.floor(midnight.getTime() / 1000);
 }
