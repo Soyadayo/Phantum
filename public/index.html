@@ -37,16 +37,12 @@
   .subtitle-langs { display:block; margin-top:8px; }
   .subtitle-langs span { display:block; font-size:10px; color:var(--muted); opacity:0.4; line-height:1.8; }
 
-  /* API key bar */
-
-
   .section { margin-bottom:40px; opacity:0; animation:fadeUp 0.8s ease forwards; }
   .section:nth-child(3) { animation-delay:0.1s; }
   .section:nth-child(4) { animation-delay:0.2s; }
   .section:nth-child(5) { animation-delay:0.3s; }
   .section-label { font-size:10px; letter-spacing:0.25em; text-transform:uppercase; color:var(--muted); margin-bottom:20px; }
 
-  /* Philosopher cards grid */
   .era-group { margin-bottom:28px; }
   .era-title { font-size:9px; letter-spacing:0.3em; text-transform:uppercase; color:var(--accent-dim); margin-bottom:12px; padding-bottom:6px; border-bottom:1px solid var(--border); }
   .frameworks { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:10px; }
@@ -68,7 +64,6 @@
   .framework-btn:hover { border-color:var(--accent-dim); background:#1a1914; }
   .framework-btn.active { border-color:var(--accent); background:#1a1812; }
 
-  /* Portrait area */
   [data-id="socrates"] .fw-portrait { background:#E8C54722; }
   [data-id="epictetus"] .fw-portrait { background:#7B9E8722; }
   [data-id="marcus"] .fw-portrait { background:#9B6B9B22; }
@@ -96,7 +91,6 @@
   .fw-portrait svg { width:100%; height:100%; }
   .framework-btn.active .fw-portrait { border-bottom-color:var(--accent-dim); }
 
-  /* Active accent line */
   .framework-btn.active::after {
     content:'';
     position:absolute;
@@ -110,7 +104,6 @@
   .framework-btn.active .fw-name { color:var(--accent); }
   .fw-desc { display:block; font-size:10px; color:var(--muted); opacity:0.7; line-height:1.4; }
 
-  /* Text input */
   textarea { width:100%; background:var(--surface); border:1px solid var(--border); color:var(--text); padding:20px; font-family:'Cormorant Garamond',serif; font-size:18px; font-weight:300; line-height:1.6; resize:vertical; min-height:120px; outline:none; transition:border-color 0.2s; }
   textarea::placeholder { color:var(--muted); font-style:italic; }
   textarea:focus { border-color:var(--accent-dim); }
@@ -150,7 +143,6 @@
 
   .reset-btn { background:none; border:none; color:var(--muted); font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.2em; text-transform:uppercase; cursor:pointer; margin-top:40px; padding:8px 0; text-decoration:underline; text-underline-offset:3px; transition:color 0.2s; }
   .reset-btn:hover { color:var(--text); }
-
 
   .lang-btn { background:var(--surface); border:1px solid var(--border); color:var(--muted); padding:5px 12px; font-family:'DM Mono',monospace; font-size:11px; letter-spacing:0.1em; cursor:pointer; transition:all 0.2s; }
   .lang-btn:hover { border-color:var(--accent-dim); color:var(--text); }
@@ -215,12 +207,6 @@
     </p>
   </header>
 
-  <!-- ▼▼▼ Gemini APIキーをここに入力 ▼▼▼ -->
-
-  <!-- ▲▲▲ Gemini APIキーをここに入力 ▲▲▲ -->
-
-
-
   <div class="mode-toggle">
     <button class="mode-btn active" id="modeChoose" onclick="setMode('choose')">Choose your thinker</button>
     <button class="mode-btn" id="modeOracle" onclick="setMode('oracle')">Let them find you</button>
@@ -239,28 +225,18 @@
         <button class="framework-btn" data-id="socrates" onclick="selectFramework(this)">
           <div class="fw-portrait">
             <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-  <!-- Socrates flat: bald head, short beard, toga -->
-  <!-- Head -->
   <ellipse cx="60" cy="44" rx="22" ry="24" fill="#E8C547"/>
-  <!-- Bald shine -->
   <ellipse cx="54" cy="34" rx="6" ry="4" fill="#F0D060" opacity="0.5"/>
-  <!-- Eyes -->
   <circle cx="52" cy="42" r="3" fill="#1a1810"/>
   <circle cx="68" cy="42" r="3" fill="#1a1810"/>
   <circle cx="53" cy="41" r="1" fill="#fff" opacity="0.6"/>
   <circle cx="69" cy="41" r="1" fill="#fff" opacity="0.6"/>
-  <!-- Broad nose -->
   <ellipse cx="60" cy="50" rx="4" ry="3" fill="#C8A030"/>
-  <!-- Short beard -->
   <path d="M42 58 Q50 70 60 72 Q70 70 78 58 Q70 62 60 63 Q50 62 42 58Z" fill="#C8A030"/>
-  <!-- Neck -->
   <rect x="54" y="68" width="12" height="10" fill="#E8C547"/>
-  <!-- Toga body -->
   <path d="M20 120 Q35 88 54 78 Q60 82 66 78 Q85 88 100 120Z" fill="#F5F0E0"/>
-  <!-- Toga fold -->
   <path d="M54 78 Q48 90 44 100" fill="none" stroke="#D0C8B0" stroke-width="1.5"/>
   <path d="M66 78 Q72 90 76 100" fill="none" stroke="#D0C8B0" stroke-width="1.5"/>
-  <!-- Hemlock cup small -->
   <path d="M84 95 L82 110 Q88 112 92 110 L90 95Z" fill="#C8A030" opacity="0.6"/>
 </svg>
           </div>
@@ -273,25 +249,17 @@
         <button class="framework-btn" data-id="epictetus" onclick="selectFramework(this)">
           <div class="fw-portrait">
             <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-  <!-- Epictetus flat: simple features, teaching gesture -->
   <ellipse cx="60" cy="44" rx="21" ry="23" fill="#7B9E87"/>
   <ellipse cx="55" cy="36" rx="5" ry="3" fill="#8FAF9A" opacity="0.5"/>
-  <!-- Short hair -->
   <path d="M39 38 Q40 22 60 21 Q80 22 81 38 Q76 30 60 29 Q44 30 39 38Z" fill="#5A7A66"/>
-  <!-- Eyes -->
   <circle cx="52" cy="42" r="3" fill="#1a1810"/>
   <circle cx="68" cy="42" r="3" fill="#1a1810"/>
   <circle cx="53" cy="41" r="1" fill="#fff" opacity="0.6"/>
   <circle cx="69" cy="41" r="1" fill="#fff" opacity="0.6"/>
-  <!-- Nose -->
   <ellipse cx="60" cy="49" rx="3" ry="2.5" fill="#5A7A66"/>
-  <!-- Light beard -->
   <path d="M44 58 Q52 68 60 70 Q68 68 76 58 Q68 62 60 63 Q52 62 44 58Z" fill="#5A7A66"/>
-  <!-- Neck -->
   <rect x="55" y="67" width="10" height="10" fill="#7B9E87"/>
-  <!-- Simple tunic -->
   <path d="M22 120 Q36 88 55 77 Q60 81 65 77 Q84 88 98 120Z" fill="#9BB8A6"/>
-  <!-- Raised arm -->
   <path d="M84 88 Q96 74 100 62" fill="none" stroke="#7B9E87" stroke-width="6" stroke-linecap="round"/>
   <circle cx="100" cy="60" r="5" fill="#7B9E87"/>
 </svg>
@@ -305,31 +273,24 @@
         <button class="framework-btn" data-id="marcus" onclick="selectFramework(this)">
           <div class="fw-portrait">
             <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-  <!-- Marcus Aurelius flat: laurel wreath, curly beard -->
   <ellipse cx="60" cy="46" rx="22" ry="24" fill="#9B6B9B"/>
-  <!-- Laurel wreath -->
   <path d="M38 36 Q60 20 82 36" fill="none" stroke="#C8A030" stroke-width="3" stroke-linecap="round"/>
   <ellipse cx="44" cy="32" rx="4" ry="6" fill="#5A8C4A" transform="rotate(-20 44 32)"/>
   <ellipse cx="52" cy="26" rx="4" ry="6" fill="#5A8C4A" transform="rotate(-10 52 26)"/>
   <ellipse cx="60" cy="24" rx="4" ry="6" fill="#5A8C4A"/>
   <ellipse cx="68" cy="26" rx="4" ry="6" fill="#5A8C4A" transform="rotate(10 68 26)"/>
   <ellipse cx="76" cy="32" rx="4" ry="6" fill="#5A8C4A" transform="rotate(20 76 32)"/>
-  <!-- Eyes weary -->
   <circle cx="52" cy="44" r="3" fill="#1a1810"/>
   <circle cx="68" cy="44" r="3" fill="#1a1810"/>
   <circle cx="53" cy="43" r="1" fill="#fff" opacity="0.5"/>
   <circle cx="69" cy="43" r="1" fill="#fff" opacity="0.5"/>
-  <!-- Nose -->
   <ellipse cx="60" cy="51" rx="3" ry="2.5" fill="#7A4A7A"/>
-  <!-- Curly beard -->
   <path d="M42 60 Q46 72 52 76 Q60 80 68 76 Q74 72 78 60 Q70 65 60 66 Q50 65 42 60Z" fill="#7A4A7A"/>
   <circle cx="48" cy="68" r="3" fill="#7A4A7A"/>
   <circle cx="56" cy="72" r="3" fill="#7A4A7A"/>
   <circle cx="64" cy="72" r="3" fill="#7A4A7A"/>
   <circle cx="72" cy="68" r="3" fill="#7A4A7A"/>
-  <!-- Neck -->
   <rect x="55" y="66" width="10" height="12" fill="#9B6B9B"/>
-  <!-- Imperial robes -->
   <path d="M20 120 Q34 86 55 78 Q60 82 65 78 Q86 86 100 120Z" fill="#C4A0C4"/>
   <path d="M55 78 Q52 88 50 96" fill="none" stroke="#9B6B9B" stroke-width="2"/>
   <path d="M65 78 Q68 88 70 96" fill="none" stroke="#9B6B9B" stroke-width="2"/>
@@ -349,27 +310,19 @@
         <button class="framework-btn" data-id="nietzsche" onclick="selectFramework(this)">
           <div class="fw-portrait">
             <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-  <!-- Nietzsche flat: MASSIVE mustache, intense brow -->
   <ellipse cx="60" cy="44" rx="22" ry="24" fill="#C4543C"/>
-  <!-- Short hair -->
   <path d="M38 38 Q40 22 60 21 Q80 22 82 38 Q76 30 60 29 Q44 30 38 38Z" fill="#8B3020"/>
-  <!-- Heavy brows -->
   <path d="M44 38 Q52 34 58 38" fill="none" stroke="#1a1810" stroke-width="3" stroke-linecap="round"/>
   <path d="M62 38 Q68 34 76 38" fill="none" stroke="#1a1810" stroke-width="3" stroke-linecap="round"/>
-  <!-- Intense eyes -->
   <circle cx="52" cy="43" r="3.5" fill="#1a1810"/>
   <circle cx="68" cy="43" r="3.5" fill="#1a1810"/>
   <circle cx="53" cy="42" r="1.2" fill="#fff" opacity="0.7"/>
   <circle cx="69" cy="42" r="1.2" fill="#fff" opacity="0.7"/>
-  <!-- Nose -->
   <ellipse cx="60" cy="50" rx="3.5" ry="3" fill="#A03428"/>
-  <!-- MASSIVE drooping mustache -->
   <path d="M40 58 Q50 54 60 56 Q70 54 80 58 Q72 62 60 62 Q48 62 40 58Z" fill="#1a1810"/>
   <path d="M40 58 Q36 68 34 76" fill="none" stroke="#1a1810" stroke-width="5" stroke-linecap="round"/>
   <path d="M80 58 Q84 68 86 76" fill="none" stroke="#1a1810" stroke-width="5" stroke-linecap="round"/>
-  <!-- Neck -->
   <rect x="55" y="62" width="10" height="14" fill="#C4543C"/>
-  <!-- Coat -->
   <path d="M18 120 Q34 86 55 76 Q60 80 65 76 Q86 86 102 120Z" fill="#2A1A14"/>
   <path d="M55 76 Q58 84 60 88 Q62 84 65 76" fill="none" stroke="#4A3020" stroke-width="2"/>
 </svg>
@@ -383,32 +336,23 @@
         <button class="framework-btn" data-id="sartre" onclick="selectFramework(this)">
           <div class="fw-portrait">
             <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-  <!-- Sartre flat: thick glasses, pipe -->
   <ellipse cx="60" cy="46" rx="21" ry="23" fill="#4A7FB5"/>
-  <!-- Hair -->
   <path d="M39 40 Q40 24 60 22 Q80 24 81 40 Q76 32 60 31 Q44 32 39 40Z" fill="#2A4F80"/>
-  <!-- Thick frame glasses -->
   <rect x="43" y="38" width="15" height="12" rx="3" fill="none" stroke="#1a1810" stroke-width="3"/>
   <rect x="62" y="38" width="15" height="12" rx="3" fill="none" stroke="#1a1810" stroke-width="3"/>
   <line x1="58" y1="44" x2="62" y2="44" stroke="#1a1810" stroke-width="2.5"/>
   <line x1="36" y1="43" x2="43" y2="43" stroke="#1a1810" stroke-width="2"/>
   <line x1="77" y1="43" x2="84" y2="43" stroke="#1a1810" stroke-width="2"/>
-  <!-- Eyes (walleye hint) -->
   <circle cx="51" cy="44" r="2.5" fill="#1a1810"/>
   <circle cx="50" cy="43" r="0.8" fill="#fff" opacity="0.7"/>
   <circle cx="70" cy="44" r="2.5" fill="#1a1810"/>
   <circle cx="71" cy="43" r="0.8" fill="#fff" opacity="0.7"/>
-  <!-- Nose -->
   <ellipse cx="60" cy="52" rx="4" ry="3" fill="#2A4F80"/>
-  <!-- Thin lips -->
   <path d="M52 62 Q60 65 68 62" fill="#2A4F80" stroke="#2A4F80" stroke-width="1"/>
-  <!-- Pipe -->
   <path d="M68 64 Q78 60 82 66 Q84 72 78 74" fill="none" stroke="#8B6040" stroke-width="3" stroke-linecap="round"/>
   <ellipse cx="78" cy="76" rx="4" ry="3" fill="#6B4020"/>
-  <!-- Neck + turtleneck -->
   <rect x="55" y="69" width="10" height="8" fill="#4A7FB5"/>
   <path d="M46 77 Q52 74 68 74 Q74 77 74 80 Q60 78 46 80Z" fill="#2A3A50"/>
-  <!-- Body -->
   <path d="M24 120 Q38 88 54 80 Q60 84 66 80 Q82 88 96 120Z" fill="#2A3A50"/>
 </svg>
           </div>
@@ -421,32 +365,22 @@
         <button class="framework-btn" data-id="camus" onclick="selectFramework(this)">
           <div class="fw-portrait">
             <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-  <!-- Camus flat: handsome, cigarette, trench coat -->
   <ellipse cx="60" cy="43" rx="22" ry="24" fill="#D4904A"/>
-  <!-- Dark hair -->
   <path d="M38 36 Q40 20 60 19 Q80 20 82 36 Q76 28 60 27 Q44 28 38 36Z" fill="#1A1410"/>
-  <!-- Strong brows -->
   <path d="M46 37 Q52 35 58 37" fill="none" stroke="#1A1410" stroke-width="2.5" stroke-linecap="round"/>
   <path d="M62 37 Q68 35 74 37" fill="none" stroke="#1A1410" stroke-width="2.5" stroke-linecap="round"/>
-  <!-- Romantic eyes -->
   <circle cx="52" cy="42" r="3.5" fill="#1A1410"/>
   <circle cx="68" cy="42" r="3.5" fill="#1A1410"/>
   <circle cx="53" cy="41" r="1.2" fill="#fff" opacity="0.6"/>
   <circle cx="69" cy="41" r="1.2" fill="#fff" opacity="0.6"/>
-  <!-- Nose -->
   <ellipse cx="60" cy="49" rx="3" ry="2.5" fill="#A86830"/>
-  <!-- Slight smirk -->
   <path d="M52 59 Q60 63 68 59" fill="#A86830" stroke="#A86830" stroke-width="1"/>
-  <!-- Cigarette -->
   <rect x="68" y="58" width="18" height="3" rx="1.5" fill="#F5F0E0" transform="rotate(-20 68 58)"/>
   <rect x="84" y="52" width="4" height="3" rx="1" fill="#FF6040" opacity="0.8" transform="rotate(-20 84 52)"/>
-  <!-- Neck -->
   <rect x="55" y="67" width="10" height="10" fill="#D4904A"/>
-  <!-- Trench coat with upturned collar -->
   <path d="M20 120 Q34 84 54 77 Q58 81 60 81 Q62 81 66 77 Q86 84 100 120Z" fill="#6B5030"/>
   <path d="M54 77 Q50 84 48 92" fill="none" stroke="#8B6848" stroke-width="2"/>
   <path d="M66 77 Q70 84 72 92" fill="none" stroke="#8B6848" stroke-width="2"/>
-  <!-- Lapels -->
   <path d="M54 77 Q57 83 60 85" fill="none" stroke="#4A3820" stroke-width="2"/>
   <path d="M66 77 Q63 83 60 85" fill="none" stroke="#4A3820" stroke-width="2"/>
 </svg>
@@ -460,29 +394,20 @@
         <button class="framework-btn" data-id="arendt" onclick="selectFramework(this)">
           <div class="fw-portrait">
             <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-  <!-- Hannah Arendt flat: chignon, elegant, cigarette holder -->
   <ellipse cx="60" cy="44" rx="21" ry="23" fill="#5B8FA8"/>
-  <!-- Hair + chignon -->
   <path d="M39 38 Q40 22 60 20 Q80 22 81 38 Q78 30 60 29 Q42 30 39 38Z" fill="#2A2018"/>
   <ellipse cx="84" cy="30" rx="8" ry="10" fill="#2A2018"/>
-  <!-- Arched brows -->
   <path d="M46 38 Q52 35 57 38" fill="none" stroke="#1A1410" stroke-width="2" stroke-linecap="round"/>
   <path d="M63 38 Q68 35 74 38" fill="none" stroke="#1A1410" stroke-width="2" stroke-linecap="round"/>
-  <!-- Sharp eyes -->
   <circle cx="52" cy="43" r="3" fill="#1A1410"/>
   <circle cx="68" cy="43" r="3" fill="#1A1410"/>
   <circle cx="53" cy="42" r="1" fill="#fff" opacity="0.6"/>
   <circle cx="69" cy="42" r="1" fill="#fff" opacity="0.6"/>
-  <!-- Nose -->
   <ellipse cx="60" cy="50" rx="3" ry="2.5" fill="#3A6A80"/>
-  <!-- Composed lips -->
   <path d="M52 59 Q60 62 68 59" fill="#3A6A80" stroke="#3A6A80" stroke-width="1"/>
-  <!-- Long cigarette holder -->
   <rect x="68" y="57" width="22" height="2" rx="1" fill="#F5F0E0" transform="rotate(-25 68 57)"/>
   <rect x="88" y="50" width="3" height="2" rx="1" fill="#FF6040" opacity="0.7" transform="rotate(-25 88 50)"/>
-  <!-- Neck -->
   <rect x="55" y="67" width="10" height="10" fill="#5B8FA8"/>
-  <!-- Blouse/jacket -->
   <path d="M22 120 Q36 86 55 77 Q60 81 65 77 Q84 86 98 120Z" fill="#3A5A6C"/>
   <path d="M55 77 Q58 85 60 89 Q62 85 65 77" fill="none" stroke="#5B8FA8" stroke-width="1.5"/>
 </svg>
@@ -496,30 +421,20 @@
         <button class="framework-btn" data-id="simone" onclick="selectFramework(this)">
           <div class="fw-portrait">
             <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-  <!-- Simone de Beauvoir flat: iconic turban -->
   <ellipse cx="60" cy="46" rx="21" ry="23" fill="#C4547A"/>
-  <!-- Turban base -->
   <ellipse cx="60" cy="32" rx="26" ry="16" fill="#E8A020"/>
-  <!-- Turban wrap layers -->
   <path d="M34 32 Q38 20 60 18 Q82 20 86 32 Q78 28 60 27 Q42 28 34 32Z" fill="#C87010"/>
   <path d="M36 36 Q42 26 60 24 Q78 26 84 36" fill="none" stroke="#E8A020" stroke-width="3"/>
-  <!-- Turban knot/twist at top -->
   <ellipse cx="60" cy="20" rx="8" ry="5" fill="#C87010"/>
-  <!-- Direct gaze brows -->
   <path d="M46 40 Q52 37 57 40" fill="none" stroke="#1A1410" stroke-width="2.5" stroke-linecap="round"/>
   <path d="M63 40 Q68 37 74 40" fill="none" stroke="#1A1410" stroke-width="2.5" stroke-linecap="round"/>
-  <!-- Eyes -->
   <circle cx="52" cy="45" r="3.5" fill="#1A1410"/>
   <circle cx="68" cy="45" r="3.5" fill="#1A1410"/>
   <circle cx="53" cy="44" r="1.2" fill="#fff" opacity="0.6"/>
   <circle cx="69" cy="44" r="1.2" fill="#fff" opacity="0.6"/>
-  <!-- Nose -->
   <ellipse cx="60" cy="52" rx="3" ry="2.5" fill="#A03058"/>
-  <!-- Lips -->
   <path d="M52 62 Q60 66 68 62" fill="#A03058" stroke="#A03058" stroke-width="1"/>
-  <!-- Neck -->
   <rect x="55" y="69" width="10" height="9" fill="#C4547A"/>
-  <!-- Jacket -->
   <path d="M22 120 Q36 86 55 78 Q60 82 65 78 Q84 86 98 120Z" fill="#8A2848"/>
 </svg>
           </div>
@@ -537,30 +452,22 @@
         <button class="framework-btn" data-id="foucault" onclick="selectFramework(this)">
           <div class="fw-portrait">
             <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-  <!-- Foucault flat: shaved head, round glasses -->
   <ellipse cx="60" cy="46" rx="22" ry="24" fill="#6B6B8A"/>
-  <!-- Very minimal hair hint (shaved) -->
   <path d="M38 40 Q40 24 60 22 Q80 24 82 40 Q78 34 60 33 Q42 34 38 40Z" fill="#4A4A60" opacity="0.4"/>
-  <!-- Round thick glasses -->
   <circle cx="51" cy="44" r="9" fill="none" stroke="#1A1410" stroke-width="3"/>
   <circle cx="69" cy="44" r="9" fill="none" stroke="#1A1410" stroke-width="3"/>
   <line x1="60" y1="44" x2="60" y2="44" stroke="#1A1410" stroke-width="2.5"/>
   <path d="M57 44 Q60 46 63 44" fill="none" stroke="#1A1410" stroke-width="2.5"/>
   <line x1="36" y1="43" x2="42" y2="43" stroke="#1A1410" stroke-width="2"/>
   <line x1="78" y1="43" x2="84" y2="43" stroke="#1A1410" stroke-width="2"/>
-  <!-- Eyes inside glasses -->
   <circle cx="51" cy="44" r="3" fill="#1A1410"/>
   <circle cx="69" cy="44" r="3" fill="#1A1410"/>
   <circle cx="52" cy="43" r="1" fill="#fff" opacity="0.6"/>
   <circle cx="70" cy="43" r="1" fill="#fff" opacity="0.6"/>
-  <!-- Nose -->
   <ellipse cx="60" cy="52" rx="4" ry="3" fill="#4A4A60"/>
-  <!-- Thin lips -->
   <path d="M52 62 Q60 64 68 62" fill="none" stroke="#4A4A60" stroke-width="2" stroke-linecap="round"/>
-  <!-- Neck + turtleneck -->
   <rect x="55" y="70" width="10" height="8" fill="#6B6B8A"/>
   <path d="M46 78 Q52 75 68 75 Q74 78 74 82 Q60 79 46 82Z" fill="#3A3A4A"/>
-  <!-- Body -->
   <path d="M24 120 Q38 88 54 80 Q60 84 66 80 Q82 88 96 120Z" fill="#3A3A4A"/>
 </svg>
           </div>
@@ -573,29 +480,20 @@
         <button class="framework-btn" data-id="han" onclick="selectFramework(this)">
           <div class="fw-portrait">
             <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-  <!-- Byung-Chul Han flat: East Asian, contemporary -->
   <ellipse cx="60" cy="45" rx="21" ry="23" fill="#4A8A7A"/>
-  <!-- Side-parted straight hair -->
   <path d="M39 38 Q40 22 60 20 Q80 22 81 38 Q76 30 60 29 Q44 30 39 38Z" fill="#1A1410"/>
   <path d="M39 38 Q42 28 50 28" fill="none" stroke="#1A1410" stroke-width="3"/>
-  <!-- Side part line -->
   <path d="M46 22 Q44 30 42 38" fill="none" stroke="#2A2010" stroke-width="1.5" opacity="0.5"/>
-  <!-- Single-eyelid eyes -->
   <path d="M46 42 Q52 40 58 43" fill="none" stroke="#1A1410" stroke-width="2.5" stroke-linecap="round"/>
   <path d="M62 43 Q68 40 74 42" fill="none" stroke="#1A1410" stroke-width="2.5" stroke-linecap="round"/>
   <ellipse cx="52" cy="43" rx="3" ry="2" fill="#1A1410"/>
   <ellipse cx="68" cy="43" rx="3" ry="2" fill="#1A1410"/>
   <circle cx="53" cy="42" r="0.8" fill="#fff" opacity="0.5"/>
   <circle cx="69" cy="42" r="0.8" fill="#fff" opacity="0.5"/>
-  <!-- Low bridge nose -->
   <ellipse cx="60" cy="50" rx="3.5" ry="2.5" fill="#2A6A5A"/>
-  <!-- Slight lips -->
   <path d="M53 60 Q60 63 67 60" fill="#2A6A5A" stroke="#2A6A5A" stroke-width="1"/>
-  <!-- Neck -->
   <rect x="55" y="68" width="10" height="10" fill="#4A8A7A"/>
-  <!-- Contemporary jacket -->
   <path d="M24 120 Q38 86 55 78 Q60 82 65 78 Q82 86 96 120Z" fill="#2A4A40"/>
-  <!-- Small book -->
   <rect x="76" y="90" width="16" height="22" rx="2" fill="#3A6A5A"/>
   <line x1="78" y1="90" x2="78" y2="112" stroke="#2A4A40" stroke-width="1.5"/>
 </svg>
@@ -609,33 +507,23 @@
         <button class="framework-btn" data-id="fisher" onclick="selectFramework(this)">
           <div class="fw-portrait">
             <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-  <!-- Mark Fisher flat: melancholic, hoodie -->
   <ellipse cx="60" cy="45" rx="22" ry="24" fill="#7A6A9A"/>
-  <!-- Unkempt hair -->
   <path d="M38 38 Q40 22 60 20 Q80 22 82 38 Q78 28 60 28 Q42 28 38 38Z" fill="#2A2030"/>
   <path d="M38 38 Q34 32 36 24" fill="none" stroke="#2A2030" stroke-width="3" stroke-linecap="round"/>
   <path d="M82 38 Q86 32 84 24" fill="none" stroke="#2A2030" stroke-width="3" stroke-linecap="round"/>
-  <!-- Downcast eyes -->
   <path d="M47 42 Q52 44 57 42" fill="none" stroke="#1A1020" stroke-width="1" stroke-linecap="round"/>
   <circle cx="52" cy="44" r="3" fill="#1A1020"/>
   <path d="M63 42 Q68 44 73 42" fill="none" stroke="#1A1020" stroke-width="1" stroke-linecap="round"/>
   <circle cx="68" cy="44" r="3" fill="#1A1020"/>
   <circle cx="53" cy="43" r="1" fill="#fff" opacity="0.4"/>
   <circle cx="69" cy="43" r="1" fill="#fff" opacity="0.4"/>
-  <!-- Furrowed brows -->
   <path d="M47 39 Q52 37 57 39" fill="none" stroke="#1A1020" stroke-width="1.5" stroke-linecap="round"/>
   <path d="M63 39 Q68 37 73 39" fill="none" stroke="#1A1020" stroke-width="1.5" stroke-linecap="round"/>
-  <!-- Nose -->
   <ellipse cx="60" cy="51" rx="3.5" ry="3" fill="#5A4A7A"/>
-  <!-- Slight downward lips -->
   <path d="M52 61 Q60 63 68 61" fill="#5A4A7A" stroke="#5A4A7A" stroke-width="1"/>
-  <!-- Light stubble -->
   <ellipse cx="60" cy="62" rx="10" ry="6" fill="#5A4A7A" opacity="0.3"/>
-  <!-- Neck -->
   <rect x="55" y="69" width="10" height="9" fill="#7A6A9A"/>
-  <!-- Hoodie -->
   <path d="M20 120 Q34 86 54 78 Q57 82 60 83 Q63 82 66 78 Q86 86 100 120Z" fill="#3A3048"/>
-  <!-- Hood strings -->
   <line x1="56" y1="83" x2="52" y2="100" stroke="#4A4060" stroke-width="2" stroke-linecap="round"/>
   <line x1="64" y1="83" x2="68" y2="100" stroke="#4A4060" stroke-width="2" stroke-linecap="round"/>
 </svg>
@@ -649,30 +537,21 @@
         <button class="framework-btn" data-id="bauman" onclick="selectFramework(this)">
           <div class="fw-portrait">
             <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-  <!-- Bauman flat: elderly, white wispy hair, cardigan -->
   <ellipse cx="60" cy="46" rx="22" ry="24" fill="#9A8060"/>
-  <!-- Wispy white hair -->
   <path d="M38 40 Q40 22 60 20 Q80 22 82 40 Q78 30 60 30 Q42 30 38 40Z" fill="#E8E0D0" opacity="0.8"/>
   <path d="M40 24 Q38 18 42 14" fill="none" stroke="#E8E0D0" stroke-width="2" stroke-linecap="round"/>
   <path d="M60 22 Q58 16 62 12" fill="none" stroke="#E8E0D0" stroke-width="2" stroke-linecap="round"/>
   <path d="M80 24 Q82 18 78 14" fill="none" stroke="#E8E0D0" stroke-width="2" stroke-linecap="round"/>
-  <!-- Aged drooping eyes -->
   <path d="M46 42 Q52 44 57 42" fill="none" stroke="#5A4030" stroke-width="1" stroke-linecap="round"/>
   <circle cx="52" cy="44" r="3" fill="#2A1A10"/>
   <path d="M63 42 Q68 44 73 42" fill="none" stroke="#5A4030" stroke-width="1" stroke-linecap="round"/>
   <circle cx="68" cy="44" r="3" fill="#2A1A10"/>
-  <!-- Deep smile lines -->
   <path d="M42 56 Q44 64 46 68" fill="none" stroke="#7A6040" stroke-width="1.5" stroke-linecap="round"/>
   <path d="M78 56 Q76 64 74 68" fill="none" stroke="#7A6040" stroke-width="1.5" stroke-linecap="round"/>
-  <!-- Prominent aged nose -->
   <ellipse cx="60" cy="52" rx="5" ry="4" fill="#7A6040"/>
-  <!-- Lips -->
   <path d="M50 64 Q60 68 70 64" fill="#7A6040" stroke="#7A6040" stroke-width="1"/>
-  <!-- Neck -->
   <rect x="55" y="70" width="10" height="10" fill="#9A8060"/>
-  <!-- Cardigan -->
   <path d="M22 120 Q36 88 55 80 Q60 84 65 80 Q84 88 98 120Z" fill="#6A5840"/>
-  <!-- Cardigan buttons -->
   <circle cx="60" cy="94" r="2.5" fill="#9A8060"/>
   <circle cx="60" cy="104" r="2.5" fill="#9A8060"/>
   <circle cx="60" cy="114" r="2.5" fill="#9A8060"/>
@@ -687,29 +566,19 @@
         <button class="framework-btn" data-id="harari" onclick="selectFramework(this)">
           <div class="fw-portrait">
             <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-  <!-- Harari flat: lean, short hair, beard, alert -->
   <ellipse cx="60" cy="44" rx="21" ry="23" fill="#5A9AB5"/>
-  <!-- Short neat hair -->
   <path d="M39 38 Q41 22 60 20 Q79 22 81 38 Q76 30 60 29 Q44 30 39 38Z" fill="#2A1A10"/>
-  <!-- Alert brows -->
   <path d="M46 37 Q52 35 57 37" fill="none" stroke="#2A1A10" stroke-width="2" stroke-linecap="round"/>
   <path d="M63 37 Q68 35 74 37" fill="none" stroke="#2A1A10" stroke-width="2" stroke-linecap="round"/>
-  <!-- Alert eyes -->
   <circle cx="52" cy="42" r="3.5" fill="#1A1010"/>
   <circle cx="68" cy="42" r="3.5" fill="#1A1010"/>
   <circle cx="53" cy="41" r="1.2" fill="#fff" opacity="0.7"/>
   <circle cx="69" cy="41" r="1.2" fill="#fff" opacity="0.7"/>
-  <!-- Nose -->
   <ellipse cx="60" cy="49" rx="3" ry="2.5" fill="#3A7A8A"/>
-  <!-- Short beard -->
   <path d="M42 58 Q50 68 60 70 Q70 68 78 58 Q70 62 60 63 Q50 62 42 58Z" fill="#3A2A20"/>
-  <!-- Lips inside beard -->
   <path d="M53 59 Q60 62 67 59" fill="#3A2A20" stroke="#3A2A20" stroke-width="1"/>
-  <!-- Neck -->
   <rect x="55" y="70" width="10" height="8" fill="#5A9AB5"/>
-  <!-- Minimal top -->
   <path d="M26 120 Q40 86 55 78 Q60 82 65 78 Q80 86 94 120Z" fill="#2A4A5A"/>
-  <!-- DNA/data motif -->
   <path d="M82 88 Q88 94 82 100 Q88 106 82 112" fill="none" stroke="#5A9AB5" stroke-width="2" stroke-linecap="round"/>
   <path d="M94 88 Q88 94 94 100 Q88 106 94 112" fill="none" stroke="#5A9AB5" stroke-width="2" stroke-linecap="round"/>
   <line x1="82" y1="94" x2="94" y2="94" stroke="#5A9AB5" stroke-width="1.5"/>
@@ -834,6 +703,15 @@ function updateSubmitState() {
 
 const loadingPhrases = ['thinking','reading between the lines','questioning the question','finding the tension'];
 
+// --- Helper: extract text from Gemini parts, filtering out thoughtSignature etc. ---
+function extractGeminiText(data) {
+  const parts = data?.candidates?.[0]?.content?.parts || [];
+  return parts
+    .filter(p => typeof p.text === 'string' && !p.thoughtSignature)
+    .map(p => p.text)
+    .join('');
+}
+
 async function runSession() {
   const input = document.getElementById('decisionInput').value.trim();
   if (!input) return;
@@ -891,12 +769,16 @@ async function runSession() {
       usageCount++;
       updateUsageBar(usageCount, 0);
     }
-        // Extract thinker/reading/tension directly from Gemini text
-    const geminiText = (data.candidates?.[0]?.content?.parts || []).map(p => p.text || '').join('');
+
+    // ★ FIX: filter out thoughtSignature parts before regex extraction
+    const geminiText = extractGeminiText(data);
     const tM = geminiText.match(/"thinker"\s*:\s*"([^"]+)"/);
     const rM = geminiText.match(/"reading"\s*:\s*"((?:[^"\\]|\\.)*)"/);
     const tnM = geminiText.match(/"tension"\s*:\s*"((?:[^"\\]|\\.)*)"/);
-    if (!tM || !rM) throw new Error('Response format error. Please try again.');
+
+    // ★ FIX: include raw data in error for debugging
+    if (!tM || !rM) throw new Error('Response format error. Raw: ' + geminiText.slice(0, 200));
+
     const parsed = {
       thinker: tM[1],
       reading: rM[1].replace(/\\n/g, '\n').replace(/\\"/g, '"'),
@@ -1067,9 +949,9 @@ async function runOracleSession(input) {
   const data1 = await response1.json();
   if (data1.error === 'FREE_LIMIT_REACHED') { showPaywall(); return null; }
   if (data1.error) throw new Error(data1.error);
-  const text1 = data1.candidates?.[0]?.content?.parts?.[0]?.text || '';
-  // Extract philosopher key from nested Gemini response
-  const geminiText1 = (data1?.candidates?.[0]?.content?.parts || []).map(p => p.text || '').join('') || JSON.stringify(data1);
+
+  // ★ FIX: filter out thoughtSignature parts before regex extraction
+  const geminiText1 = extractGeminiText(data1) || JSON.stringify(data1);
   const philMatch = geminiText1.match(/"philosopher"\s*:\s*"([a-z]+)"/);
   if (!philMatch) throw new Error('No philosopher found in: ' + geminiText1.slice(0, 150));
   const pickedKey = philMatch[1];
@@ -1237,7 +1119,6 @@ updateUsageBar(0, paidCredits);
     renderer.setRenderTarget(null);
   }
 
-  // Mouse / auto driver
   const mouse = { x:0, y:0, ox:0, oy:0, dx:0, dy:0 };
   let autoTime = 0, autoTarget = { x:0.3, y:0.3 }, autoCur = { x:0, y:0 };
   let lastUserTime = -9999;
@@ -1288,34 +1169,28 @@ updateUsageBar(0, paidCredits);
     mouse.ox = mouse.x;
     mouse.oy = mouse.y;
 
-    // Advection
     advPass.uniforms.vel.value = vel0.texture;
     advPass.uniforms.dt.value = 0.014;
     runPass(advPass, vel1);
 
-    // Force
     forcePass.uniforms.vel.value = vel1.texture;
     forcePass.uniforms.force.value.set(mouse.dx * 0.5, mouse.dy * 0.5);
     forcePass.uniforms.center.value.set(mouse.x, mouse.y);
     runPass(forcePass, vel1);
 
-    // Divergence
     divPass.uniforms.vel.value = vel1.texture;
     runPass(divPass, div);
 
-    // Poisson iterations
     for (let i = 0; i < 24; i++) {
       poissonPass.uniforms.pressure.value = (i%2===0 ? p0 : p1).texture;
       poissonPass.uniforms.divergence.value = div.texture;
       runPass(poissonPass, i%2===0 ? p1 : p0);
     }
 
-    // Projection
     projPass.uniforms.vel.value = vel1.texture;
     projPass.uniforms.pressure.value = p1.texture;
     runPass(projPass, vel0);
 
-    // Render color
     colorMat.uniforms.vel.value = vel0.texture;
     renderer.setRenderTarget(null);
     renderer.render(colorScene, cam);
