@@ -46,7 +46,7 @@ export default async function handler(req, res) {
       const response = await fetch(
         `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${process.env.GEMINI_API_KEY}`,
         { method:'POST', headers:{'Content-Type':'application/json'},
-          body: JSON.stringify({ system_instruction:{parts:[{text:systemPrompt}]}, contents:[{role:'user',parts:[{text:input}]}], generationConfig:{temperature:0.3,maxOutputTokens:128} }) }
+          body: JSON.stringify({ system_instruction:{parts:[{text:systemPrompt}]}, contents:[{role:'user',parts:[{text:input}]}], generationConfig:{temperature:0.3,maxOutputTokens:256} }) }
       );
       const data = await response.json();
       if (data.error) return res.status(500).json({ error: data.error.message });
