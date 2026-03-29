@@ -143,6 +143,25 @@
   .lang-row { margin-top:12px; margin-bottom:4px; }
   .lang-row-label { display:block; font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:var(--accent-dim); margin-bottom:8px; }
   .lang-btns { display:flex; gap:6px; flex-wrap:wrap; }
+
+  .paywall-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:2000; align-items:center; justify-content:center; }
+  .paywall-overlay.visible { display:flex; }
+  .paywall-box { background:#161510; border:1px solid var(--accent-dim); padding:48px 40px; max-width:420px; width:90%; text-align:center; }
+  .paywall-label { font-size:10px; letter-spacing:0.3em; text-transform:uppercase; color:var(--accent); margin-bottom:16px; }
+  .paywall-title { font-family:'Cormorant Garamond',serif; font-size:28px; font-weight:300; color:var(--text); margin-bottom:12px; line-height:1.3; }
+  .paywall-sub { font-size:11px; color:var(--muted); line-height:1.7; margin-bottom:32px; }
+  .paywall-price { font-size:32px; color:var(--accent); font-family:'Cormorant Garamond',serif; margin-bottom:8px; }
+  .paywall-price span { font-size:14px; color:var(--muted); }
+  .paywall-btn { display:block; width:100%; background:var(--accent); color:var(--bg); border:none; padding:14px; font-family:'DM Mono',monospace; font-size:11px; letter-spacing:0.2em; text-transform:uppercase; cursor:pointer; margin-top:24px; transition:opacity 0.2s; }
+  .paywall-btn:hover { opacity:0.85; }
+  .paywall-close { background:none; border:none; color:var(--muted); font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.15em; cursor:pointer; margin-top:16px; text-decoration:underline; text-underline-offset:3px; }
+  .usage-bar { display:flex; align-items:center; gap:8px; margin-top:8px; }
+  .usage-dots { display:flex; gap:4px; }
+  .usage-dot { width:8px; height:8px; border-radius:50%; border:1px solid var(--accent-dim); }
+  .usage-dot.used { background:var(--accent); border-color:var(--accent); }
+  .usage-text { font-size:10px; color:var(--muted); letter-spacing:0.05em; }
+  .usage-upgrade { font-size:10px; color:var(--accent-dim); cursor:pointer; text-decoration:underline; text-underline-offset:3px; margin-left:auto; }
+  .usage-upgrade:hover { color:var(--accent); }
   @keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
   @keyframes pulse { 0%,100%{opacity:0.3;transform:scale(0.8)} 50%{opacity:1;transform:scale(1)} }
 </style>
@@ -684,7 +703,21 @@
 
 </div>
 
+<div class="paywall-overlay" id="paywallOverlay">
+  <div class="paywall-box">
+    <div class="paywall-label">Phantum</div>
+    <div class="paywall-title">You've used your<br>3 free readings today.</div>
+    <p class="paywall-sub">Unlock unlimited access to all 13 thinkers.<br>Your readings reset every day at midnight.</p>
+    <div class="paywall-price">3.99€ <span>/ month</span></div>
+    <input type="email" id="paywallEmail" placeholder="your@email.com" style="width:100%;background:transparent;border:none;border-bottom:1px solid var(--border);color:var(--text);font-family:'DM Mono',monospace;font-size:12px;padding:8px 0;outline:none;margin-top:16px;" />
+    <button class="paywall-btn" onclick="startCheckout()">Unlock unlimited access</button>
+    <br>
+    <button class="paywall-close" onclick="closePaywall()">Maybe later</button>
+  </div>
+</div>
+
 <script>
+
 const FRAMEWORKS = {
   socrates: { name:"Socrates", prompt:`You have just examined their soul through the elenctic method and seen what they cannot see themselves. You speak from the irony of knowing your own ignorance. Reference the unexamined life, what they think they know but do not, and what wisdom is truly demanding of them right now. Speak in first person as Socrates. You are giving a direct reading — like an oracle or tarot — to someone who has come to you with a decision or struggle. Write 4-6 sentences of flowing prose. Do NOT ask questions. Do NOT use bullet points or lists. Speak with authority, depth, and your unique philosophical voice. End with one sharp unforgettable sentence that cuts to the heart of their situation. Respond ONLY in JSON with no preamble: {"thinker":"Socrates","reading":"...","tension":"..."}` },
   epictetus: { name:"Epictetus", prompt:`You were a slave who found absolute freedom through philosophy. Speak from hard-won experience about what is and is not in their control. Be direct, even blunt. Name the fear they are hiding behind reason. Speak in first person as Epictetus. You are giving a direct reading — like an oracle or tarot — to someone who has come to you with a decision or struggle. Write 4-6 sentences of flowing prose. Do NOT ask questions. Do NOT use bullet points or lists. Speak with authority, depth, and your unique philosophical voice. End with one sharp unforgettable sentence that cuts to the heart of their situation. Respond ONLY in JSON with no preamble: {"thinker":"Epictetus","reading":"...","tension":"..."}` },
@@ -748,10 +781,13 @@ async function runSession() {
     const langInstruction = `Respond entirely in ${langNames[selectedLang] || 'English'}.`;
     const response = await fetch('/api/ask', {
       method:'POST', headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({ input, systemPrompt: fw.prompt + ' ' + langInstruction })
+      body:JSON.stringify({ input, systemPrompt: fw.prompt + ' ' + langInstruction, customerId })
     });
     const data = await response.json();
+    if (data.error === 'FREE_LIMIT_REACHED') { showPaywall(); clearInterval(phraseInterval); loading.classList.remove('visible'); document.getElementById('submitBtn').disabled = false; return; }
     if (data.error) throw new Error(data.error);
+    usageCount++;
+    updateUsageBar(usageCount);
     const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
     const clean = text.replace(/```json\n?|```/g,'').trim();
     const jsonMatch = clean.match(/\{[\s\S]*\}/);
@@ -764,9 +800,13 @@ async function runSession() {
     clearInterval(phraseInterval);
     loading.classList.remove('visible');
     document.getElementById('submitBtn').disabled = false;
-    const errorEl = document.getElementById('errorMsg');
-    errorEl.textContent = 'Error: ' + (err.message || 'API connection failed. Check your key and try again.');
-    errorEl.classList.add('visible');
+    if (err.message === 'FREE_LIMIT_REACHED' || (err.message && err.message.includes('FREE_LIMIT'))) {
+      showPaywall();
+    } else {
+      const errorEl = document.getElementById('errorMsg');
+      errorEl.textContent = 'Error: ' + (err.message || 'Something went wrong. Please try again.');
+      errorEl.classList.add('visible');
+    }
   }
 }
 
@@ -798,6 +838,64 @@ function resetSession() {
   document.getElementById('summaryArea').classList.remove('visible');
   document.getElementById('errorMsg').classList.remove('visible');
   window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// --- Usage tracking ---
+let usageCount = 0;
+const customerId = localStorage.getItem('phantum_customer_id') || null;
+
+function updateUsageBar(count) {
+  const bar = document.getElementById('usageBar');
+  if (!bar) return;
+  const dots = bar.querySelectorAll('.usage-dot');
+  dots.forEach((d, i) => d.classList.toggle('used', i < count));
+  const txt = bar.querySelector('.usage-text');
+  if (txt) txt.textContent = `${3 - count} free reading${3 - count !== 1 ? 's' : ''} left today`;
+}
+
+function showPaywall() {
+  document.getElementById('paywallOverlay').classList.add('visible');
+}
+
+function closePaywall() {
+  document.getElementById('paywallOverlay').classList.remove('visible');
+}
+
+async function startCheckout() {
+  const email = document.getElementById('paywallEmail').value.trim();
+  const btn = document.querySelector('.paywall-btn');
+  btn.textContent = 'Redirecting...';
+  btn.disabled = true;
+  try {
+    const res = await fetch('/api/checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+    const data = await res.json();
+    if (data.url) window.location.href = data.url;
+    else throw new Error(data.error);
+  } catch (err) {
+    btn.textContent = 'Unlock unlimited access';
+    btn.disabled = false;
+    alert('Something went wrong. Please try again.');
+  }
+}
+
+// Check for success redirect from Stripe
+const urlParams = new URLSearchParams(window.location.search);
+if (urlParams.get('status') === 'success') {
+  const sessionId = urlParams.get('session_id');
+  if (sessionId) {
+    fetch('/api/session?session_id=' + sessionId)
+      .then(r => r.json())
+      .then(d => {
+        if (d.customerId) {
+          localStorage.setItem('phantum_customer_id', d.customerId);
+          history.replaceState({}, '', '/');
+        }
+      });
+  }
 }
 </script>
 
