@@ -892,7 +892,7 @@ async function runSession() {
       updateUsageBar(usageCount, 0);
     }
         // Extract thinker/reading/tension directly from Gemini text
-    const geminiText = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    const geminiText = (data.candidates?.[0]?.content?.parts || []).map(p => p.text || '').join('');
     const tM = geminiText.match(/"thinker"\s*:\s*"([^"]+)"/);
     const rM = geminiText.match(/"reading"\s*:\s*"((?:[^"\\]|\\.)*)"/);
     const tnM = geminiText.match(/"tension"\s*:\s*"((?:[^"\\]|\\.)*)"/);
@@ -1069,7 +1069,7 @@ async function runOracleSession(input) {
   if (data1.error) throw new Error(data1.error);
   const text1 = data1.candidates?.[0]?.content?.parts?.[0]?.text || '';
   // Extract philosopher key from nested Gemini response
-  const geminiText1 = data1?.candidates?.[0]?.content?.parts?.[0]?.text || JSON.stringify(data1);
+  const geminiText1 = (data1?.candidates?.[0]?.content?.parts || []).map(p => p.text || '').join('') || JSON.stringify(data1);
   const philMatch = geminiText1.match(/"philosopher"\s*:\s*"([a-z]+)"/);
   if (!philMatch) throw new Error('No philosopher found in: ' + geminiText1.slice(0, 150));
   const pickedKey = philMatch[1];
