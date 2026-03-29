@@ -703,7 +703,7 @@
 
   <div class="section">
     <div class="section-label">02 — Describe your decision</div>
-    <textarea id="decisionInput" placeholder="I need to decide whether to leave my job. I've been here five years and the stability feels comfortable, but..." oninput="updateCount()"></textarea>
+    <textarea id="decisionInput" maxlength="500" placeholder="I need to decide whether to leave my job. I've been here five years and the stability feels comfortable, but..." oninput="updateCount()"></textarea>
     <div class="lang-row">
       <span class="lang-row-label">Response language / 返答言語 / Antwortsprache / Langue de réponse / Idioma de respuesta</span>
       <div class="lang-btns">
@@ -716,7 +716,7 @@
     </div>
     <div class="submit-row">
       <button class="submit-btn" id="submitBtn" onclick="runSession()" disabled>Read it</button>
-      <span class="char-count" id="charCount">0 characters</span>
+      <span class="char-count" id="charCount">0 / 500</span>
     </div>
     <div class="error-msg" id="errorMsg"></div>
   </div>
@@ -789,7 +789,7 @@ function selectFramework(btn) {
 
 function updateCount() {
   const val = document.getElementById('decisionInput').value;
-  document.getElementById('charCount').textContent = val.length + ' characters';
+  const len = val.length; document.getElementById('charCount').textContent = len + ' / 500'; document.getElementById('charCount').style.color = len > 450 ? '#c87070' : 'var(--muted)';
   updateSubmitState();
 }
 
