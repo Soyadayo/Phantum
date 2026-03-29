@@ -740,20 +740,19 @@ async function runSession() {
     document.getElementById('loadingText').textContent = loadingPhrases[phraseIdx];
   }, 1800);
   try {
-    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
-    const response = await fetch(endpoint, {
+    const langNames = {en:'English',ja:'Japanese',de:'German',fr:'French',es:'Spanish',zh:'Chinese',ko:'Korean',tr:'Turkish',ar:'Arabic',fa:'Persian'};
+    const langInstruction = `Respond entirely in ${langNames[selectedLang] || 'English'}.`;
+    const response = await fetch('/api/ask', {
       method:'POST', headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        system_instruction:{parts:[{text:fw.prompt}]},
-        contents:[{role:'user',parts:[{text:input}]}],
-        generationConfig:{temperature:0.8,maxOutputTokens:1000}
-      })
+      body:JSON.stringify({ input, systemPrompt: fw.prompt + ' ' + langInstruction })
     });
     const data = await response.json();
-    if (data.error) throw new Error(data.error.message);
+    if (data.error) throw new Error(data.error);
     const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-    const clean = text.replace(/```json|```/g,'').trim();
-    const parsed = JSON.parse(clean);
+    const clean = text.replace(/```json\n?|```/g,'').trim();
+    const jsonMatch = clean.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error('Response format error. Please try again.');
+    const parsed = JSON.parse(jsonMatch[0]);
     clearInterval(phraseInterval);
     loading.classList.remove('visible');
     renderResponse(parsed);
