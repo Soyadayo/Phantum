@@ -34,6 +34,8 @@
   h1 { font-family:'Cormorant Garamond',serif; font-weight:300; font-size:clamp(36px,6vw,52px); line-height:1.1; color:var(--text); margin-bottom:12px; }
   h1 em { font-style:italic; color:var(--accent); }
   .subtitle { font-size:12px; color:var(--muted); letter-spacing:0.05em; line-height:1.6; }
+  .subtitle-langs { display:block; margin-top:8px; }
+  .subtitle-langs span { display:block; font-size:10px; color:var(--muted); opacity:0.4; line-height:1.8; }
 
   /* API key bar */
 
@@ -67,6 +69,19 @@
   .framework-btn.active { border-color:var(--accent); background:#1a1812; }
 
   /* Portrait area */
+  [data-id="socrates"] .fw-portrait { background:#E8C54722; }
+  [data-id="epictetus"] .fw-portrait { background:#7B9E8722; }
+  [data-id="marcus"] .fw-portrait { background:#9B6B9B22; }
+  [data-id="nietzsche"] .fw-portrait { background:#C4543C22; }
+  [data-id="sartre"] .fw-portrait { background:#4A7FB522; }
+  [data-id="camus"] .fw-portrait { background:#D4904A22; }
+  [data-id="arendt"] .fw-portrait { background:#5B8FA822; }
+  [data-id="simone"] .fw-portrait { background:#C4547A22; }
+  [data-id="foucault"] .fw-portrait { background:#6B6B8A22; }
+  [data-id="han"] .fw-portrait { background:#4A8A7A22; }
+  [data-id="fisher"] .fw-portrait { background:#7A6A9A22; }
+  [data-id="bauman"] .fw-portrait { background:#9A806022; }
+  [data-id="harari"] .fw-portrait { background:#5A9AB522; }
   .fw-portrait {
     width:100%;
     aspect-ratio:1;
@@ -173,13 +188,14 @@
 
   <header>
     <div class="header-label">Phantum</div>
-    <h1>Speak your<br><em>mind.</em></h1>
-    <p class="subtitle">
-      Choose a thinker and write what's on your mind. You'll receive their reading. Choose your response language below.<br>
-      <span style="opacity:0.5">思想家を選んで、今思っていることを書いてください。答えが返ってきます。返答の言語は選べます。</span><br>
-      <span style="opacity:0.5">Wähle einen Denker und schreib, was dich beschäftigt. Du erhältst ihre Antwort. Die Sprache ist wählbar.</span><br>
-      <span style="opacity:0.5">Choisissez un penseur et écrivez ce que vous avez en tête. Vous recevrez leur réponse. La langue est au choix.</span><br>
-      <span style="opacity:0.5">Elige un pensador y escribe lo que tienes en mente. Recibirás su respuesta. El idioma es tu elección.</span>
+    <h1>Your situation.<br><em>Their wisdom.</em></h1>
+    <p class="subtitle">Pick a thinker. Write what's on your mind. Get their take.<br>
+    <span class="subtitle-langs">
+      <span>思想家を選んで今思うことを書く。答えが返ってくる。</span>
+      <span>Einen Denker wählen. Schreiben. Antwort erhalten.</span>
+      <span>Choisissez. Écrivez. Recevez.</span>
+      <span>Elige. Escribe. Recibe.</span>
+    </span>
     </p>
   </header>
 
@@ -198,27 +214,30 @@
         <button class="framework-btn" data-id="socrates" onclick="selectFramework(this)">
           <div class="fw-portrait">
             <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-              <!-- Socrates: bald, short beard, broad nose, toga -->
-              <circle cx="60" cy="48" r="26" fill="none" stroke="#c8a96e" stroke-width="1.2"/>
-              <!-- Bald dome -->
-              <path d="M36 50 Q38 26 60 24 Q82 26 84 50" fill="none" stroke="#c8a96e" stroke-width="1"/>
-              <!-- Eyes -->
-              <line x1="48" y1="46" x2="54" y2="46" stroke="#c8a96e" stroke-width="1.2"/>
-              <line x1="66" y1="46" x2="72" y2="46" stroke="#c8a96e" stroke-width="1.2"/>
-              <!-- Broad nose -->
-              <path d="M58 50 Q57 56 55 58 Q60 60 65 58 Q63 56 62 50" fill="none" stroke="#c8a96e" stroke-width="1"/>
-              <!-- Short thick beard -->
-              <path d="M44 64 Q50 72 60 74 Q70 72 76 64" fill="none" stroke="#c8a96e" stroke-width="1"/>
-              <path d="M46 68 Q52 76 60 78 Q68 76 74 68" fill="none" stroke="#c8a96e" stroke-width="1"/>
-              <!-- Neck + toga -->
-              <line x1="55" y1="74" x2="52" y2="84" stroke="#c8a96e" stroke-width="1"/>
-              <line x1="65" y1="74" x2="68" y2="84" stroke="#c8a96e" stroke-width="1"/>
-              <path d="M28 120 Q40 90 52 84 Q60 88 68 84 Q80 90 92 120" fill="none" stroke="#c8a96e" stroke-width="1"/>
-              <path d="M32 120 Q38 98 48 92" fill="none" stroke="#c8a96e" stroke-width="0.8" opacity="0.5"/>
-              <path d="M88 120 Q82 98 72 92" fill="none" stroke="#c8a96e" stroke-width="0.8" opacity="0.5"/>
-              <!-- Hemlock cup hint -->
-              <path d="M88 100 L84 115 Q90 117 94 115 L92 100 Z" fill="none" stroke="#c8a96e" stroke-width="0.8" opacity="0.4"/>
-            </svg>
+  <!-- Socrates flat: bald head, short beard, toga -->
+  <!-- Head -->
+  <ellipse cx="60" cy="44" rx="22" ry="24" fill="#E8C547"/>
+  <!-- Bald shine -->
+  <ellipse cx="54" cy="34" rx="6" ry="4" fill="#F0D060" opacity="0.5"/>
+  <!-- Eyes -->
+  <circle cx="52" cy="42" r="3" fill="#1a1810"/>
+  <circle cx="68" cy="42" r="3" fill="#1a1810"/>
+  <circle cx="53" cy="41" r="1" fill="#fff" opacity="0.6"/>
+  <circle cx="69" cy="41" r="1" fill="#fff" opacity="0.6"/>
+  <!-- Broad nose -->
+  <ellipse cx="60" cy="50" rx="4" ry="3" fill="#C8A030"/>
+  <!-- Short beard -->
+  <path d="M42 58 Q50 70 60 72 Q70 70 78 58 Q70 62 60 63 Q50 62 42 58Z" fill="#C8A030"/>
+  <!-- Neck -->
+  <rect x="54" y="68" width="12" height="10" fill="#E8C547"/>
+  <!-- Toga body -->
+  <path d="M20 120 Q35 88 54 78 Q60 82 66 78 Q85 88 100 120Z" fill="#F5F0E0"/>
+  <!-- Toga fold -->
+  <path d="M54 78 Q48 90 44 100" fill="none" stroke="#D0C8B0" stroke-width="1.5"/>
+  <path d="M66 78 Q72 90 76 100" fill="none" stroke="#D0C8B0" stroke-width="1.5"/>
+  <!-- Hemlock cup small -->
+  <path d="M84 95 L82 110 Q88 112 92 110 L90 95Z" fill="#C8A030" opacity="0.6"/>
+</svg>
           </div>
           <div class="fw-info">
             <span class="fw-name">Socrates</span>
@@ -229,29 +248,28 @@
         <button class="framework-btn" data-id="epictetus" onclick="selectFramework(this)">
           <div class="fw-portrait">
             <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-              <!-- Epictetus: slave, lame, stoic expression, simple tunic -->
-              <circle cx="60" cy="46" r="24" fill="none" stroke="#c8a96e" stroke-width="1.2"/>
-              <!-- Short hair -->
-              <path d="M38 42 Q40 24 60 22 Q80 24 82 42" fill="none" stroke="#c8a96e" stroke-width="1"/>
-              <path d="M38 42 Q36 35 40 30" fill="none" stroke="#c8a96e" stroke-width="0.8"/>
-              <!-- Eyes — steady, calm -->
-              <line x1="49" y1="44" x2="55" y2="44" stroke="#c8a96e" stroke-width="1.2"/>
-              <line x1="65" y1="44" x2="71" y2="44" stroke="#c8a96e" stroke-width="1.2"/>
-              <!-- Nose -->
-              <path d="M59 48 Q58 53 57 55 Q60 57 63 55 Q62 53 61 48" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
-              <!-- Light beard -->
-              <path d="M45 60 Q52 68 60 70 Q68 68 75 60" fill="none" stroke="#c8a96e" stroke-width="1"/>
-              <!-- Neck -->
-              <line x1="56" y1="70" x2="54" y2="80" stroke="#c8a96e" stroke-width="1"/>
-              <line x1="64" y1="70" x2="66" y2="80" stroke="#c8a96e" stroke-width="1"/>
-              <!-- Simple tunic + one arm raised (teaching gesture) -->
-              <path d="M26 120 Q38 88 54 80 Q60 84 66 80 Q82 88 94 120" fill="none" stroke="#c8a96e" stroke-width="1"/>
-              <!-- Raised right arm -->
-              <path d="M82 92 Q94 78 98 68" fill="none" stroke="#c8a96e" stroke-width="1"/>
-              <path d="M98 68 L102 64 M98 68 L94 62" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
-              <!-- Lame leg hint -->
-              <path d="M38 110 Q35 118 32 120" fill="none" stroke="#c8a96e" stroke-width="0.8" opacity="0.5"/>
-            </svg>
+  <!-- Epictetus flat: simple features, teaching gesture -->
+  <ellipse cx="60" cy="44" rx="21" ry="23" fill="#7B9E87"/>
+  <ellipse cx="55" cy="36" rx="5" ry="3" fill="#8FAF9A" opacity="0.5"/>
+  <!-- Short hair -->
+  <path d="M39 38 Q40 22 60 21 Q80 22 81 38 Q76 30 60 29 Q44 30 39 38Z" fill="#5A7A66"/>
+  <!-- Eyes -->
+  <circle cx="52" cy="42" r="3" fill="#1a1810"/>
+  <circle cx="68" cy="42" r="3" fill="#1a1810"/>
+  <circle cx="53" cy="41" r="1" fill="#fff" opacity="0.6"/>
+  <circle cx="69" cy="41" r="1" fill="#fff" opacity="0.6"/>
+  <!-- Nose -->
+  <ellipse cx="60" cy="49" rx="3" ry="2.5" fill="#5A7A66"/>
+  <!-- Light beard -->
+  <path d="M44 58 Q52 68 60 70 Q68 68 76 58 Q68 62 60 63 Q52 62 44 58Z" fill="#5A7A66"/>
+  <!-- Neck -->
+  <rect x="55" y="67" width="10" height="10" fill="#7B9E87"/>
+  <!-- Simple tunic -->
+  <path d="M22 120 Q36 88 55 77 Q60 81 65 77 Q84 88 98 120Z" fill="#9BB8A6"/>
+  <!-- Raised arm -->
+  <path d="M84 88 Q96 74 100 62" fill="none" stroke="#7B9E87" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="100" cy="60" r="5" fill="#7B9E87"/>
+</svg>
           </div>
           <div class="fw-info">
             <span class="fw-name">Epictetus</span>
@@ -262,32 +280,35 @@
         <button class="framework-btn" data-id="marcus" onclick="selectFramework(this)">
           <div class="fw-portrait">
             <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-              <!-- Marcus Aurelius: emperor, curly beard, laurel wreath -->
-              <circle cx="60" cy="46" r="24" fill="none" stroke="#c8a96e" stroke-width="1.2"/>
-              <!-- Laurel wreath -->
-              <path d="M38 36 Q42 28 48 30 Q44 36 40 38" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
-              <path d="M44 28 Q50 22 56 26 Q52 30 48 30" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
-              <path d="M56 24 Q62 20 68 24 Q64 28 60 28 Q58 26 56 24" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
-              <path d="M68 24 Q74 22 78 28 Q74 30 70 28" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
-              <path d="M78 28 Q84 32 82 40 Q78 38 76 36" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
-              <!-- Eyes — contemplative, slightly weary -->
-              <line x1="49" y1="44" x2="55" y2="44" stroke="#c8a96e" stroke-width="1.2"/>
-              <line x1="65" y1="44" x2="71" y2="44" stroke="#c8a96e" stroke-width="1.2"/>
-              <line x1="48" y1="42" x2="56" y2="41" stroke="#c8a96e" stroke-width="0.6" opacity="0.6"/>
-              <!-- Nose -->
-              <path d="M59 48 Q58 53 57 55 Q60 57 63 55 Q62 53 61 48" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
-              <!-- Full curly beard -->
-              <path d="M43 60 Q46 70 52 74 Q60 78 68 74 Q74 70 77 60" fill="none" stroke="#c8a96e" stroke-width="1"/>
-              <path d="M44 64 Q47 72 52 76" fill="none" stroke="#c8a96e" stroke-width="0.7" opacity="0.5"/>
-              <path d="M68 64 Q72 72 74 68" fill="none" stroke="#c8a96e" stroke-width="0.7" opacity="0.5"/>
-              <path d="M52 76 Q56 80 60 80 Q64 80 68 76" fill="none" stroke="#c8a96e" stroke-width="0.7" opacity="0.5"/>
-              <!-- Neck + imperial robes -->
-              <line x1="56" y1="78" x2="53" y2="86" stroke="#c8a96e" stroke-width="1"/>
-              <line x1="64" y1="78" x2="67" y2="86" stroke="#c8a96e" stroke-width="1"/>
-              <path d="M24 120 Q36 88 53 86 Q60 90 67 86 Q84 88 96 120" fill="none" stroke="#c8a96e" stroke-width="1"/>
-              <path d="M36 120 Q40 100 46 94" fill="none" stroke="#c8a96e" stroke-width="0.8" opacity="0.5"/>
-              <path d="M84 120 Q80 100 74 94" fill="none" stroke="#c8a96e" stroke-width="0.8" opacity="0.5"/>
-            </svg>
+  <!-- Marcus Aurelius flat: laurel wreath, curly beard -->
+  <ellipse cx="60" cy="46" rx="22" ry="24" fill="#9B6B9B"/>
+  <!-- Laurel wreath -->
+  <path d="M38 36 Q60 20 82 36" fill="none" stroke="#C8A030" stroke-width="3" stroke-linecap="round"/>
+  <ellipse cx="44" cy="32" rx="4" ry="6" fill="#5A8C4A" transform="rotate(-20 44 32)"/>
+  <ellipse cx="52" cy="26" rx="4" ry="6" fill="#5A8C4A" transform="rotate(-10 52 26)"/>
+  <ellipse cx="60" cy="24" rx="4" ry="6" fill="#5A8C4A"/>
+  <ellipse cx="68" cy="26" rx="4" ry="6" fill="#5A8C4A" transform="rotate(10 68 26)"/>
+  <ellipse cx="76" cy="32" rx="4" ry="6" fill="#5A8C4A" transform="rotate(20 76 32)"/>
+  <!-- Eyes weary -->
+  <circle cx="52" cy="44" r="3" fill="#1a1810"/>
+  <circle cx="68" cy="44" r="3" fill="#1a1810"/>
+  <circle cx="53" cy="43" r="1" fill="#fff" opacity="0.5"/>
+  <circle cx="69" cy="43" r="1" fill="#fff" opacity="0.5"/>
+  <!-- Nose -->
+  <ellipse cx="60" cy="51" rx="3" ry="2.5" fill="#7A4A7A"/>
+  <!-- Curly beard -->
+  <path d="M42 60 Q46 72 52 76 Q60 80 68 76 Q74 72 78 60 Q70 65 60 66 Q50 65 42 60Z" fill="#7A4A7A"/>
+  <circle cx="48" cy="68" r="3" fill="#7A4A7A"/>
+  <circle cx="56" cy="72" r="3" fill="#7A4A7A"/>
+  <circle cx="64" cy="72" r="3" fill="#7A4A7A"/>
+  <circle cx="72" cy="68" r="3" fill="#7A4A7A"/>
+  <!-- Neck -->
+  <rect x="55" y="66" width="10" height="12" fill="#9B6B9B"/>
+  <!-- Imperial robes -->
+  <path d="M20 120 Q34 86 55 78 Q60 82 65 78 Q86 86 100 120Z" fill="#C4A0C4"/>
+  <path d="M55 78 Q52 88 50 96" fill="none" stroke="#9B6B9B" stroke-width="2"/>
+  <path d="M65 78 Q68 88 70 96" fill="none" stroke="#9B6B9B" stroke-width="2"/>
+</svg>
           </div>
           <div class="fw-info">
             <span class="fw-name">Marcus Aurelius</span>
@@ -303,29 +324,30 @@
         <button class="framework-btn" data-id="nietzsche" onclick="selectFramework(this)">
           <div class="fw-portrait">
             <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-              <!-- Nietzsche: massive mustache, intense brow, short hair -->
-              <circle cx="60" cy="46" r="24" fill="none" stroke="#c8a96e" stroke-width="1.2"/>
-              <path d="M38 40 Q40 24 60 22 Q80 24 82 40" fill="none" stroke="#c8a96e" stroke-width="1"/>
-              <!-- Heavy brow -->
-              <path d="M44 40 Q52 37 56 40" fill="none" stroke="#c8a96e" stroke-width="1.4"/>
-              <path d="M64 40 Q68 37 76 40" fill="none" stroke="#c8a96e" stroke-width="1.4"/>
-              <!-- Intense eyes -->
-              <line x1="47" y1="44" x2="55" y2="44" stroke="#c8a96e" stroke-width="1.4"/>
-              <line x1="65" y1="44" x2="73" y2="44" stroke="#c8a96e" stroke-width="1.4"/>
-              <!-- Nose -->
-              <path d="M59 48 Q58 52 57 54 Q60 56 63 54 Q62 52 61 48" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
-              <!-- MASSIVE drooping mustache -->
-              <path d="M44 60 Q52 56 60 58 Q68 56 76 60" fill="none" stroke="#c8a96e" stroke-width="1.6"/>
-              <path d="M44 60 Q40 68 38 74" fill="none" stroke="#c8a96e" stroke-width="1.4"/>
-              <path d="M76 60 Q80 68 82 74" fill="none" stroke="#c8a96e" stroke-width="1.4"/>
-              <path d="M38 74 Q44 70 52 68 Q58 68 60 70" fill="none" stroke="#c8a96e" stroke-width="0.9" opacity="0.6"/>
-              <path d="M82 74 Q76 70 68 68 Q62 68 60 70" fill="none" stroke="#c8a96e" stroke-width="0.9" opacity="0.6"/>
-              <!-- Neck + coat -->
-              <line x1="56" y1="70" x2="54" y2="80" stroke="#c8a96e" stroke-width="1"/>
-              <line x1="64" y1="70" x2="66" y2="80" stroke="#c8a96e" stroke-width="1"/>
-              <path d="M26 120 Q38 86 54 80 Q60 84 66 80 Q82 86 94 120" fill="none" stroke="#c8a96e" stroke-width="1"/>
-              <path d="M54 80 Q58 88 60 92 Q62 88 66 80" fill="none" stroke="#c8a96e" stroke-width="0.8" opacity="0.5"/>
-            </svg>
+  <!-- Nietzsche flat: MASSIVE mustache, intense brow -->
+  <ellipse cx="60" cy="44" rx="22" ry="24" fill="#C4543C"/>
+  <!-- Short hair -->
+  <path d="M38 38 Q40 22 60 21 Q80 22 82 38 Q76 30 60 29 Q44 30 38 38Z" fill="#8B3020"/>
+  <!-- Heavy brows -->
+  <path d="M44 38 Q52 34 58 38" fill="none" stroke="#1a1810" stroke-width="3" stroke-linecap="round"/>
+  <path d="M62 38 Q68 34 76 38" fill="none" stroke="#1a1810" stroke-width="3" stroke-linecap="round"/>
+  <!-- Intense eyes -->
+  <circle cx="52" cy="43" r="3.5" fill="#1a1810"/>
+  <circle cx="68" cy="43" r="3.5" fill="#1a1810"/>
+  <circle cx="53" cy="42" r="1.2" fill="#fff" opacity="0.7"/>
+  <circle cx="69" cy="42" r="1.2" fill="#fff" opacity="0.7"/>
+  <!-- Nose -->
+  <ellipse cx="60" cy="50" rx="3.5" ry="3" fill="#A03428"/>
+  <!-- MASSIVE drooping mustache -->
+  <path d="M40 58 Q50 54 60 56 Q70 54 80 58 Q72 62 60 62 Q48 62 40 58Z" fill="#1a1810"/>
+  <path d="M40 58 Q36 68 34 76" fill="none" stroke="#1a1810" stroke-width="5" stroke-linecap="round"/>
+  <path d="M80 58 Q84 68 86 76" fill="none" stroke="#1a1810" stroke-width="5" stroke-linecap="round"/>
+  <!-- Neck -->
+  <rect x="55" y="62" width="10" height="14" fill="#C4543C"/>
+  <!-- Coat -->
+  <path d="M18 120 Q34 86 55 76 Q60 80 65 76 Q86 86 102 120Z" fill="#2A1A14"/>
+  <path d="M55 76 Q58 84 60 88 Q62 84 65 76" fill="none" stroke="#4A3020" stroke-width="2"/>
+</svg>
           </div>
           <div class="fw-info">
             <span class="fw-name">Nietzsche</span>
@@ -336,35 +358,34 @@
         <button class="framework-btn" data-id="sartre" onclick="selectFramework(this)">
           <div class="fw-portrait">
             <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-              <!-- Sartre: glasses, pipe, small stature, slightly asymmetric eyes -->
-              <circle cx="60" cy="46" r="24" fill="none" stroke="#c8a96e" stroke-width="1.2"/>
-              <path d="M38 40 Q40 24 60 22 Q80 24 82 40" fill="none" stroke="#c8a96e" stroke-width="1"/>
-              <!-- Thick-framed glasses -->
-              <rect x="44" y="39" width="14" height="10" rx="2" fill="none" stroke="#c8a96e" stroke-width="1.3"/>
-              <rect x="62" y="39" width="14" height="10" rx="2" fill="none" stroke="#c8a96e" stroke-width="1.3"/>
-              <line x1="58" y1="44" x2="62" y2="44" stroke="#c8a96e" stroke-width="1.1"/>
-              <line x1="38" y1="44" x2="44" y2="44" stroke="#c8a96e" stroke-width="1"/>
-              <line x1="76" y1="44" x2="82" y2="44" stroke="#c8a96e" stroke-width="1"/>
-              <!-- One eye slightly off (walleye) -->
-              <circle cx="51" cy="44" r="2" fill="none" stroke="#c8a96e" stroke-width="0.8"/>
-              <circle cx="50" cy="44" r="0.8" fill="#c8a96e" opacity="0.6"/>
-              <circle cx="69" cy="44" r="2" fill="none" stroke="#c8a96e" stroke-width="0.8"/>
-              <circle cx="70" cy="44" r="0.8" fill="#c8a96e" opacity="0.6"/>
-              <!-- Nose -->
-              <path d="M59 50 Q57 55 56 57 Q60 59 64 57 Q63 55 61 50" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
-              <!-- Thin lips -->
-              <line x1="53" y1="62" x2="67" y2="62" stroke="#c8a96e" stroke-width="1"/>
-              <!-- Pipe -->
-              <path d="M67 64 Q74 62 78 66 Q80 70 76 72" fill="none" stroke="#c8a96e" stroke-width="1"/>
-              <path d="M76 72 Q78 78 76 80" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
-              <!-- Smoke wisps -->
-              <path d="M76 80 Q74 74 78 70" fill="none" stroke="#c8a96e" stroke-width="0.6" opacity="0.4"/>
-              <!-- Neck + turtleneck -->
-              <line x1="56" y1="70" x2="54" y2="80" stroke="#c8a96e" stroke-width="1"/>
-              <line x1="64" y1="70" x2="66" y2="80" stroke="#c8a96e" stroke-width="1"/>
-              <path d="M30 120 Q42 86 54 80 Q60 84 66 80 Q78 86 90 120" fill="none" stroke="#c8a96e" stroke-width="1"/>
-              <path d="M52 80 Q53 86 60 88 Q67 86 68 80" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
-            </svg>
+  <!-- Sartre flat: thick glasses, pipe -->
+  <ellipse cx="60" cy="46" rx="21" ry="23" fill="#4A7FB5"/>
+  <!-- Hair -->
+  <path d="M39 40 Q40 24 60 22 Q80 24 81 40 Q76 32 60 31 Q44 32 39 40Z" fill="#2A4F80"/>
+  <!-- Thick frame glasses -->
+  <rect x="43" y="38" width="15" height="12" rx="3" fill="none" stroke="#1a1810" stroke-width="3"/>
+  <rect x="62" y="38" width="15" height="12" rx="3" fill="none" stroke="#1a1810" stroke-width="3"/>
+  <line x1="58" y1="44" x2="62" y2="44" stroke="#1a1810" stroke-width="2.5"/>
+  <line x1="36" y1="43" x2="43" y2="43" stroke="#1a1810" stroke-width="2"/>
+  <line x1="77" y1="43" x2="84" y2="43" stroke="#1a1810" stroke-width="2"/>
+  <!-- Eyes (walleye hint) -->
+  <circle cx="51" cy="44" r="2.5" fill="#1a1810"/>
+  <circle cx="50" cy="43" r="0.8" fill="#fff" opacity="0.7"/>
+  <circle cx="70" cy="44" r="2.5" fill="#1a1810"/>
+  <circle cx="71" cy="43" r="0.8" fill="#fff" opacity="0.7"/>
+  <!-- Nose -->
+  <ellipse cx="60" cy="52" rx="4" ry="3" fill="#2A4F80"/>
+  <!-- Thin lips -->
+  <path d="M52 62 Q60 65 68 62" fill="#2A4F80" stroke="#2A4F80" stroke-width="1"/>
+  <!-- Pipe -->
+  <path d="M68 64 Q78 60 82 66 Q84 72 78 74" fill="none" stroke="#8B6040" stroke-width="3" stroke-linecap="round"/>
+  <ellipse cx="78" cy="76" rx="4" ry="3" fill="#6B4020"/>
+  <!-- Neck + turtleneck -->
+  <rect x="55" y="69" width="10" height="8" fill="#4A7FB5"/>
+  <path d="M46 77 Q52 74 68 74 Q74 77 74 80 Q60 78 46 80Z" fill="#2A3A50"/>
+  <!-- Body -->
+  <path d="M24 120 Q38 88 54 80 Q60 84 66 80 Q82 88 96 120Z" fill="#2A3A50"/>
+</svg>
           </div>
           <div class="fw-info">
             <span class="fw-name">Sartre</span>
@@ -375,36 +396,35 @@
         <button class="framework-btn" data-id="camus" onclick="selectFramework(this)">
           <div class="fw-portrait">
             <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-              <!-- Camus: handsome, sharp features, trench coat, cigarette -->
-              <circle cx="60" cy="44" r="24" fill="none" stroke="#c8a96e" stroke-width="1.2"/>
-              <path d="M38 38 Q40 22 60 20 Q80 22 82 38" fill="none" stroke="#c8a96e" stroke-width="1"/>
-              <!-- Defined cheekbones -->
-              <path d="M38 52 Q40 58 44 60" fill="none" stroke="#c8a96e" stroke-width="0.7" opacity="0.5"/>
-              <path d="M82 52 Q80 58 76 60" fill="none" stroke="#c8a96e" stroke-width="0.7" opacity="0.5"/>
-              <!-- Eyes — dark, romantic -->
-              <line x1="48" y1="42" x2="56" y2="42" stroke="#c8a96e" stroke-width="1.3"/>
-              <line x1="64" y1="42" x2="72" y2="42" stroke="#c8a96e" stroke-width="1.3"/>
-              <!-- Strong brow -->
-              <path d="M47 39 Q52 37 57 39" fill="none" stroke="#c8a96e" stroke-width="1"/>
-              <path d="M63 39 Q68 37 73 39" fill="none" stroke="#c8a96e" stroke-width="1"/>
-              <!-- Nose -->
-              <path d="M59 46 Q58 51 57 53 Q60 55 63 53 Q62 51 61 46" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
-              <!-- Slight smirk -->
-              <path d="M53 60 Q60 63 67 60" fill="none" stroke="#c8a96e" stroke-width="1"/>
-              <!-- Cigarette -->
-              <line x1="67" y1="60" x2="78" y2="56" stroke="#c8a96e" stroke-width="1.2"/>
-              <line x1="78" y1="56" x2="82" y2="55" stroke="#c8a96e" stroke-width="0.9" opacity="0.5"/>
-              <path d="M82 55 Q80 50 84 46" fill="none" stroke="#c8a96e" stroke-width="0.5" opacity="0.35"/>
-              <!-- Trench coat + upturned collar -->
-              <line x1="56" y1="68" x2="52" y2="78" stroke="#c8a96e" stroke-width="1"/>
-              <line x1="64" y1="68" x2="68" y2="78" stroke="#c8a96e" stroke-width="1"/>
-              <path d="M22 120 Q36 84 52 78 Q56 82 60 82 Q64 82 68 78 Q84 84 98 120" fill="none" stroke="#c8a96e" stroke-width="1"/>
-              <path d="M52 78 Q50 86 48 90" fill="none" stroke="#c8a96e" stroke-width="0.9" opacity="0.6"/>
-              <path d="M68 78 Q70 86 72 90" fill="none" stroke="#c8a96e" stroke-width="0.9" opacity="0.6"/>
-              <!-- Coat lapels -->
-              <path d="M52 78 Q56 84 60 86" fill="none" stroke="#c8a96e" stroke-width="0.8"/>
-              <path d="M68 78 Q64 84 60 86" fill="none" stroke="#c8a96e" stroke-width="0.8"/>
-            </svg>
+  <!-- Camus flat: handsome, cigarette, trench coat -->
+  <ellipse cx="60" cy="43" rx="22" ry="24" fill="#D4904A"/>
+  <!-- Dark hair -->
+  <path d="M38 36 Q40 20 60 19 Q80 20 82 36 Q76 28 60 27 Q44 28 38 36Z" fill="#1A1410"/>
+  <!-- Strong brows -->
+  <path d="M46 37 Q52 35 58 37" fill="none" stroke="#1A1410" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M62 37 Q68 35 74 37" fill="none" stroke="#1A1410" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- Romantic eyes -->
+  <circle cx="52" cy="42" r="3.5" fill="#1A1410"/>
+  <circle cx="68" cy="42" r="3.5" fill="#1A1410"/>
+  <circle cx="53" cy="41" r="1.2" fill="#fff" opacity="0.6"/>
+  <circle cx="69" cy="41" r="1.2" fill="#fff" opacity="0.6"/>
+  <!-- Nose -->
+  <ellipse cx="60" cy="49" rx="3" ry="2.5" fill="#A86830"/>
+  <!-- Slight smirk -->
+  <path d="M52 59 Q60 63 68 59" fill="#A86830" stroke="#A86830" stroke-width="1"/>
+  <!-- Cigarette -->
+  <rect x="68" y="58" width="18" height="3" rx="1.5" fill="#F5F0E0" transform="rotate(-20 68 58)"/>
+  <rect x="84" y="52" width="4" height="3" rx="1" fill="#FF6040" opacity="0.8" transform="rotate(-20 84 52)"/>
+  <!-- Neck -->
+  <rect x="55" y="67" width="10" height="10" fill="#D4904A"/>
+  <!-- Trench coat with upturned collar -->
+  <path d="M20 120 Q34 84 54 77 Q58 81 60 81 Q62 81 66 77 Q86 84 100 120Z" fill="#6B5030"/>
+  <path d="M54 77 Q50 84 48 92" fill="none" stroke="#8B6848" stroke-width="2"/>
+  <path d="M66 77 Q70 84 72 92" fill="none" stroke="#8B6848" stroke-width="2"/>
+  <!-- Lapels -->
+  <path d="M54 77 Q57 83 60 85" fill="none" stroke="#4A3820" stroke-width="2"/>
+  <path d="M66 77 Q63 83 60 85" fill="none" stroke="#4A3820" stroke-width="2"/>
+</svg>
           </div>
           <div class="fw-info">
             <span class="fw-name">Camus</span>
@@ -415,31 +435,32 @@
         <button class="framework-btn" data-id="arendt" onclick="selectFramework(this)">
           <div class="fw-portrait">
             <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-              <!-- Hannah Arendt: elegant, sharp eyes, chignon, cigarette holder -->
-              <circle cx="60" cy="44" r="23" fill="none" stroke="#c8a96e" stroke-width="1.2"/>
-              <!-- Chignon (hair pinned back) -->
-              <path d="M40 36 Q42 22 60 20 Q78 22 80 36" fill="none" stroke="#c8a96e" stroke-width="1"/>
-              <path d="M78 36 Q84 40 82 50" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
-              <ellipse cx="84" cy="32" rx="6" ry="8" fill="none" stroke="#c8a96e" stroke-width="0.9" opacity="0.7"/>
-              <!-- Arched brows -->
-              <path d="M47 39 Q52 36 57 39" fill="none" stroke="#c8a96e" stroke-width="1"/>
-              <path d="M63 39 Q68 36 73 39" fill="none" stroke="#c8a96e" stroke-width="1"/>
-              <!-- Intelligent eyes -->
-              <line x1="48" y1="43" x2="56" y2="43" stroke="#c8a96e" stroke-width="1.3"/>
-              <line x1="64" y1="43" x2="72" y2="43" stroke="#c8a96e" stroke-width="1.3"/>
-              <!-- Nose -->
-              <path d="M59 47 Q58 52 57 54 Q60 56 63 54 Q62 52 61 47" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
-              <!-- Composed lips -->
-              <path d="M53 60 Q60 62 67 60" fill="none" stroke="#c8a96e" stroke-width="1"/>
-              <!-- Long cigarette holder -->
-              <line x1="67" y1="60" x2="84" y2="50" stroke="#c8a96e" stroke-width="0.9"/>
-              <line x1="84" y1="50" x2="88" y2="48" stroke="#c8a96e" stroke-width="0.7" opacity="0.4"/>
-              <!-- Neck + blouse -->
-              <line x1="56" y1="67" x2="54" y2="78" stroke="#c8a96e" stroke-width="1"/>
-              <line x1="64" y1="67" x2="66" y2="78" stroke="#c8a96e" stroke-width="1"/>
-              <path d="M26 120 Q40 86 54 78 Q60 82 66 78 Q80 86 94 120" fill="none" stroke="#c8a96e" stroke-width="1"/>
-              <path d="M54 78 Q58 86 60 90 Q62 86 66 78" fill="none" stroke="#c8a96e" stroke-width="0.8" opacity="0.5"/>
-            </svg>
+  <!-- Hannah Arendt flat: chignon, elegant, cigarette holder -->
+  <ellipse cx="60" cy="44" rx="21" ry="23" fill="#5B8FA8"/>
+  <!-- Hair + chignon -->
+  <path d="M39 38 Q40 22 60 20 Q80 22 81 38 Q78 30 60 29 Q42 30 39 38Z" fill="#2A2018"/>
+  <ellipse cx="84" cy="30" rx="8" ry="10" fill="#2A2018"/>
+  <!-- Arched brows -->
+  <path d="M46 38 Q52 35 57 38" fill="none" stroke="#1A1410" stroke-width="2" stroke-linecap="round"/>
+  <path d="M63 38 Q68 35 74 38" fill="none" stroke="#1A1410" stroke-width="2" stroke-linecap="round"/>
+  <!-- Sharp eyes -->
+  <circle cx="52" cy="43" r="3" fill="#1A1410"/>
+  <circle cx="68" cy="43" r="3" fill="#1A1410"/>
+  <circle cx="53" cy="42" r="1" fill="#fff" opacity="0.6"/>
+  <circle cx="69" cy="42" r="1" fill="#fff" opacity="0.6"/>
+  <!-- Nose -->
+  <ellipse cx="60" cy="50" rx="3" ry="2.5" fill="#3A6A80"/>
+  <!-- Composed lips -->
+  <path d="M52 59 Q60 62 68 59" fill="#3A6A80" stroke="#3A6A80" stroke-width="1"/>
+  <!-- Long cigarette holder -->
+  <rect x="68" y="57" width="22" height="2" rx="1" fill="#F5F0E0" transform="rotate(-25 68 57)"/>
+  <rect x="88" y="50" width="3" height="2" rx="1" fill="#FF6040" opacity="0.7" transform="rotate(-25 88 50)"/>
+  <!-- Neck -->
+  <rect x="55" y="67" width="10" height="10" fill="#5B8FA8"/>
+  <!-- Blouse/jacket -->
+  <path d="M22 120 Q36 86 55 77 Q60 81 65 77 Q84 86 98 120Z" fill="#3A5A6C"/>
+  <path d="M55 77 Q58 85 60 89 Q62 85 65 77" fill="none" stroke="#5B8FA8" stroke-width="1.5"/>
+</svg>
           </div>
           <div class="fw-info">
             <span class="fw-name">Hannah Arendt</span>
@@ -450,26 +471,32 @@
         <button class="framework-btn" data-id="simone" onclick="selectFramework(this)">
           <div class="fw-portrait">
             <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-              <!-- Simone de Beauvoir: turban/head wrap, strong gaze, elegant -->
-              <circle cx="60" cy="46" r="23" fill="none" stroke="#c8a96e" stroke-width="1.2"/>
-              <!-- Iconic turban wrap -->
-              <path d="M38 40 Q36 28 42 24 Q52 18 68 18 Q80 20 84 30 Q86 38 82 42" fill="none" stroke="#c8a96e" stroke-width="1.1"/>
-              <path d="M38 40 Q42 36 50 34 Q60 32 70 34 Q78 36 82 42" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
-              <path d="M42 24 Q50 30 56 28 Q62 30 70 28 Q76 24 80 30" fill="none" stroke="#c8a96e" stroke-width="0.7" opacity="0.5"/>
-              <!-- Defined brows, direct gaze -->
-              <path d="M47 42 Q52 39 57 42" fill="none" stroke="#c8a96e" stroke-width="1.1"/>
-              <path d="M63 42 Q68 39 73 42" fill="none" stroke="#c8a96e" stroke-width="1.1"/>
-              <line x1="48" y1="46" x2="56" y2="46" stroke="#c8a96e" stroke-width="1.3"/>
-              <line x1="64" y1="46" x2="72" y2="46" stroke="#c8a96e" stroke-width="1.3"/>
-              <!-- Nose -->
-              <path d="M59 50 Q58 55 57 57 Q60 59 63 57 Q62 55 61 50" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
-              <!-- Lips -->
-              <path d="M53 62 Q60 65 67 62" fill="none" stroke="#c8a96e" stroke-width="1"/>
-              <!-- Neck + jacket -->
-              <line x1="56" y1="69" x2="54" y2="80" stroke="#c8a96e" stroke-width="1"/>
-              <line x1="64" y1="69" x2="66" y2="80" stroke="#c8a96e" stroke-width="1"/>
-              <path d="M26 120 Q40 86 54 80 Q60 84 66 80 Q80 86 94 120" fill="none" stroke="#c8a96e" stroke-width="1"/>
-            </svg>
+  <!-- Simone de Beauvoir flat: iconic turban -->
+  <ellipse cx="60" cy="46" rx="21" ry="23" fill="#C4547A"/>
+  <!-- Turban base -->
+  <ellipse cx="60" cy="32" rx="26" ry="16" fill="#E8A020"/>
+  <!-- Turban wrap layers -->
+  <path d="M34 32 Q38 20 60 18 Q82 20 86 32 Q78 28 60 27 Q42 28 34 32Z" fill="#C87010"/>
+  <path d="M36 36 Q42 26 60 24 Q78 26 84 36" fill="none" stroke="#E8A020" stroke-width="3"/>
+  <!-- Turban knot/twist at top -->
+  <ellipse cx="60" cy="20" rx="8" ry="5" fill="#C87010"/>
+  <!-- Direct gaze brows -->
+  <path d="M46 40 Q52 37 57 40" fill="none" stroke="#1A1410" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M63 40 Q68 37 74 40" fill="none" stroke="#1A1410" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- Eyes -->
+  <circle cx="52" cy="45" r="3.5" fill="#1A1410"/>
+  <circle cx="68" cy="45" r="3.5" fill="#1A1410"/>
+  <circle cx="53" cy="44" r="1.2" fill="#fff" opacity="0.6"/>
+  <circle cx="69" cy="44" r="1.2" fill="#fff" opacity="0.6"/>
+  <!-- Nose -->
+  <ellipse cx="60" cy="52" rx="3" ry="2.5" fill="#A03058"/>
+  <!-- Lips -->
+  <path d="M52 62 Q60 66 68 62" fill="#A03058" stroke="#A03058" stroke-width="1"/>
+  <!-- Neck -->
+  <rect x="55" y="69" width="10" height="9" fill="#C4547A"/>
+  <!-- Jacket -->
+  <path d="M22 120 Q36 86 55 78 Q60 82 65 78 Q84 86 98 120Z" fill="#8A2848"/>
+</svg>
           </div>
           <div class="fw-info">
             <span class="fw-name">Simone de Beauvoir</span>
@@ -485,29 +512,32 @@
         <button class="framework-btn" data-id="foucault" onclick="selectFramework(this)">
           <div class="fw-portrait">
             <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-              <!-- Foucault: shaved head, round glasses, intense -->
-              <circle cx="60" cy="46" r="24" fill="none" stroke="#c8a96e" stroke-width="1.2"/>
-              <!-- Shaved head (very minimal hair) -->
-              <path d="M38 42 Q40 24 60 22 Q80 24 82 42" fill="none" stroke="#c8a96e" stroke-width="0.7" opacity="0.4"/>
-              <!-- Round glasses -->
-              <circle cx="51" cy="44" r="7" fill="none" stroke="#c8a96e" stroke-width="1.2"/>
-              <circle cx="69" cy="44" r="7" fill="none" stroke="#c8a96e" stroke-width="1.2"/>
-              <line x1="58" y1="44" x2="62" y2="44" stroke="#c8a96e" stroke-width="1"/>
-              <line x1="36" y1="43" x2="44" y2="43" stroke="#c8a96e" stroke-width="1"/>
-              <line x1="76" y1="43" x2="84" y2="43" stroke="#c8a96e" stroke-width="1"/>
-              <!-- Eyes -->
-              <circle cx="51" cy="44" r="2.5" fill="none" stroke="#c8a96e" stroke-width="0.8"/>
-              <circle cx="69" cy="44" r="2.5" fill="none" stroke="#c8a96e" stroke-width="0.8"/>
-              <!-- Nose -->
-              <path d="M59 50 Q58 55 56 57 Q60 59 64 57 Q62 55 61 50" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
-              <!-- Thin pursed lips -->
-              <line x1="53" y1="62" x2="67" y2="62" stroke="#c8a96e" stroke-width="1"/>
-              <!-- Neck + turtleneck -->
-              <line x1="56" y1="70" x2="54" y2="80" stroke="#c8a96e" stroke-width="1"/>
-              <line x1="64" y1="70" x2="66" y2="80" stroke="#c8a96e" stroke-width="1"/>
-              <path d="M30 120 Q42 86 54 80 Q60 84 66 80 Q78 86 90 120" fill="none" stroke="#c8a96e" stroke-width="1"/>
-              <path d="M52 80 Q53 86 60 88 Q67 86 68 80" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
-            </svg>
+  <!-- Foucault flat: shaved head, round glasses -->
+  <ellipse cx="60" cy="46" rx="22" ry="24" fill="#6B6B8A"/>
+  <!-- Very minimal hair hint (shaved) -->
+  <path d="M38 40 Q40 24 60 22 Q80 24 82 40 Q78 34 60 33 Q42 34 38 40Z" fill="#4A4A60" opacity="0.4"/>
+  <!-- Round thick glasses -->
+  <circle cx="51" cy="44" r="9" fill="none" stroke="#1A1410" stroke-width="3"/>
+  <circle cx="69" cy="44" r="9" fill="none" stroke="#1A1410" stroke-width="3"/>
+  <line x1="60" y1="44" x2="60" y2="44" stroke="#1A1410" stroke-width="2.5"/>
+  <path d="M57 44 Q60 46 63 44" fill="none" stroke="#1A1410" stroke-width="2.5"/>
+  <line x1="36" y1="43" x2="42" y2="43" stroke="#1A1410" stroke-width="2"/>
+  <line x1="78" y1="43" x2="84" y2="43" stroke="#1A1410" stroke-width="2"/>
+  <!-- Eyes inside glasses -->
+  <circle cx="51" cy="44" r="3" fill="#1A1410"/>
+  <circle cx="69" cy="44" r="3" fill="#1A1410"/>
+  <circle cx="52" cy="43" r="1" fill="#fff" opacity="0.6"/>
+  <circle cx="70" cy="43" r="1" fill="#fff" opacity="0.6"/>
+  <!-- Nose -->
+  <ellipse cx="60" cy="52" rx="4" ry="3" fill="#4A4A60"/>
+  <!-- Thin lips -->
+  <path d="M52 62 Q60 64 68 62" fill="none" stroke="#4A4A60" stroke-width="2" stroke-linecap="round"/>
+  <!-- Neck + turtleneck -->
+  <rect x="55" y="70" width="10" height="8" fill="#6B6B8A"/>
+  <path d="M46 78 Q52 75 68 75 Q74 78 74 82 Q60 79 46 82Z" fill="#3A3A4A"/>
+  <!-- Body -->
+  <path d="M24 120 Q38 88 54 80 Q60 84 66 80 Q82 88 96 120Z" fill="#3A3A4A"/>
+</svg>
           </div>
           <div class="fw-info">
             <span class="fw-name">Foucault</span>
@@ -518,31 +548,32 @@
         <button class="framework-btn" data-id="han" onclick="selectFramework(this)">
           <div class="fw-portrait">
             <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-              <!-- Byung-Chul Han: East Asian features, contemporary, composed -->
-              <circle cx="60" cy="46" r="23" fill="none" stroke="#c8a96e" stroke-width="1.2"/>
-              <!-- Hair — straight, side-parted -->
-              <path d="M38 40 Q40 22 60 20 Q80 22 82 40" fill="none" stroke="#c8a96e" stroke-width="1"/>
-              <path d="M40 28 Q44 34 42 42" fill="none" stroke="#c8a96e" stroke-width="0.8" opacity="0.5"/>
-              <line x1="40" y1="28" x2="72" y2="26" stroke="#c8a96e" stroke-width="0.7" opacity="0.4"/>
-              <!-- East Asian eye shape — single eyelid, horizontal -->
-              <line x1="47" y1="44" x2="57" y2="43" stroke="#c8a96e" stroke-width="1.4"/>
-              <line x1="63" y1="43" x2="73" y2="44" stroke="#c8a96e" stroke-width="1.4"/>
-              <!-- High cheekbones -->
-              <path d="M38 52 Q40 56 44 58" fill="none" stroke="#c8a96e" stroke-width="0.6" opacity="0.4"/>
-              <path d="M82 52 Q80 56 76 58" fill="none" stroke="#c8a96e" stroke-width="0.6" opacity="0.4"/>
-              <!-- Nose — low bridge -->
-              <path d="M59 48 Q58 53 58 55 Q60 57 62 55 Q62 53 61 48" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
-              <!-- Slight lips -->
-              <path d="M54 61 Q60 63 66 61" fill="none" stroke="#c8a96e" stroke-width="1"/>
-              <!-- Neck + contemporary jacket -->
-              <line x1="56" y1="69" x2="54" y2="80" stroke="#c8a96e" stroke-width="1"/>
-              <line x1="64" y1="69" x2="66" y2="80" stroke="#c8a96e" stroke-width="1"/>
-              <path d="M28 120 Q40 86 54 80 Q60 84 66 80 Q80 86 92 120" fill="none" stroke="#c8a96e" stroke-width="1"/>
-              <path d="M54 80 Q56 88 60 90 Q64 88 66 80" fill="none" stroke="#c8a96e" stroke-width="0.8" opacity="0.5"/>
-              <!-- Book hint (his many thin books) -->
-              <rect x="78" y="90" width="14" height="20" rx="1" fill="none" stroke="#c8a96e" stroke-width="0.8" opacity="0.4"/>
-              <line x1="80" y1="90" x2="80" y2="110" stroke="#c8a96e" stroke-width="0.5" opacity="0.3"/>
-            </svg>
+  <!-- Byung-Chul Han flat: East Asian, contemporary -->
+  <ellipse cx="60" cy="45" rx="21" ry="23" fill="#4A8A7A"/>
+  <!-- Side-parted straight hair -->
+  <path d="M39 38 Q40 22 60 20 Q80 22 81 38 Q76 30 60 29 Q44 30 39 38Z" fill="#1A1410"/>
+  <path d="M39 38 Q42 28 50 28" fill="none" stroke="#1A1410" stroke-width="3"/>
+  <!-- Side part line -->
+  <path d="M46 22 Q44 30 42 38" fill="none" stroke="#2A2010" stroke-width="1.5" opacity="0.5"/>
+  <!-- Single-eyelid eyes -->
+  <path d="M46 42 Q52 40 58 43" fill="none" stroke="#1A1410" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M62 43 Q68 40 74 42" fill="none" stroke="#1A1410" stroke-width="2.5" stroke-linecap="round"/>
+  <ellipse cx="52" cy="43" rx="3" ry="2" fill="#1A1410"/>
+  <ellipse cx="68" cy="43" rx="3" ry="2" fill="#1A1410"/>
+  <circle cx="53" cy="42" r="0.8" fill="#fff" opacity="0.5"/>
+  <circle cx="69" cy="42" r="0.8" fill="#fff" opacity="0.5"/>
+  <!-- Low bridge nose -->
+  <ellipse cx="60" cy="50" rx="3.5" ry="2.5" fill="#2A6A5A"/>
+  <!-- Slight lips -->
+  <path d="M53 60 Q60 63 67 60" fill="#2A6A5A" stroke="#2A6A5A" stroke-width="1"/>
+  <!-- Neck -->
+  <rect x="55" y="68" width="10" height="10" fill="#4A8A7A"/>
+  <!-- Contemporary jacket -->
+  <path d="M24 120 Q38 86 55 78 Q60 82 65 78 Q82 86 96 120Z" fill="#2A4A40"/>
+  <!-- Small book -->
+  <rect x="76" y="90" width="16" height="22" rx="2" fill="#3A6A5A"/>
+  <line x1="78" y1="90" x2="78" y2="112" stroke="#2A4A40" stroke-width="1.5"/>
+</svg>
           </div>
           <div class="fw-info">
             <span class="fw-name">Byung-Chul Han</span>
@@ -553,32 +584,36 @@
         <button class="framework-btn" data-id="fisher" onclick="selectFramework(this)">
           <div class="fw-portrait">
             <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-              <!-- Mark Fisher: melancholic, round face, slight stubble, hoodie -->
-              <circle cx="60" cy="46" r="24" fill="none" stroke="#c8a96e" stroke-width="1.2"/>
-              <!-- Hair — unkempt, slightly long -->
-              <path d="M38 40 Q40 22 60 20 Q80 22 82 40" fill="none" stroke="#c8a96e" stroke-width="1"/>
-              <path d="M38 40 Q35 36 36 28" fill="none" stroke="#c8a96e" stroke-width="0.8" opacity="0.6"/>
-              <path d="M82 40 Q85 36 84 28" fill="none" stroke="#c8a96e" stroke-width="0.8" opacity="0.6"/>
-              <!-- Downcast eyes (melancholy) -->
-              <line x1="48" y1="44" x2="56" y2="45" stroke="#c8a96e" stroke-width="1.2"/>
-              <line x1="64" y1="45" x2="72" y2="44" stroke="#c8a96e" stroke-width="1.2"/>
-              <!-- Slight brow furrow -->
-              <path d="M48 40 Q52 38 56 40" fill="none" stroke="#c8a96e" stroke-width="0.8" opacity="0.6"/>
-              <path d="M64 40 Q68 38 72 40" fill="none" stroke="#c8a96e" stroke-width="0.8" opacity="0.6"/>
-              <!-- Nose -->
-              <path d="M59 49 Q58 54 57 56 Q60 58 63 56 Q62 54 61 49" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
-              <!-- Slight stubble (dots) -->
-              <path d="M44 64 Q52 70 60 72 Q68 70 76 64" fill="none" stroke="#c8a96e" stroke-width="0.8" opacity="0.4"/>
-              <!-- Lips -->
-              <path d="M53 62 Q60 64 67 62" fill="none" stroke="#c8a96e" stroke-width="1"/>
-              <!-- Hoodie -->
-              <line x1="56" y1="72" x2="52" y2="82" stroke="#c8a96e" stroke-width="1"/>
-              <line x1="64" y1="72" x2="68" y2="82" stroke="#c8a96e" stroke-width="1"/>
-              <path d="M22 120 Q36 86 52 82 Q56 86 60 86 Q64 86 68 82 Q84 86 98 120" fill="none" stroke="#c8a96e" stroke-width="1"/>
-              <!-- Hoodie strings -->
-              <path d="M56 82 Q54 92 52 96" fill="none" stroke="#c8a96e" stroke-width="0.7" opacity="0.5"/>
-              <path d="M64 82 Q66 92 68 96" fill="none" stroke="#c8a96e" stroke-width="0.7" opacity="0.5"/>
-            </svg>
+  <!-- Mark Fisher flat: melancholic, hoodie -->
+  <ellipse cx="60" cy="45" rx="22" ry="24" fill="#7A6A9A"/>
+  <!-- Unkempt hair -->
+  <path d="M38 38 Q40 22 60 20 Q80 22 82 38 Q78 28 60 28 Q42 28 38 38Z" fill="#2A2030"/>
+  <path d="M38 38 Q34 32 36 24" fill="none" stroke="#2A2030" stroke-width="3" stroke-linecap="round"/>
+  <path d="M82 38 Q86 32 84 24" fill="none" stroke="#2A2030" stroke-width="3" stroke-linecap="round"/>
+  <!-- Downcast eyes -->
+  <path d="M47 42 Q52 44 57 42" fill="none" stroke="#1A1020" stroke-width="1" stroke-linecap="round"/>
+  <circle cx="52" cy="44" r="3" fill="#1A1020"/>
+  <path d="M63 42 Q68 44 73 42" fill="none" stroke="#1A1020" stroke-width="1" stroke-linecap="round"/>
+  <circle cx="68" cy="44" r="3" fill="#1A1020"/>
+  <circle cx="53" cy="43" r="1" fill="#fff" opacity="0.4"/>
+  <circle cx="69" cy="43" r="1" fill="#fff" opacity="0.4"/>
+  <!-- Furrowed brows -->
+  <path d="M47 39 Q52 37 57 39" fill="none" stroke="#1A1020" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M63 39 Q68 37 73 39" fill="none" stroke="#1A1020" stroke-width="1.5" stroke-linecap="round"/>
+  <!-- Nose -->
+  <ellipse cx="60" cy="51" rx="3.5" ry="3" fill="#5A4A7A"/>
+  <!-- Slight downward lips -->
+  <path d="M52 61 Q60 63 68 61" fill="#5A4A7A" stroke="#5A4A7A" stroke-width="1"/>
+  <!-- Light stubble -->
+  <ellipse cx="60" cy="62" rx="10" ry="6" fill="#5A4A7A" opacity="0.3"/>
+  <!-- Neck -->
+  <rect x="55" y="69" width="10" height="9" fill="#7A6A9A"/>
+  <!-- Hoodie -->
+  <path d="M20 120 Q34 86 54 78 Q57 82 60 83 Q63 82 66 78 Q86 86 100 120Z" fill="#3A3048"/>
+  <!-- Hood strings -->
+  <line x1="56" y1="83" x2="52" y2="100" stroke="#4A4060" stroke-width="2" stroke-linecap="round"/>
+  <line x1="64" y1="83" x2="68" y2="100" stroke="#4A4060" stroke-width="2" stroke-linecap="round"/>
+</svg>
           </div>
           <div class="fw-info">
             <span class="fw-name">Mark Fisher</span>
@@ -589,34 +624,34 @@
         <button class="framework-btn" data-id="bauman" onclick="selectFramework(this)">
           <div class="fw-portrait">
             <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-              <!-- Bauman: elderly, white hair, deeply lined face, cardigan -->
-              <circle cx="60" cy="46" r="24" fill="none" stroke="#c8a96e" stroke-width="1.2"/>
-              <!-- Wispy white/thin hair -->
-              <path d="M38 42 Q40 24 60 22 Q80 24 82 42" fill="none" stroke="#c8a96e" stroke-width="0.7" opacity="0.5"/>
-              <path d="M40 26 Q38 22 40 18" fill="none" stroke="#c8a96e" stroke-width="0.6" opacity="0.4"/>
-              <path d="M60 22 Q58 18 60 14" fill="none" stroke="#c8a96e" stroke-width="0.6" opacity="0.4"/>
-              <path d="M80 26 Q82 22 80 18" fill="none" stroke="#c8a96e" stroke-width="0.6" opacity="0.4"/>
-              <!-- Aged eyes, slightly drooping -->
-              <line x1="47" y1="44" x2="55" y2="45" stroke="#c8a96e" stroke-width="1.2"/>
-              <line x1="65" y1="45" x2="73" y2="44" stroke="#c8a96e" stroke-width="1.2"/>
-              <path d="M46 42 Q52 40 56 43" fill="none" stroke="#c8a96e" stroke-width="0.6" opacity="0.5"/>
-              <path d="M64 43 Q68 40 74 42" fill="none" stroke="#c8a96e" stroke-width="0.6" opacity="0.5"/>
-              <!-- Nose — aged, prominent -->
-              <path d="M58 50 Q56 55 55 58 Q60 61 65 58 Q64 55 62 50" fill="none" stroke="#c8a96e" stroke-width="1"/>
-              <!-- Deep smile lines -->
-              <path d="M44 58 Q46 66 48 70" fill="none" stroke="#c8a96e" stroke-width="0.7" opacity="0.5"/>
-              <path d="M76 58 Q74 66 72 70" fill="none" stroke="#c8a96e" stroke-width="0.7" opacity="0.5"/>
-              <!-- Full lips with age -->
-              <path d="M51 64 Q60 68 69 64" fill="none" stroke="#c8a96e" stroke-width="1"/>
-              <!-- Neck + cardigan -->
-              <line x1="56" y1="70" x2="53" y2="82" stroke="#c8a96e" stroke-width="1"/>
-              <line x1="64" y1="70" x2="67" y2="82" stroke="#c8a96e" stroke-width="1"/>
-              <path d="M24 120 Q38 88 53 82 Q60 86 67 82 Q82 88 96 120" fill="none" stroke="#c8a96e" stroke-width="1"/>
-              <path d="M53 82 Q56 90 60 92 Q64 90 67 82" fill="none" stroke="#c8a96e" stroke-width="0.8" opacity="0.5"/>
-              <!-- Cardigan buttons -->
-              <circle cx="60" cy="96" r="1.5" fill="none" stroke="#c8a96e" stroke-width="0.8" opacity="0.5"/>
-              <circle cx="60" cy="104" r="1.5" fill="none" stroke="#c8a96e" stroke-width="0.8" opacity="0.5"/>
-            </svg>
+  <!-- Bauman flat: elderly, white wispy hair, cardigan -->
+  <ellipse cx="60" cy="46" rx="22" ry="24" fill="#9A8060"/>
+  <!-- Wispy white hair -->
+  <path d="M38 40 Q40 22 60 20 Q80 22 82 40 Q78 30 60 30 Q42 30 38 40Z" fill="#E8E0D0" opacity="0.8"/>
+  <path d="M40 24 Q38 18 42 14" fill="none" stroke="#E8E0D0" stroke-width="2" stroke-linecap="round"/>
+  <path d="M60 22 Q58 16 62 12" fill="none" stroke="#E8E0D0" stroke-width="2" stroke-linecap="round"/>
+  <path d="M80 24 Q82 18 78 14" fill="none" stroke="#E8E0D0" stroke-width="2" stroke-linecap="round"/>
+  <!-- Aged drooping eyes -->
+  <path d="M46 42 Q52 44 57 42" fill="none" stroke="#5A4030" stroke-width="1" stroke-linecap="round"/>
+  <circle cx="52" cy="44" r="3" fill="#2A1A10"/>
+  <path d="M63 42 Q68 44 73 42" fill="none" stroke="#5A4030" stroke-width="1" stroke-linecap="round"/>
+  <circle cx="68" cy="44" r="3" fill="#2A1A10"/>
+  <!-- Deep smile lines -->
+  <path d="M42 56 Q44 64 46 68" fill="none" stroke="#7A6040" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M78 56 Q76 64 74 68" fill="none" stroke="#7A6040" stroke-width="1.5" stroke-linecap="round"/>
+  <!-- Prominent aged nose -->
+  <ellipse cx="60" cy="52" rx="5" ry="4" fill="#7A6040"/>
+  <!-- Lips -->
+  <path d="M50 64 Q60 68 70 64" fill="#7A6040" stroke="#7A6040" stroke-width="1"/>
+  <!-- Neck -->
+  <rect x="55" y="70" width="10" height="10" fill="#9A8060"/>
+  <!-- Cardigan -->
+  <path d="M22 120 Q36 88 55 80 Q60 84 65 80 Q84 88 98 120Z" fill="#6A5840"/>
+  <!-- Cardigan buttons -->
+  <circle cx="60" cy="94" r="2.5" fill="#9A8060"/>
+  <circle cx="60" cy="104" r="2.5" fill="#9A8060"/>
+  <circle cx="60" cy="114" r="2.5" fill="#9A8060"/>
+</svg>
           </div>
           <div class="fw-info">
             <span class="fw-name">Zygmunt Bauman</span>
@@ -627,32 +662,35 @@
         <button class="framework-btn" data-id="harari" onclick="selectFramework(this)">
           <div class="fw-portrait">
             <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-              <!-- Harari: short hair, beard, lean, modern look -->
-              <circle cx="60" cy="44" r="23" fill="none" stroke="#c8a96e" stroke-width="1.2"/>
-              <!-- Short neat hair -->
-              <path d="M39 40 Q41 24 60 22 Q79 24 81 40" fill="none" stroke="#c8a96e" stroke-width="1"/>
-              <path d="M39 40 Q38 34 40 28" fill="none" stroke="#c8a96e" stroke-width="0.8" opacity="0.5"/>
-              <!-- Expressive eyes, alert -->
-              <line x1="48" y1="42" x2="56" y2="42" stroke="#c8a96e" stroke-width="1.3"/>
-              <line x1="64" y1="42" x2="72" y2="42" stroke="#c8a96e" stroke-width="1.3"/>
-              <!-- Nose -->
-              <path d="M59 46 Q58 51 57 53 Q60 55 63 53 Q62 51 61 46" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
-              <!-- Short beard / stubble -->
-              <path d="M44 60 Q52 68 60 70 Q68 68 76 60" fill="none" stroke="#c8a96e" stroke-width="1"/>
-              <path d="M46 64 Q52 70 60 72 Q68 70 74 64" fill="none" stroke="#c8a96e" stroke-width="0.7" opacity="0.5"/>
-              <!-- Lips -->
-              <path d="M54 60 Q60 62 66 60" fill="none" stroke="#c8a96e" stroke-width="0.8" opacity="0.7"/>
-              <!-- Neck + minimal top (meditation, vegan aesthetic) -->
-              <line x1="56" y1="67" x2="54" y2="78" stroke="#c8a96e" stroke-width="1"/>
-              <line x1="64" y1="67" x2="66" y2="78" stroke="#c8a96e" stroke-width="1"/>
-              <path d="M28 120 Q40 84 54 78 Q60 82 66 78 Q80 84 92 120" fill="none" stroke="#c8a96e" stroke-width="1"/>
-              <!-- Tiny DNA helix / data motif -->
-              <path d="M84 88 Q88 92 84 96 Q88 100 84 104" fill="none" stroke="#c8a96e" stroke-width="0.7" opacity="0.4"/>
-              <path d="M92 88 Q88 92 92 96 Q88 100 92 104" fill="none" stroke="#c8a96e" stroke-width="0.7" opacity="0.4"/>
-              <line x1="84" y1="92" x2="92" y2="92" stroke="#c8a96e" stroke-width="0.5" opacity="0.3"/>
-              <line x1="84" y1="96" x2="92" y2="96" stroke="#c8a96e" stroke-width="0.5" opacity="0.3"/>
-              <line x1="84" y1="100" x2="92" y2="100" stroke="#c8a96e" stroke-width="0.5" opacity="0.3"/>
-            </svg>
+  <!-- Harari flat: lean, short hair, beard, alert -->
+  <ellipse cx="60" cy="44" rx="21" ry="23" fill="#5A9AB5"/>
+  <!-- Short neat hair -->
+  <path d="M39 38 Q41 22 60 20 Q79 22 81 38 Q76 30 60 29 Q44 30 39 38Z" fill="#2A1A10"/>
+  <!-- Alert brows -->
+  <path d="M46 37 Q52 35 57 37" fill="none" stroke="#2A1A10" stroke-width="2" stroke-linecap="round"/>
+  <path d="M63 37 Q68 35 74 37" fill="none" stroke="#2A1A10" stroke-width="2" stroke-linecap="round"/>
+  <!-- Alert eyes -->
+  <circle cx="52" cy="42" r="3.5" fill="#1A1010"/>
+  <circle cx="68" cy="42" r="3.5" fill="#1A1010"/>
+  <circle cx="53" cy="41" r="1.2" fill="#fff" opacity="0.7"/>
+  <circle cx="69" cy="41" r="1.2" fill="#fff" opacity="0.7"/>
+  <!-- Nose -->
+  <ellipse cx="60" cy="49" rx="3" ry="2.5" fill="#3A7A8A"/>
+  <!-- Short beard -->
+  <path d="M42 58 Q50 68 60 70 Q70 68 78 58 Q70 62 60 63 Q50 62 42 58Z" fill="#3A2A20"/>
+  <!-- Lips inside beard -->
+  <path d="M53 59 Q60 62 67 59" fill="#3A2A20" stroke="#3A2A20" stroke-width="1"/>
+  <!-- Neck -->
+  <rect x="55" y="70" width="10" height="8" fill="#5A9AB5"/>
+  <!-- Minimal top -->
+  <path d="M26 120 Q40 86 55 78 Q60 82 65 78 Q80 86 94 120Z" fill="#2A4A5A"/>
+  <!-- DNA/data motif -->
+  <path d="M82 88 Q88 94 82 100 Q88 106 82 112" fill="none" stroke="#5A9AB5" stroke-width="2" stroke-linecap="round"/>
+  <path d="M94 88 Q88 94 94 100 Q88 106 94 112" fill="none" stroke="#5A9AB5" stroke-width="2" stroke-linecap="round"/>
+  <line x1="82" y1="94" x2="94" y2="94" stroke="#5A9AB5" stroke-width="1.5"/>
+  <line x1="82" y1="100" x2="94" y2="100" stroke="#5A9AB5" stroke-width="1.5"/>
+  <line x1="82" y1="106" x2="94" y2="106" stroke="#5A9AB5" stroke-width="1.5"/>
+</svg>
           </div>
           <div class="fw-info">
             <span class="fw-name">Yuval Noah Harari</span>
