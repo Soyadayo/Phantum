@@ -40,7 +40,6 @@ export default async function handler(req, res) {
   const ip = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || 'unknown';
   const today = new Date().toISOString().slice(0, 10);
 
-  // Skip credit check for oracle selector (internal call)
   if (skipCredit) {
     try {
       const response = await fetch(
@@ -56,7 +55,6 @@ export default async function handler(req, res) {
         }
       );
       const data = await response.json();
-      console.log('GEMINI RAW (oracle selector):', JSON.stringify(data).slice(0, 800));
       if (data.error) return res.status(500).json({ error: data.error.message });
       return res.status(200).json(data);
     } catch (err) {
@@ -64,27 +62,17 @@ export default async function handler(req, res) {
     }
   }
 
-  // Check paid credits
   const creditKey = userId ? `phantum:credits:user:${userId}` : `phantum:credits:ip:${ip}`;
   const credits = parseInt(await redisGet(REDIS_URL, REDIS_TOKEN, creditKey) || '0', 10);
-
   let creditsRemaining = null;
 
   if (credits > 0) {
     creditsRemaining = await redisDecr(REDIS_URL, REDIS_TOKEN, creditKey);
   } else {
-    // Free daily limit
     const freeKey = `phantum:free:${ip}:${today}`;
     const freeCount = parseInt(await redisGet(REDIS_URL, REDIS_TOKEN, freeKey) || '0', 10);
-
-    if (freeCount >= 1) {
-      return res.status(429).json({ error: 'FREE_LIMIT_REACHED' });
-    }
-
-    await redisPipeline(REDIS_URL, REDIS_TOKEN, [
-      ['INCR', freeKey],
-      ['EXPIREAT', freeKey, getNextMidnightUnix()]
-    ]);
+    if (freeCount >= 1) return res.status(429).json({ error: 'FREE_LIMIT_REACHED' });
+    await redisPipeline(REDIS_URL, REDIS_TOKEN, [['INCR', freeKey], ['EXPIREAT', freeKey, getNextMidnightUnix()]]);
   }
 
   try {
@@ -101,7 +89,6 @@ export default async function handler(req, res) {
       }
     );
     const data = await response.json();
-    console.log('GEMINI RAW (reading):', JSON.stringify(data).slice(0, 800));
     if (data.error) return res.status(500).json({ error: data.error.message });
     res.status(200).json({ ...data, creditsRemaining });
   } catch (err) {
