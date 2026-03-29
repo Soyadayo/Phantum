@@ -177,6 +177,22 @@
   .usage-text { font-size:10px; color:var(--muted); letter-spacing:0.05em; }
   .usage-upgrade { font-size:10px; color:var(--accent-dim); cursor:pointer; text-decoration:underline; text-underline-offset:3px; margin-left:auto; }
   .usage-upgrade:hover { color:var(--accent); }
+
+  .mode-toggle { display:flex; gap:0; margin-bottom:40px; opacity:0; animation:fadeUp 0.8s ease 0.05s forwards; }
+  .mode-btn { flex:1; background:var(--surface); border:1px solid var(--border); color:var(--muted); padding:12px 16px; font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.2em; text-transform:uppercase; cursor:pointer; transition:all 0.2s; text-align:center; }
+  .mode-btn:first-child { border-right:none; }
+  .mode-btn.active { background:#1a1812; border-color:var(--accent); color:var(--accent); }
+  .mode-btn:hover:not(.active) { border-color:var(--accent-dim); color:var(--text); }
+  .thinker-section { transition:opacity 0.3s, transform 0.3s; }
+  .thinker-section.hidden { opacity:0; pointer-events:none; height:0; overflow:hidden; margin:0; }
+  .oracle-hint { font-size:11px; color:var(--muted); line-height:1.7; padding:16px 20px; border:1px solid var(--border); background:var(--surface); margin-bottom:40px; display:none; font-style:italic; }
+  .oracle-hint.visible { display:block; }
+  .oracle-reveal { display:none; align-items:center; gap:16px; margin-bottom:32px; }
+  .oracle-reveal.visible { display:flex; animation:fadeUp 0.5s ease forwards; }
+  .oracle-portrait { width:64px; height:64px; border:1px solid var(--accent); overflow:hidden; flex-shrink:0; }
+  .oracle-portrait svg { width:100%; height:100%; }
+  .oracle-name { font-family:'Cormorant Garamond',serif; font-size:20px; font-style:italic; color:var(--accent); }
+  .oracle-sub { font-size:10px; color:var(--muted); letter-spacing:0.1em; margin-top:2px; }
   @keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
   @keyframes pulse { 0%,100%{opacity:0.3;transform:scale(0.8)} 50%{opacity:1;transform:scale(1)} }
 </style>
@@ -205,7 +221,16 @@
 
 
 
-  <div class="section">
+  <div class="mode-toggle">
+    <button class="mode-btn active" id="modeChoose" onclick="setMode('choose')">Choose your thinker</button>
+    <button class="mode-btn" id="modeOracle" onclick="setMode('oracle')">Let them find you</button>
+  </div>
+
+  <div class="oracle-hint" id="oracleHint">
+    Write what's on your mind. The right thinker will come to you.
+  </div>
+
+  <div class="section thinker-section" id="thinkerSection">
     <div class="section-label">01 — Choose your thinker</div>
 
     <div class="era-group">
@@ -703,9 +728,9 @@
 
   <div class="section">
     <div class="section-label">02 — Describe your decision</div>
-    <textarea id="decisionInput" maxlength="500" placeholder="I need to decide whether to leave my job. I've been here five years and the stability feels comfortable, but..." oninput="updateCount()"></textarea>
+    <textarea id="decisionInput" maxlength="500" placeholder="Write in any language — what's on your mind?" oninput="updateCount()"></textarea>
     <div class="lang-row">
-      <span class="lang-row-label">Response language / 返答言語 / Antwortsprache / Langue de réponse / Idioma de respuesta</span>
+      <span class="lang-row-label">Response language</span>
       <div class="lang-btns">
         <button class="lang-btn active" data-lang="en" onclick="selectLang(this)">EN</button>
         <button class="lang-btn" data-lang="ja" onclick="selectLang(this)">日本語</button>
@@ -719,6 +744,14 @@
       <span class="char-count" id="charCount">0 / 500</span>
     </div>
     <div class="error-msg" id="errorMsg"></div>
+  </div>
+
+  <div class="oracle-reveal" id="oracleReveal">
+    <div class="oracle-portrait" id="oraclePortrait"></div>
+    <div>
+      <div class="oracle-name" id="oracleName"></div>
+      <div class="oracle-sub" id="oracleDesc"></div>
+    </div>
   </div>
 
   <div class="loading" id="loading">
@@ -795,15 +828,41 @@ function updateCount() {
 
 function updateSubmitState() {
   const hasText = document.getElementById('decisionInput').value.trim().length > 20;
-  document.getElementById('submitBtn').disabled = !(hasText && selectedFramework);
+  const ready = currentMode === 'oracle' ? hasText : (hasText && selectedFramework);
+  document.getElementById('submitBtn').disabled = !ready;
 }
 
 const loadingPhrases = ['thinking','reading between the lines','questioning the question','finding the tension'];
 
 async function runSession() {
   const input = document.getElementById('decisionInput').value.trim();
-  if (!input || !selectedFramework) return;
-  const fw = FRAMEWORKS[selectedFramework];
+  if (!input) return;
+  if (currentMode === 'choose' && !selectedFramework) return;
+
+  let fwKey = selectedFramework;
+
+  if (currentMode === 'oracle') {
+    document.getElementById('submitBtn').disabled = true;
+    document.getElementById('errorMsg').classList.remove('visible');
+    document.getElementById('responseArea').classList.remove('visible');
+    document.getElementById('oracleReveal').classList.remove('visible');
+    const loading = document.getElementById('loading');
+    loading.classList.add('visible');
+    document.getElementById('loadingText').textContent = 'finding your thinker';
+    try {
+      fwKey = await runOracleSession(input);
+      if (!fwKey) return;
+    } catch(err) {
+      loading.classList.remove('visible');
+      document.getElementById('submitBtn').disabled = false;
+      document.getElementById('errorMsg').textContent = 'Error: ' + err.message;
+      document.getElementById('errorMsg').classList.add('visible');
+      return;
+    }
+    document.getElementById('loadingText').textContent = 'reading your situation';
+  }
+
+  const fw = FRAMEWORKS[fwKey];
   document.getElementById('submitBtn').disabled = true;
   document.getElementById('errorMsg').classList.remove('visible');
   document.getElementById('responseArea').classList.remove('visible');
@@ -881,6 +940,7 @@ function resetSession() {
   document.getElementById('responseArea').classList.remove('visible');
   document.getElementById('summaryArea').classList.remove('visible');
   document.getElementById('errorMsg').classList.remove('visible');
+  document.getElementById('oracleReveal').classList.remove('visible');
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
@@ -961,6 +1021,66 @@ if (urlParams.get('status') === 'success') {
       });
   }
 }
+
+// --- Mode logic ---
+let currentMode = 'choose';
+
+const THINKER_META = {
+  socrates:  { desc:'Questioning & ignorance' },
+  epictetus: { desc:'Control & acceptance' },
+  marcus:    { desc:'Duty & impermanence' },
+  nietzsche: { desc:'Will & self-overcoming' },
+  sartre:    { desc:'Radical freedom' },
+  camus:     { desc:'Absurdity & revolt' },
+  arendt:    { desc:'Action & plurality' },
+  simone:    { desc:'Ambiguity & ethics' },
+  foucault:  { desc:'Power & structure' },
+  han:       { desc:'Burnout & transparency' },
+  fisher:    { desc:'Capitalist realism' },
+  bauman:    { desc:'Liquid modernity' },
+  harari:    { desc:'Algorithms & meaning' },
+};
+
+function setMode(mode) {
+  currentMode = mode;
+  document.getElementById('modeChoose').classList.toggle('active', mode === 'choose');
+  document.getElementById('modeOracle').classList.toggle('active', mode === 'oracle');
+  document.getElementById('thinkerSection').classList.toggle('hidden', mode === 'oracle');
+  document.getElementById('oracleHint').classList.toggle('visible', mode === 'oracle');
+  if (mode === 'oracle') selectedFramework = null;
+  updateSubmitState();
+}
+
+const ORACLE_SELECTOR_PROMPT = `You are a philosophical oracle. Given a person's situation or problem, select the ONE philosopher from this list who would have the most relevant and powerful perspective: socrates, epictetus, marcus, nietzsche, sartre, camus, arendt, simone, foucault, han, fisher, bauman, harari. Respond ONLY in JSON with no preamble: {"philosopher":"<key>","reason":"<one sentence why, max 10 words>"}`;
+
+async function runOracleSession(input) {
+  const response1 = await fetch('/api/ask', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ input, systemPrompt: ORACLE_SELECTOR_PROMPT, userId, skipCredit: true })
+  });
+  const data1 = await response1.json();
+  if (data1.error === 'FREE_LIMIT_REACHED') { showPaywall(); return null; }
+  if (data1.error) throw new Error(data1.error);
+  const text1 = data1.candidates?.[0]?.content?.parts?.[0]?.text || '';
+  const clean1 = text1.replace(/```json\n?|```/g,'').trim();
+  const match1 = clean1.match(/\{[\s\S]*\}/);
+  if (!match1) throw new Error('Could not select thinker');
+  const selection = JSON.parse(match1[0]);
+  const pickedKey = selection.philosopher;
+  if (!FRAMEWORKS[pickedKey]) throw new Error('Unknown philosopher: ' + pickedKey);
+
+  // Show reveal
+  const fw = FRAMEWORKS[pickedKey];
+  const meta = THINKER_META[pickedKey];
+  const portraitEl = document.getElementById('oraclePortrait');
+  const srcPortrait = document.querySelector(`[data-id="${pickedKey}"] .fw-portrait`);
+  if (srcPortrait) portraitEl.innerHTML = srcPortrait.innerHTML;
+  document.getElementById('oracleName').textContent = fw.name;
+  document.getElementById('oracleDesc').textContent = meta?.desc || '';
+  document.getElementById('oracleReveal').classList.add('visible');
+  return pickedKey;
+}
+
 updateUsageBar(0, paidCredits);
 </script>
 
