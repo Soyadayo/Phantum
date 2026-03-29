@@ -707,10 +707,10 @@
   <div class="paywall-box">
     <div class="paywall-label">Phantum</div>
     <div class="paywall-title">You've used your<br>3 free readings today.</div>
-    <p class="paywall-sub">Unlock unlimited access to all 13 thinkers.<br>Your readings reset every day at midnight.</p>
-    <div class="paywall-price">3.99€ <span>/ month</span></div>
+    <p class="paywall-sub">Get 10 readings to use anytime.<br>Your 1 free daily reading still resets every midnight.</p>
+    <div class="paywall-price">3.00€ <span>for 10 readings</span></div>
     <input type="email" id="paywallEmail" placeholder="your@email.com" style="width:100%;background:transparent;border:none;border-bottom:1px solid var(--border);color:var(--text);font-family:'DM Mono',monospace;font-size:12px;padding:8px 0;outline:none;margin-top:16px;" />
-    <button class="paywall-btn" onclick="startCheckout()">Unlock unlimited access</button>
+    <button class="paywall-btn" onclick="startCheckout()">Get 10 readings — 3.00€</button>
     <br>
     <button class="paywall-close" onclick="closePaywall()">Maybe later</button>
   </div>
@@ -781,13 +781,19 @@ async function runSession() {
     const langInstruction = `Respond entirely in ${langNames[selectedLang] || 'English'}.`;
     const response = await fetch('/api/ask', {
       method:'POST', headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({ input, systemPrompt: fw.prompt + ' ' + langInstruction, customerId })
+      body:JSON.stringify({ input, systemPrompt: fw.prompt + ' ' + langInstruction, userId })
     });
     const data = await response.json();
     if (data.error === 'FREE_LIMIT_REACHED') { showPaywall(); clearInterval(phraseInterval); loading.classList.remove('visible'); document.getElementById('submitBtn').disabled = false; return; }
     if (data.error) throw new Error(data.error);
-    usageCount++;
-    updateUsageBar(usageCount);
+    if (data.creditsRemaining !== null && data.creditsRemaining !== undefined) {
+      paidCredits = data.creditsRemaining;
+      localStorage.setItem('phantum_credits', paidCredits);
+      updateUsageBar(usageCount, paidCredits);
+    } else {
+      usageCount++;
+      updateUsageBar(usageCount, 0);
+    }
     const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
     const clean = text.replace(/```json\n?|```/g,'').trim();
     const jsonMatch = clean.match(/\{[\s\S]*\}/);
@@ -842,15 +848,31 @@ function resetSession() {
 
 // --- Usage tracking ---
 let usageCount = 0;
-const customerId = localStorage.getItem('phantum_customer_id') || null;
+let userId = localStorage.getItem('phantum_user_id');
+if (!userId) {
+  userId = 'u_' + Math.random().toString(36).slice(2, 10);
+  localStorage.setItem('phantum_user_id', userId);
+}
+let paidCredits = parseInt(localStorage.getItem('phantum_credits') || '0', 10);
 
-function updateUsageBar(count) {
+function updateUsageBar(count, credits) {
   const bar = document.getElementById('usageBar');
   if (!bar) return;
-  const dots = bar.querySelectorAll('.usage-dot');
-  dots.forEach((d, i) => d.classList.toggle('used', i < count));
-  const txt = bar.querySelector('.usage-text');
-  if (txt) txt.textContent = `${3 - count} free reading${3 - count !== 1 ? 's' : ''} left today`;
+  if (credits > 0) {
+    const dots = bar.querySelectorAll('.usage-dot');
+    dots.forEach(d => d.classList.add('used'));
+    const txt = bar.querySelector('.usage-text');
+    if (txt) txt.textContent = `${credits} paid reading${credits !== 1 ? 's' : ''} remaining`;
+    const upg = bar.querySelector('.usage-upgrade');
+    if (upg) upg.style.display = 'none';
+  } else {
+    const dots = bar.querySelectorAll('.usage-dot');
+    dots.forEach((d, i) => d.classList.toggle('used', i < count));
+    const txt = bar.querySelector('.usage-text');
+    if (txt) txt.textContent = `${1 - count} free reading${1 - count !== 1 ? 's' : ''} left today`;
+    const upg = bar.querySelector('.usage-upgrade');
+    if (upg) upg.style.display = '';
+  }
 }
 
 function showPaywall() {
@@ -870,7 +892,7 @@ async function startCheckout() {
     const res = await fetch('/api/checkout', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email })
+      body: JSON.stringify({ email, userId })
     });
     const data = await res.json();
     if (data.url) window.location.href = data.url;
@@ -890,13 +912,18 @@ if (urlParams.get('status') === 'success') {
     fetch('/api/session?session_id=' + sessionId)
       .then(r => r.json())
       .then(d => {
-        if (d.customerId) {
-          localStorage.setItem('phantum_customer_id', d.customerId);
+        if (d.success && d.credits) {
+          paidCredits = d.credits;
+          localStorage.setItem('phantum_credits', d.credits);
+          localStorage.setItem('phantum_user_id', d.userId);
+          userId = d.userId;
+          updateUsageBar(usageCount, paidCredits);
           history.replaceState({}, '', '/');
         }
       });
   }
 }
+updateUsageBar(0, paidCredits);
 </script>
 
 <script>
