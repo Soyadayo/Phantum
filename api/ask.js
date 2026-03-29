@@ -45,13 +45,23 @@ export default async function handler(req, res) {
     try {
       const response = await fetch(
         `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
-        { method:'POST', headers:{'Content-Type':'application/json'},
-          body: JSON.stringify({ system_instruction:{parts:[{text:systemPrompt}]}, contents:[{role:'user',parts:[{text:input}]}], generationConfig:{temperature:0.3,maxOutputTokens:256},thinkingConfig:{thinkingBudget:0} }) }
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            system_instruction: { parts: [{ text: systemPrompt }] },
+            contents: [{ role: 'user', parts: [{ text: input }] }],
+            generationConfig: { temperature: 0.3, maxOutputTokens: 256 }
+          })
+        }
       );
       const data = await response.json();
+      console.log('GEMINI RAW (oracle selector):', JSON.stringify(data).slice(0, 800));
       if (data.error) return res.status(500).json({ error: data.error.message });
       return res.status(200).json(data);
-    } catch(err) { return res.status(500).json({ error: err.message }); }
+    } catch (err) {
+      return res.status(500).json({ error: err.message });
+    }
   }
 
   // Check paid credits
@@ -86,11 +96,12 @@ export default async function handler(req, res) {
         body: JSON.stringify({
           system_instruction: { parts: [{ text: systemPrompt }] },
           contents: [{ role: 'user', parts: [{ text: input }] }],
-          generationConfig: { temperature: 0.8, maxOutputTokens: 512 }, thinkingConfig: { thinkingBudget: 0 }
+          generationConfig: { temperature: 0.8, maxOutputTokens: 512 }
         })
       }
     );
     const data = await response.json();
+    console.log('GEMINI RAW (reading):', JSON.stringify(data).slice(0, 800));
     if (data.error) return res.status(500).json({ error: data.error.message });
     res.status(200).json({ ...data, creditsRemaining });
   } catch (err) {
