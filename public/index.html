@@ -891,22 +891,17 @@ async function runSession() {
       usageCount++;
       updateUsageBar(usageCount, 0);
     }
-        // Parse response
+        // Extract thinker/reading/tension directly from Gemini text
     const geminiText = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-    let parsed;
-    try {
-      const s = geminiText.indexOf('{');
-      const e = geminiText.lastIndexOf('}');
-      if (s !== -1 && e !== -1) parsed = JSON.parse(geminiText.slice(s, e+1));
-    } catch(_) {}
-    if (!parsed) {
-      // Fallback: extract fields manually
-      const tM = geminiText.match(/"thinker"\s*:\s*"([^"]+)"/);
-      const rM = geminiText.match(/"reading"\s*:\s*"([\s\S]+?)(?<!\\)"\s*[,}]/);
-      const tnM = geminiText.match(/"tension"\s*:\s*"([^"]+)"/);
-      if (!tM || !rM) throw new Error('Response format error. Please try again.');
-      parsed = { thinker: tM[1], reading: rM[1], tension: tnM ? tnM[1] : '' };
-    }
+    const tM = geminiText.match(/"thinker"\s*:\s*"([^"]+)"/);
+    const rM = geminiText.match(/"reading"\s*:\s*"((?:[^"\\]|\\.)*)"/);
+    const tnM = geminiText.match(/"tension"\s*:\s*"((?:[^"\\]|\\.)*)"/);
+    if (!tM || !rM) throw new Error('Response format error. Please try again.');
+    const parsed = {
+      thinker: tM[1],
+      reading: rM[1].replace(/\\n/g, '\n').replace(/\\"/g, '"'),
+      tension: tnM ? tnM[1].replace(/\\n/g, '\n').replace(/\\"/g, '"') : ''
+    };
     clearInterval(phraseInterval);
     loading.classList.remove('visible');
     renderResponse(parsed);
