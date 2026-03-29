@@ -32,13 +32,27 @@ function getNextMidnightUnix() {
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const { input, systemPrompt, userId } = req.body;
+  const { input, systemPrompt, userId, skipCredit } = req.body;
   if (!input || !systemPrompt) return res.status(400).json({ error: 'Missing input or systemPrompt' });
 
   const REDIS_URL = process.env.UPSTASH_REDIS_REST_URL;
   const REDIS_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN;
   const ip = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || 'unknown';
   const today = new Date().toISOString().slice(0, 10);
+
+  // Skip credit check for oracle selector (internal call)
+  if (skipCredit) {
+    try {
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${process.env.GEMINI_API_KEY}`,
+        { method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({ system_instruction:{parts:[{text:systemPrompt}]}, contents:[{role:'user',parts:[{text:input}]}], generationConfig:{temperature:0.3,maxOutputTokens:128} }) }
+      );
+      const data = await response.json();
+      if (data.error) return res.status(500).json({ error: data.error.message });
+      return res.status(200).json(data);
+    } catch(err) { return res.status(500).json({ error: err.message }); }
+  }
 
   // Check paid credits
   const creditKey = userId ? `phantum:credits:user:${userId}` : `phantum:credits:ip:${ip}`;
