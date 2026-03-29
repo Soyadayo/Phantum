@@ -891,11 +891,22 @@ async function runSession() {
       usageCount++;
       updateUsageBar(usageCount, 0);
     }
-    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-    const clean = text.replace(/```json\n?|```/g,'').trim();
-    const jsonMatch = clean.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) throw new Error('Response format error. Please try again.');
-    const parsed = JSON.parse(jsonMatch[0]);
+        // Parse response
+    const geminiText = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    let parsed;
+    try {
+      const s = geminiText.indexOf('{');
+      const e = geminiText.lastIndexOf('}');
+      if (s !== -1 && e !== -1) parsed = JSON.parse(geminiText.slice(s, e+1));
+    } catch(_) {}
+    if (!parsed) {
+      // Fallback: extract fields manually
+      const tM = geminiText.match(/"thinker"\s*:\s*"([^"]+)"/);
+      const rM = geminiText.match(/"reading"\s*:\s*"([\s\S]+?)(?<!\\)"\s*[,}]/);
+      const tnM = geminiText.match(/"tension"\s*:\s*"([^"]+)"/);
+      if (!tM || !rM) throw new Error('Response format error. Please try again.');
+      parsed = { thinker: tM[1], reading: rM[1], tension: tnM ? tnM[1] : '' };
+    }
     clearInterval(phraseInterval);
     loading.classList.remove('visible');
     renderResponse(parsed);
@@ -1062,10 +1073,10 @@ async function runOracleSession(input) {
   if (data1.error === 'FREE_LIMIT_REACHED') { showPaywall(); return null; }
   if (data1.error) throw new Error(data1.error);
   const text1 = data1.candidates?.[0]?.content?.parts?.[0]?.text || '';
-  // Extract philosopher key directly from response
-  const fullResponse = JSON.stringify(data1);
-  const philMatch = fullResponse.match(/"philosopher":"([a-z]+)"/);
-  if (!philMatch) throw new Error('No philosopher found in: ' + fullResponse.slice(0, 150));
+  // Extract philosopher key from nested Gemini response
+  const geminiText1 = data1?.candidates?.[0]?.content?.parts?.[0]?.text || JSON.stringify(data1);
+  const philMatch = geminiText1.match(/"philosopher"\s*:\s*"([a-z]+)"/);
+  if (!philMatch) throw new Error('No philosopher found in: ' + geminiText1.slice(0, 150));
   const pickedKey = philMatch[1];
   if (!FRAMEWORKS[pickedKey]) throw new Error('Invalid key: ' + pickedKey);
 
