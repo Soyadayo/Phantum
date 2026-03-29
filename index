@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Examined Decision</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0908;
+    --surface: rgba(18,17,12,0.82);
+    --border: #2a2820;
+    --text: #e8e2d4;
+    --muted: #6b6557;
+    --accent: #c8a96e;
+    --accent-dim: #7a6440;
+    --danger: #8b4a3a;
+  }
+
+  #liquid-bg {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .container { position: relative; z-index: 1; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:#0a0908; color:var(--text); font-family:'DM Mono',monospace; font-weight:300; min-height:100vh; overflow-x:hidden; }
+  body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events:none; z-index:1000; opacity:0.4; }
+  .container { max-width:740px; margin:0 auto; padding:80px 32px; }
+  header { margin-bottom:64px; opacity:0; animation:fadeUp 0.8s ease forwards; }
+  .header-label { font-size:10px; letter-spacing:0.3em; text-transform:uppercase; color:var(--accent); margin-bottom:16px; }
+  h1 { font-family:'Cormorant Garamond',serif; font-weight:300; font-size:clamp(36px,6vw,52px); line-height:1.1; color:var(--text); margin-bottom:12px; }
+  h1 em { font-style:italic; color:var(--accent); }
+  .subtitle { font-size:12px; color:var(--muted); letter-spacing:0.05em; line-height:1.6; }
+
+  /* API key bar */
+
+
+  .section { margin-bottom:40px; opacity:0; animation:fadeUp 0.8s ease forwards; }
+  .section:nth-child(3) { animation-delay:0.1s; }
+  .section:nth-child(4) { animation-delay:0.2s; }
+  .section:nth-child(5) { animation-delay:0.3s; }
+  .section-label { font-size:10px; letter-spacing:0.25em; text-transform:uppercase; color:var(--muted); margin-bottom:20px; }
+
+  /* Philosopher cards grid */
+  .era-group { margin-bottom:28px; }
+  .era-title { font-size:9px; letter-spacing:0.3em; text-transform:uppercase; color:var(--accent-dim); margin-bottom:12px; padding-bottom:6px; border-bottom:1px solid var(--border); }
+  .frameworks { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:10px; }
+
+  .framework-btn {
+    background:var(--surface);
+    border:1px solid var(--border);
+    color:var(--muted);
+    padding:0;
+    cursor:pointer;
+    text-align:left;
+    transition:all 0.2s ease;
+    font-family:'DM Mono',monospace;
+    font-size:11px;
+    font-weight:300;
+    overflow:hidden;
+    position:relative;
+  }
+  .framework-btn:hover { border-color:var(--accent-dim); background:#1a1914; }
+  .framework-btn.active { border-color:var(--accent); background:#1a1812; }
+
+  /* Portrait area */
+  .fw-portrait {
+    width:100%;
+    aspect-ratio:1;
+    background:#111009;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+    position:relative;
+    border-bottom:1px solid var(--border);
+  }
+  .fw-portrait svg { width:100%; height:100%; }
+  .framework-btn.active .fw-portrait { border-bottom-color:var(--accent-dim); }
+
+  /* Active accent line */
+  .framework-btn.active::after {
+    content:'';
+    position:absolute;
+    top:0; left:0; right:0;
+    height:2px;
+    background:var(--accent);
+  }
+
+  .fw-info { padding:10px 12px 12px; }
+  .fw-name { display:block; font-size:12px; color:var(--text); margin-bottom:2px; letter-spacing:0.03em; }
+  .framework-btn.active .fw-name { color:var(--accent); }
+  .fw-desc { display:block; font-size:10px; color:var(--muted); opacity:0.7; line-height:1.4; }
+
+  /* Text input */
+  textarea { width:100%; background:var(--surface); border:1px solid var(--border); color:var(--text); padding:20px; font-family:'Cormorant Garamond',serif; font-size:18px; font-weight:300; line-height:1.6; resize:vertical; min-height:120px; outline:none; transition:border-color 0.2s; }
+  textarea::placeholder { color:var(--muted); font-style:italic; }
+  textarea:focus { border-color:var(--accent-dim); }
+
+  .submit-row { display:flex; align-items:center; gap:16px; margin-top:8px; }
+  .submit-btn { background:transparent; border:1px solid var(--accent); color:var(--accent); padding:12px 28px; font-family:'DM Mono',monospace; font-size:11px; letter-spacing:0.2em; text-transform:uppercase; cursor:pointer; transition:all 0.2s ease; }
+  .submit-btn:hover:not(:disabled) { background:var(--accent); color:var(--bg); }
+  .submit-btn:disabled { opacity:0.3; cursor:not-allowed; }
+  .char-count { font-size:10px; color:var(--muted); letter-spacing:0.05em; }
+
+  .response-area { margin-top:48px; border-top:1px solid var(--border); padding-top:48px; display:none; }
+  .response-area.visible { display:block; animation:fadeUp 0.6s ease forwards; }
+  .response-header { display:flex; align-items:center; gap:12px; margin-bottom:32px; }
+  .response-thinker { font-family:'Cormorant Garamond',serif; font-size:13px; font-style:italic; color:var(--accent); }
+  .response-divider { flex:1; height:1px; background:var(--border); }
+  .questions-list { list-style:none; display:flex; flex-direction:column; }
+  .question-item { padding:24px 0; border-bottom:1px solid var(--border); opacity:0; transform:translateY(8px); transition:opacity 0.4s ease,transform 0.4s ease; }
+  .question-item.visible { opacity:1; transform:translateY(0); }
+  .question-num { font-size:10px; color:var(--accent-dim); letter-spacing:0.2em; margin-bottom:8px; }
+  .question-text { font-family:'Cormorant Garamond',serif; font-size:22px; font-weight:300; line-height:1.4; color:var(--text); }
+  .question-context { font-size:11px; color:var(--muted); margin-top:8px; line-height:1.6; }
+
+  .loading { display:none; align-items:center; gap:12px; padding:32px 0; color:var(--muted); font-size:11px; letter-spacing:0.1em; }
+  .loading.visible { display:flex; }
+  .loading-dots { display:flex; gap:4px; }
+  .loading-dots span { width:4px; height:4px; border-radius:50%; background:var(--accent-dim); animation:pulse 1.2s ease infinite; }
+  .loading-dots span:nth-child(2) { animation-delay:0.2s; }
+  .loading-dots span:nth-child(3) { animation-delay:0.4s; }
+
+  .error-msg { display:none; padding:16px 20px; border:1px solid var(--danger); color:#d4847a; font-size:11px; line-height:1.6; margin-top:16px; }
+  .error-msg.visible { display:block; }
+
+  .summary-area { margin-top:40px; padding:24px; border:1px solid var(--border); background:var(--surface); display:none; }
+  .summary-area.visible { display:block; }
+  .summary-label { font-size:10px; letter-spacing:0.25em; text-transform:uppercase; color:var(--accent); margin-bottom:12px; }
+  .summary-text { font-family:'Cormorant Garamond',serif; font-size:16px; font-weight:300; font-style:italic; line-height:1.7; color:var(--muted); }
+
+  .reset-btn { background:none; border:none; color:var(--muted); font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.2em; text-transform:uppercase; cursor:pointer; margin-top:40px; padding:8px 0; text-decoration:underline; text-underline-offset:3px; transition:color 0.2s; }
+  .reset-btn:hover { color:var(--text); }
+
+
+  .lang-bar { display:flex; align-items:center; gap:12px; margin-bottom:48px; opacity:0; animation:fadeUp 0.8s ease 0.05s forwards; }
+  .lang-bar label { font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--muted); white-space:nowrap; }
+  .lang-btn { background:var(--surface); border:1px solid var(--border); color:var(--muted); padding:6px 14px; font-family:'DM Mono',monospace; font-size:11px; letter-spacing:0.1em; cursor:pointer; transition:all 0.2s; }
+  .lang-btn:hover { border-color:var(--accent-dim); color:var(--text); }
+  .lang-btn.active { border-color:var(--accent); color:var(--accent); }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes pulse { 0%,100%{opacity:0.3;transform:scale(0.8)} 50%{opacity:1;transform:scale(1)} }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+<canvas id="liquid-bg"></canvas>
+<div class="container">
+
+  <header>
+    <div class="header-label">The Examined Decision</div>
+    <h1>What decision<br>are you <em>avoiding?</em></h1>
+    <p class="subtitle">Name the decision. Choose a thinker.<br>Receive the questions they would have asked you.</p>
+  </header>
+
+  <!-- ▼▼▼ Gemini APIキーをここに入力 ▼▼▼ -->
+
+  <!-- ▲▲▲ Gemini APIキーをここに入力 ▲▲▲ -->
+
+  <div class="lang-bar">
+    <label>Response language</label>
+    <button class="lang-btn active" data-lang="en" onclick="selectLang(this)">EN</button>
+    <button class="lang-btn" data-lang="ja" onclick="selectLang(this)">日本語</button>
+    <button class="lang-btn" data-lang="de" onclick="selectLang(this)">DE</button>
+    <button class="lang-btn" data-lang="fr" onclick="selectLang(this)">FR</button>
+    <button class="lang-btn" data-lang="es" onclick="selectLang(this)">ES</button>
+    <button class="lang-btn" data-lang="zh" onclick="selectLang(this)">中文</button>
+    <button class="lang-btn" data-lang="ko" onclick="selectLang(this)">한국어</button>
+    <button class="lang-btn" data-lang="tr" onclick="selectLang(this)">TR</button>
+    <button class="lang-btn" data-lang="ar" onclick="selectLang(this)">AR</button>
+    <button class="lang-btn" data-lang="fa" onclick="selectLang(this)">FA</button>
+  </div>
+
+  <div class="section">
+    <div class="section-label">01 — Choose your thinker</div>
+
+    <div class="era-group">
+      <div class="era-title">Ancient</div>
+      <div class="frameworks">
+        <button class="framework-btn" data-id="socrates" onclick="selectFramework(this)">
+          <div class="fw-portrait">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+              <!-- Socrates: bald, short beard, broad nose, toga -->
+              <circle cx="60" cy="48" r="26" fill="none" stroke="#c8a96e" stroke-width="1.2"/>
+              <!-- Bald dome -->
+              <path d="M36 50 Q38 26 60 24 Q82 26 84 50" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <!-- Eyes -->
+              <line x1="48" y1="46" x2="54" y2="46" stroke="#c8a96e" stroke-width="1.2"/>
+              <line x1="66" y1="46" x2="72" y2="46" stroke="#c8a96e" stroke-width="1.2"/>
+              <!-- Broad nose -->
+              <path d="M58 50 Q57 56 55 58 Q60 60 65 58 Q63 56 62 50" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <!-- Short thick beard -->
+              <path d="M44 64 Q50 72 60 74 Q70 72 76 64" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M46 68 Q52 76 60 78 Q68 76 74 68" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <!-- Neck + toga -->
+              <line x1="55" y1="74" x2="52" y2="84" stroke="#c8a96e" stroke-width="1"/>
+              <line x1="65" y1="74" x2="68" y2="84" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M28 120 Q40 90 52 84 Q60 88 68 84 Q80 90 92 120" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M32 120 Q38 98 48 92" fill="none" stroke="#c8a96e" stroke-width="0.8" opacity="0.5"/>
+              <path d="M88 120 Q82 98 72 92" fill="none" stroke="#c8a96e" stroke-width="0.8" opacity="0.5"/>
+              <!-- Hemlock cup hint -->
+              <path d="M88 100 L84 115 Q90 117 94 115 L92 100 Z" fill="none" stroke="#c8a96e" stroke-width="0.8" opacity="0.4"/>
+            </svg>
+          </div>
+          <div class="fw-info">
+            <span class="fw-name">Socrates</span>
+            <span class="fw-desc">Questioning & ignorance</span>
+          </div>
+        </button>
+
+        <button class="framework-btn" data-id="epictetus" onclick="selectFramework(this)">
+          <div class="fw-portrait">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+              <!-- Epictetus: slave, lame, stoic expression, simple tunic -->
+              <circle cx="60" cy="46" r="24" fill="none" stroke="#c8a96e" stroke-width="1.2"/>
+              <!-- Short hair -->
+              <path d="M38 42 Q40 24 60 22 Q80 24 82 42" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M38 42 Q36 35 40 30" fill="none" stroke="#c8a96e" stroke-width="0.8"/>
+              <!-- Eyes — steady, calm -->
+              <line x1="49" y1="44" x2="55" y2="44" stroke="#c8a96e" stroke-width="1.2"/>
+              <line x1="65" y1="44" x2="71" y2="44" stroke="#c8a96e" stroke-width="1.2"/>
+              <!-- Nose -->
+              <path d="M59 48 Q58 53 57 55 Q60 57 63 55 Q62 53 61 48" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
+              <!-- Light beard -->
+              <path d="M45 60 Q52 68 60 70 Q68 68 75 60" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <!-- Neck -->
+              <line x1="56" y1="70" x2="54" y2="80" stroke="#c8a96e" stroke-width="1"/>
+              <line x1="64" y1="70" x2="66" y2="80" stroke="#c8a96e" stroke-width="1"/>
+              <!-- Simple tunic + one arm raised (teaching gesture) -->
+              <path d="M26 120 Q38 88 54 80 Q60 84 66 80 Q82 88 94 120" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <!-- Raised right arm -->
+              <path d="M82 92 Q94 78 98 68" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M98 68 L102 64 M98 68 L94 62" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
+              <!-- Lame leg hint -->
+              <path d="M38 110 Q35 118 32 120" fill="none" stroke="#c8a96e" stroke-width="0.8" opacity="0.5"/>
+            </svg>
+          </div>
+          <div class="fw-info">
+            <span class="fw-name">Epictetus</span>
+            <span class="fw-desc">Control & acceptance</span>
+          </div>
+        </button>
+
+        <button class="framework-btn" data-id="marcus" onclick="selectFramework(this)">
+          <div class="fw-portrait">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+              <!-- Marcus Aurelius: emperor, curly beard, laurel wreath -->
+              <circle cx="60" cy="46" r="24" fill="none" stroke="#c8a96e" stroke-width="1.2"/>
+              <!-- Laurel wreath -->
+              <path d="M38 36 Q42 28 48 30 Q44 36 40 38" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
+              <path d="M44 28 Q50 22 56 26 Q52 30 48 30" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
+              <path d="M56 24 Q62 20 68 24 Q64 28 60 28 Q58 26 56 24" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
+              <path d="M68 24 Q74 22 78 28 Q74 30 70 28" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
+              <path d="M78 28 Q84 32 82 40 Q78 38 76 36" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
+              <!-- Eyes — contemplative, slightly weary -->
+              <line x1="49" y1="44" x2="55" y2="44" stroke="#c8a96e" stroke-width="1.2"/>
+              <line x1="65" y1="44" x2="71" y2="44" stroke="#c8a96e" stroke-width="1.2"/>
+              <line x1="48" y1="42" x2="56" y2="41" stroke="#c8a96e" stroke-width="0.6" opacity="0.6"/>
+              <!-- Nose -->
+              <path d="M59 48 Q58 53 57 55 Q60 57 63 55 Q62 53 61 48" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
+              <!-- Full curly beard -->
+              <path d="M43 60 Q46 70 52 74 Q60 78 68 74 Q74 70 77 60" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M44 64 Q47 72 52 76" fill="none" stroke="#c8a96e" stroke-width="0.7" opacity="0.5"/>
+              <path d="M68 64 Q72 72 74 68" fill="none" stroke="#c8a96e" stroke-width="0.7" opacity="0.5"/>
+              <path d="M52 76 Q56 80 60 80 Q64 80 68 76" fill="none" stroke="#c8a96e" stroke-width="0.7" opacity="0.5"/>
+              <!-- Neck + imperial robes -->
+              <line x1="56" y1="78" x2="53" y2="86" stroke="#c8a96e" stroke-width="1"/>
+              <line x1="64" y1="78" x2="67" y2="86" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M24 120 Q36 88 53 86 Q60 90 67 86 Q84 88 96 120" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M36 120 Q40 100 46 94" fill="none" stroke="#c8a96e" stroke-width="0.8" opacity="0.5"/>
+              <path d="M84 120 Q80 100 74 94" fill="none" stroke="#c8a96e" stroke-width="0.8" opacity="0.5"/>
+            </svg>
+          </div>
+          <div class="fw-info">
+            <span class="fw-name">Marcus Aurelius</span>
+            <span class="fw-desc">Duty & impermanence</span>
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <div class="era-group">
+      <div class="era-title">Modern</div>
+      <div class="frameworks">
+        <button class="framework-btn" data-id="nietzsche" onclick="selectFramework(this)">
+          <div class="fw-portrait">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+              <!-- Nietzsche: massive mustache, intense brow, short hair -->
+              <circle cx="60" cy="46" r="24" fill="none" stroke="#c8a96e" stroke-width="1.2"/>
+              <path d="M38 40 Q40 24 60 22 Q80 24 82 40" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <!-- Heavy brow -->
+              <path d="M44 40 Q52 37 56 40" fill="none" stroke="#c8a96e" stroke-width="1.4"/>
+              <path d="M64 40 Q68 37 76 40" fill="none" stroke="#c8a96e" stroke-width="1.4"/>
+              <!-- Intense eyes -->
+              <line x1="47" y1="44" x2="55" y2="44" stroke="#c8a96e" stroke-width="1.4"/>
+              <line x1="65" y1="44" x2="73" y2="44" stroke="#c8a96e" stroke-width="1.4"/>
+              <!-- Nose -->
+              <path d="M59 48 Q58 52 57 54 Q60 56 63 54 Q62 52 61 48" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
+              <!-- MASSIVE drooping mustache -->
+              <path d="M44 60 Q52 56 60 58 Q68 56 76 60" fill="none" stroke="#c8a96e" stroke-width="1.6"/>
+              <path d="M44 60 Q40 68 38 74" fill="none" stroke="#c8a96e" stroke-width="1.4"/>
+              <path d="M76 60 Q80 68 82 74" fill="none" stroke="#c8a96e" stroke-width="1.4"/>
+              <path d="M38 74 Q44 70 52 68 Q58 68 60 70" fill="none" stroke="#c8a96e" stroke-width="0.9" opacity="0.6"/>
+              <path d="M82 74 Q76 70 68 68 Q62 68 60 70" fill="none" stroke="#c8a96e" stroke-width="0.9" opacity="0.6"/>
+              <!-- Neck + coat -->
+              <line x1="56" y1="70" x2="54" y2="80" stroke="#c8a96e" stroke-width="1"/>
+              <line x1="64" y1="70" x2="66" y2="80" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M26 120 Q38 86 54 80 Q60 84 66 80 Q82 86 94 120" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M54 80 Q58 88 60 92 Q62 88 66 80" fill="none" stroke="#c8a96e" stroke-width="0.8" opacity="0.5"/>
+            </svg>
+          </div>
+          <div class="fw-info">
+            <span class="fw-name">Nietzsche</span>
+            <span class="fw-desc">Will & self-overcoming</span>
+          </div>
+        </button>
+
+        <button class="framework-btn" data-id="sartre" onclick="selectFramework(this)">
+          <div class="fw-portrait">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+              <!-- Sartre: glasses, pipe, small stature, slightly asymmetric eyes -->
+              <circle cx="60" cy="46" r="24" fill="none" stroke="#c8a96e" stroke-width="1.2"/>
+              <path d="M38 40 Q40 24 60 22 Q80 24 82 40" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <!-- Thick-framed glasses -->
+              <rect x="44" y="39" width="14" height="10" rx="2" fill="none" stroke="#c8a96e" stroke-width="1.3"/>
+              <rect x="62" y="39" width="14" height="10" rx="2" fill="none" stroke="#c8a96e" stroke-width="1.3"/>
+              <line x1="58" y1="44" x2="62" y2="44" stroke="#c8a96e" stroke-width="1.1"/>
+              <line x1="38" y1="44" x2="44" y2="44" stroke="#c8a96e" stroke-width="1"/>
+              <line x1="76" y1="44" x2="82" y2="44" stroke="#c8a96e" stroke-width="1"/>
+              <!-- One eye slightly off (walleye) -->
+              <circle cx="51" cy="44" r="2" fill="none" stroke="#c8a96e" stroke-width="0.8"/>
+              <circle cx="50" cy="44" r="0.8" fill="#c8a96e" opacity="0.6"/>
+              <circle cx="69" cy="44" r="2" fill="none" stroke="#c8a96e" stroke-width="0.8"/>
+              <circle cx="70" cy="44" r="0.8" fill="#c8a96e" opacity="0.6"/>
+              <!-- Nose -->
+              <path d="M59 50 Q57 55 56 57 Q60 59 64 57 Q63 55 61 50" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
+              <!-- Thin lips -->
+              <line x1="53" y1="62" x2="67" y2="62" stroke="#c8a96e" stroke-width="1"/>
+              <!-- Pipe -->
+              <path d="M67 64 Q74 62 78 66 Q80 70 76 72" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M76 72 Q78 78 76 80" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
+              <!-- Smoke wisps -->
+              <path d="M76 80 Q74 74 78 70" fill="none" stroke="#c8a96e" stroke-width="0.6" opacity="0.4"/>
+              <!-- Neck + turtleneck -->
+              <line x1="56" y1="70" x2="54" y2="80" stroke="#c8a96e" stroke-width="1"/>
+              <line x1="64" y1="70" x2="66" y2="80" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M30 120 Q42 86 54 80 Q60 84 66 80 Q78 86 90 120" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M52 80 Q53 86 60 88 Q67 86 68 80" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
+            </svg>
+          </div>
+          <div class="fw-info">
+            <span class="fw-name">Sartre</span>
+            <span class="fw-desc">Radical freedom</span>
+          </div>
+        </button>
+
+        <button class="framework-btn" data-id="camus" onclick="selectFramework(this)">
+          <div class="fw-portrait">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+              <!-- Camus: handsome, sharp features, trench coat, cigarette -->
+              <circle cx="60" cy="44" r="24" fill="none" stroke="#c8a96e" stroke-width="1.2"/>
+              <path d="M38 38 Q40 22 60 20 Q80 22 82 38" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <!-- Defined cheekbones -->
+              <path d="M38 52 Q40 58 44 60" fill="none" stroke="#c8a96e" stroke-width="0.7" opacity="0.5"/>
+              <path d="M82 52 Q80 58 76 60" fill="none" stroke="#c8a96e" stroke-width="0.7" opacity="0.5"/>
+              <!-- Eyes — dark, romantic -->
+              <line x1="48" y1="42" x2="56" y2="42" stroke="#c8a96e" stroke-width="1.3"/>
+              <line x1="64" y1="42" x2="72" y2="42" stroke="#c8a96e" stroke-width="1.3"/>
+              <!-- Strong brow -->
+              <path d="M47 39 Q52 37 57 39" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M63 39 Q68 37 73 39" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <!-- Nose -->
+              <path d="M59 46 Q58 51 57 53 Q60 55 63 53 Q62 51 61 46" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
+              <!-- Slight smirk -->
+              <path d="M53 60 Q60 63 67 60" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <!-- Cigarette -->
+              <line x1="67" y1="60" x2="78" y2="56" stroke="#c8a96e" stroke-width="1.2"/>
+              <line x1="78" y1="56" x2="82" y2="55" stroke="#c8a96e" stroke-width="0.9" opacity="0.5"/>
+              <path d="M82 55 Q80 50 84 46" fill="none" stroke="#c8a96e" stroke-width="0.5" opacity="0.35"/>
+              <!-- Trench coat + upturned collar -->
+              <line x1="56" y1="68" x2="52" y2="78" stroke="#c8a96e" stroke-width="1"/>
+              <line x1="64" y1="68" x2="68" y2="78" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M22 120 Q36 84 52 78 Q56 82 60 82 Q64 82 68 78 Q84 84 98 120" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M52 78 Q50 86 48 90" fill="none" stroke="#c8a96e" stroke-width="0.9" opacity="0.6"/>
+              <path d="M68 78 Q70 86 72 90" fill="none" stroke="#c8a96e" stroke-width="0.9" opacity="0.6"/>
+              <!-- Coat lapels -->
+              <path d="M52 78 Q56 84 60 86" fill="none" stroke="#c8a96e" stroke-width="0.8"/>
+              <path d="M68 78 Q64 84 60 86" fill="none" stroke="#c8a96e" stroke-width="0.8"/>
+            </svg>
+          </div>
+          <div class="fw-info">
+            <span class="fw-name">Camus</span>
+            <span class="fw-desc">Absurdity & revolt</span>
+          </div>
+        </button>
+
+        <button class="framework-btn" data-id="arendt" onclick="selectFramework(this)">
+          <div class="fw-portrait">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+              <!-- Hannah Arendt: elegant, sharp eyes, chignon, cigarette holder -->
+              <circle cx="60" cy="44" r="23" fill="none" stroke="#c8a96e" stroke-width="1.2"/>
+              <!-- Chignon (hair pinned back) -->
+              <path d="M40 36 Q42 22 60 20 Q78 22 80 36" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M78 36 Q84 40 82 50" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
+              <ellipse cx="84" cy="32" rx="6" ry="8" fill="none" stroke="#c8a96e" stroke-width="0.9" opacity="0.7"/>
+              <!-- Arched brows -->
+              <path d="M47 39 Q52 36 57 39" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M63 39 Q68 36 73 39" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <!-- Intelligent eyes -->
+              <line x1="48" y1="43" x2="56" y2="43" stroke="#c8a96e" stroke-width="1.3"/>
+              <line x1="64" y1="43" x2="72" y2="43" stroke="#c8a96e" stroke-width="1.3"/>
+              <!-- Nose -->
+              <path d="M59 47 Q58 52 57 54 Q60 56 63 54 Q62 52 61 47" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
+              <!-- Composed lips -->
+              <path d="M53 60 Q60 62 67 60" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <!-- Long cigarette holder -->
+              <line x1="67" y1="60" x2="84" y2="50" stroke="#c8a96e" stroke-width="0.9"/>
+              <line x1="84" y1="50" x2="88" y2="48" stroke="#c8a96e" stroke-width="0.7" opacity="0.4"/>
+              <!-- Neck + blouse -->
+              <line x1="56" y1="67" x2="54" y2="78" stroke="#c8a96e" stroke-width="1"/>
+              <line x1="64" y1="67" x2="66" y2="78" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M26 120 Q40 86 54 78 Q60 82 66 78 Q80 86 94 120" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M54 78 Q58 86 60 90 Q62 86 66 78" fill="none" stroke="#c8a96e" stroke-width="0.8" opacity="0.5"/>
+            </svg>
+          </div>
+          <div class="fw-info">
+            <span class="fw-name">Hannah Arendt</span>
+            <span class="fw-desc">Action & plurality</span>
+          </div>
+        </button>
+
+        <button class="framework-btn" data-id="simone" onclick="selectFramework(this)">
+          <div class="fw-portrait">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+              <!-- Simone de Beauvoir: turban/head wrap, strong gaze, elegant -->
+              <circle cx="60" cy="46" r="23" fill="none" stroke="#c8a96e" stroke-width="1.2"/>
+              <!-- Iconic turban wrap -->
+              <path d="M38 40 Q36 28 42 24 Q52 18 68 18 Q80 20 84 30 Q86 38 82 42" fill="none" stroke="#c8a96e" stroke-width="1.1"/>
+              <path d="M38 40 Q42 36 50 34 Q60 32 70 34 Q78 36 82 42" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
+              <path d="M42 24 Q50 30 56 28 Q62 30 70 28 Q76 24 80 30" fill="none" stroke="#c8a96e" stroke-width="0.7" opacity="0.5"/>
+              <!-- Defined brows, direct gaze -->
+              <path d="M47 42 Q52 39 57 42" fill="none" stroke="#c8a96e" stroke-width="1.1"/>
+              <path d="M63 42 Q68 39 73 42" fill="none" stroke="#c8a96e" stroke-width="1.1"/>
+              <line x1="48" y1="46" x2="56" y2="46" stroke="#c8a96e" stroke-width="1.3"/>
+              <line x1="64" y1="46" x2="72" y2="46" stroke="#c8a96e" stroke-width="1.3"/>
+              <!-- Nose -->
+              <path d="M59 50 Q58 55 57 57 Q60 59 63 57 Q62 55 61 50" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
+              <!-- Lips -->
+              <path d="M53 62 Q60 65 67 62" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <!-- Neck + jacket -->
+              <line x1="56" y1="69" x2="54" y2="80" stroke="#c8a96e" stroke-width="1"/>
+              <line x1="64" y1="69" x2="66" y2="80" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M26 120 Q40 86 54 80 Q60 84 66 80 Q80 86 94 120" fill="none" stroke="#c8a96e" stroke-width="1"/>
+            </svg>
+          </div>
+          <div class="fw-info">
+            <span class="fw-name">Simone de Beauvoir</span>
+            <span class="fw-desc">Ambiguity & ethics</span>
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <div class="era-group">
+      <div class="era-title">Contemporary</div>
+      <div class="frameworks">
+        <button class="framework-btn" data-id="foucault" onclick="selectFramework(this)">
+          <div class="fw-portrait">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+              <!-- Foucault: shaved head, round glasses, intense -->
+              <circle cx="60" cy="46" r="24" fill="none" stroke="#c8a96e" stroke-width="1.2"/>
+              <!-- Shaved head (very minimal hair) -->
+              <path d="M38 42 Q40 24 60 22 Q80 24 82 42" fill="none" stroke="#c8a96e" stroke-width="0.7" opacity="0.4"/>
+              <!-- Round glasses -->
+              <circle cx="51" cy="44" r="7" fill="none" stroke="#c8a96e" stroke-width="1.2"/>
+              <circle cx="69" cy="44" r="7" fill="none" stroke="#c8a96e" stroke-width="1.2"/>
+              <line x1="58" y1="44" x2="62" y2="44" stroke="#c8a96e" stroke-width="1"/>
+              <line x1="36" y1="43" x2="44" y2="43" stroke="#c8a96e" stroke-width="1"/>
+              <line x1="76" y1="43" x2="84" y2="43" stroke="#c8a96e" stroke-width="1"/>
+              <!-- Eyes -->
+              <circle cx="51" cy="44" r="2.5" fill="none" stroke="#c8a96e" stroke-width="0.8"/>
+              <circle cx="69" cy="44" r="2.5" fill="none" stroke="#c8a96e" stroke-width="0.8"/>
+              <!-- Nose -->
+              <path d="M59 50 Q58 55 56 57 Q60 59 64 57 Q62 55 61 50" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
+              <!-- Thin pursed lips -->
+              <line x1="53" y1="62" x2="67" y2="62" stroke="#c8a96e" stroke-width="1"/>
+              <!-- Neck + turtleneck -->
+              <line x1="56" y1="70" x2="54" y2="80" stroke="#c8a96e" stroke-width="1"/>
+              <line x1="64" y1="70" x2="66" y2="80" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M30 120 Q42 86 54 80 Q60 84 66 80 Q78 86 90 120" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M52 80 Q53 86 60 88 Q67 86 68 80" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
+            </svg>
+          </div>
+          <div class="fw-info">
+            <span class="fw-name">Foucault</span>
+            <span class="fw-desc">Power & structure</span>
+          </div>
+        </button>
+
+        <button class="framework-btn" data-id="han" onclick="selectFramework(this)">
+          <div class="fw-portrait">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+              <!-- Byung-Chul Han: East Asian features, contemporary, composed -->
+              <circle cx="60" cy="46" r="23" fill="none" stroke="#c8a96e" stroke-width="1.2"/>
+              <!-- Hair — straight, side-parted -->
+              <path d="M38 40 Q40 22 60 20 Q80 22 82 40" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M40 28 Q44 34 42 42" fill="none" stroke="#c8a96e" stroke-width="0.8" opacity="0.5"/>
+              <line x1="40" y1="28" x2="72" y2="26" stroke="#c8a96e" stroke-width="0.7" opacity="0.4"/>
+              <!-- East Asian eye shape — single eyelid, horizontal -->
+              <line x1="47" y1="44" x2="57" y2="43" stroke="#c8a96e" stroke-width="1.4"/>
+              <line x1="63" y1="43" x2="73" y2="44" stroke="#c8a96e" stroke-width="1.4"/>
+              <!-- High cheekbones -->
+              <path d="M38 52 Q40 56 44 58" fill="none" stroke="#c8a96e" stroke-width="0.6" opacity="0.4"/>
+              <path d="M82 52 Q80 56 76 58" fill="none" stroke="#c8a96e" stroke-width="0.6" opacity="0.4"/>
+              <!-- Nose — low bridge -->
+              <path d="M59 48 Q58 53 58 55 Q60 57 62 55 Q62 53 61 48" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
+              <!-- Slight lips -->
+              <path d="M54 61 Q60 63 66 61" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <!-- Neck + contemporary jacket -->
+              <line x1="56" y1="69" x2="54" y2="80" stroke="#c8a96e" stroke-width="1"/>
+              <line x1="64" y1="69" x2="66" y2="80" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M28 120 Q40 86 54 80 Q60 84 66 80 Q80 86 92 120" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M54 80 Q56 88 60 90 Q64 88 66 80" fill="none" stroke="#c8a96e" stroke-width="0.8" opacity="0.5"/>
+              <!-- Book hint (his many thin books) -->
+              <rect x="78" y="90" width="14" height="20" rx="1" fill="none" stroke="#c8a96e" stroke-width="0.8" opacity="0.4"/>
+              <line x1="80" y1="90" x2="80" y2="110" stroke="#c8a96e" stroke-width="0.5" opacity="0.3"/>
+            </svg>
+          </div>
+          <div class="fw-info">
+            <span class="fw-name">Byung-Chul Han</span>
+            <span class="fw-desc">Burnout & transparency</span>
+          </div>
+        </button>
+
+        <button class="framework-btn" data-id="fisher" onclick="selectFramework(this)">
+          <div class="fw-portrait">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+              <!-- Mark Fisher: melancholic, round face, slight stubble, hoodie -->
+              <circle cx="60" cy="46" r="24" fill="none" stroke="#c8a96e" stroke-width="1.2"/>
+              <!-- Hair — unkempt, slightly long -->
+              <path d="M38 40 Q40 22 60 20 Q80 22 82 40" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M38 40 Q35 36 36 28" fill="none" stroke="#c8a96e" stroke-width="0.8" opacity="0.6"/>
+              <path d="M82 40 Q85 36 84 28" fill="none" stroke="#c8a96e" stroke-width="0.8" opacity="0.6"/>
+              <!-- Downcast eyes (melancholy) -->
+              <line x1="48" y1="44" x2="56" y2="45" stroke="#c8a96e" stroke-width="1.2"/>
+              <line x1="64" y1="45" x2="72" y2="44" stroke="#c8a96e" stroke-width="1.2"/>
+              <!-- Slight brow furrow -->
+              <path d="M48 40 Q52 38 56 40" fill="none" stroke="#c8a96e" stroke-width="0.8" opacity="0.6"/>
+              <path d="M64 40 Q68 38 72 40" fill="none" stroke="#c8a96e" stroke-width="0.8" opacity="0.6"/>
+              <!-- Nose -->
+              <path d="M59 49 Q58 54 57 56 Q60 58 63 56 Q62 54 61 49" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
+              <!-- Slight stubble (dots) -->
+              <path d="M44 64 Q52 70 60 72 Q68 70 76 64" fill="none" stroke="#c8a96e" stroke-width="0.8" opacity="0.4"/>
+              <!-- Lips -->
+              <path d="M53 62 Q60 64 67 62" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <!-- Hoodie -->
+              <line x1="56" y1="72" x2="52" y2="82" stroke="#c8a96e" stroke-width="1"/>
+              <line x1="64" y1="72" x2="68" y2="82" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M22 120 Q36 86 52 82 Q56 86 60 86 Q64 86 68 82 Q84 86 98 120" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <!-- Hoodie strings -->
+              <path d="M56 82 Q54 92 52 96" fill="none" stroke="#c8a96e" stroke-width="0.7" opacity="0.5"/>
+              <path d="M64 82 Q66 92 68 96" fill="none" stroke="#c8a96e" stroke-width="0.7" opacity="0.5"/>
+            </svg>
+          </div>
+          <div class="fw-info">
+            <span class="fw-name">Mark Fisher</span>
+            <span class="fw-desc">Capitalist realism</span>
+          </div>
+        </button>
+
+        <button class="framework-btn" data-id="bauman" onclick="selectFramework(this)">
+          <div class="fw-portrait">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+              <!-- Bauman: elderly, white hair, deeply lined face, cardigan -->
+              <circle cx="60" cy="46" r="24" fill="none" stroke="#c8a96e" stroke-width="1.2"/>
+              <!-- Wispy white/thin hair -->
+              <path d="M38 42 Q40 24 60 22 Q80 24 82 42" fill="none" stroke="#c8a96e" stroke-width="0.7" opacity="0.5"/>
+              <path d="M40 26 Q38 22 40 18" fill="none" stroke="#c8a96e" stroke-width="0.6" opacity="0.4"/>
+              <path d="M60 22 Q58 18 60 14" fill="none" stroke="#c8a96e" stroke-width="0.6" opacity="0.4"/>
+              <path d="M80 26 Q82 22 80 18" fill="none" stroke="#c8a96e" stroke-width="0.6" opacity="0.4"/>
+              <!-- Aged eyes, slightly drooping -->
+              <line x1="47" y1="44" x2="55" y2="45" stroke="#c8a96e" stroke-width="1.2"/>
+              <line x1="65" y1="45" x2="73" y2="44" stroke="#c8a96e" stroke-width="1.2"/>
+              <path d="M46 42 Q52 40 56 43" fill="none" stroke="#c8a96e" stroke-width="0.6" opacity="0.5"/>
+              <path d="M64 43 Q68 40 74 42" fill="none" stroke="#c8a96e" stroke-width="0.6" opacity="0.5"/>
+              <!-- Nose — aged, prominent -->
+              <path d="M58 50 Q56 55 55 58 Q60 61 65 58 Q64 55 62 50" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <!-- Deep smile lines -->
+              <path d="M44 58 Q46 66 48 70" fill="none" stroke="#c8a96e" stroke-width="0.7" opacity="0.5"/>
+              <path d="M76 58 Q74 66 72 70" fill="none" stroke="#c8a96e" stroke-width="0.7" opacity="0.5"/>
+              <!-- Full lips with age -->
+              <path d="M51 64 Q60 68 69 64" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <!-- Neck + cardigan -->
+              <line x1="56" y1="70" x2="53" y2="82" stroke="#c8a96e" stroke-width="1"/>
+              <line x1="64" y1="70" x2="67" y2="82" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M24 120 Q38 88 53 82 Q60 86 67 82 Q82 88 96 120" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M53 82 Q56 90 60 92 Q64 90 67 82" fill="none" stroke="#c8a96e" stroke-width="0.8" opacity="0.5"/>
+              <!-- Cardigan buttons -->
+              <circle cx="60" cy="96" r="1.5" fill="none" stroke="#c8a96e" stroke-width="0.8" opacity="0.5"/>
+              <circle cx="60" cy="104" r="1.5" fill="none" stroke="#c8a96e" stroke-width="0.8" opacity="0.5"/>
+            </svg>
+          </div>
+          <div class="fw-info">
+            <span class="fw-name">Zygmunt Bauman</span>
+            <span class="fw-desc">Liquid modernity</span>
+          </div>
+        </button>
+
+        <button class="framework-btn" data-id="harari" onclick="selectFramework(this)">
+          <div class="fw-portrait">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+              <!-- Harari: short hair, beard, lean, modern look -->
+              <circle cx="60" cy="44" r="23" fill="none" stroke="#c8a96e" stroke-width="1.2"/>
+              <!-- Short neat hair -->
+              <path d="M39 40 Q41 24 60 22 Q79 24 81 40" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M39 40 Q38 34 40 28" fill="none" stroke="#c8a96e" stroke-width="0.8" opacity="0.5"/>
+              <!-- Expressive eyes, alert -->
+              <line x1="48" y1="42" x2="56" y2="42" stroke="#c8a96e" stroke-width="1.3"/>
+              <line x1="64" y1="42" x2="72" y2="42" stroke="#c8a96e" stroke-width="1.3"/>
+              <!-- Nose -->
+              <path d="M59 46 Q58 51 57 53 Q60 55 63 53 Q62 51 61 46" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
+              <!-- Short beard / stubble -->
+              <path d="M44 60 Q52 68 60 70 Q68 68 76 60" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M46 64 Q52 70 60 72 Q68 70 74 64" fill="none" stroke="#c8a96e" stroke-width="0.7" opacity="0.5"/>
+              <!-- Lips -->
+              <path d="M54 60 Q60 62 66 60" fill="none" stroke="#c8a96e" stroke-width="0.8" opacity="0.7"/>
+              <!-- Neck + minimal top (meditation, vegan aesthetic) -->
+              <line x1="56" y1="67" x2="54" y2="78" stroke="#c8a96e" stroke-width="1"/>
+              <line x1="64" y1="67" x2="66" y2="78" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M28 120 Q40 84 54 78 Q60 82 66 78 Q80 84 92 120" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <!-- Tiny DNA helix / data motif -->
+              <path d="M84 88 Q88 92 84 96 Q88 100 84 104" fill="none" stroke="#c8a96e" stroke-width="0.7" opacity="0.4"/>
+              <path d="M92 88 Q88 92 92 96 Q88 100 92 104" fill="none" stroke="#c8a96e" stroke-width="0.7" opacity="0.4"/>
+              <line x1="84" y1="92" x2="92" y2="92" stroke="#c8a96e" stroke-width="0.5" opacity="0.3"/>
+              <line x1="84" y1="96" x2="92" y2="96" stroke="#c8a96e" stroke-width="0.5" opacity="0.3"/>
+              <line x1="84" y1="100" x2="92" y2="100" stroke="#c8a96e" stroke-width="0.5" opacity="0.3"/>
+            </svg>
+          </div>
+          <div class="fw-info">
+            <span class="fw-name">Yuval Noah Harari</span>
+            <span class="fw-desc">Algorithms & meaning</span>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">02 — Describe your decision</div>
+    <textarea id="decisionInput" placeholder="I need to decide whether to leave my job. I've been here five years and the stability feels comfortable, but..." oninput="updateCount()"></textarea>
+    <div class="submit-row">
+      <button class="submit-btn" id="submitBtn" onclick="runSession()" disabled>Examine it</button>
+      <span class="char-count" id="charCount">0 characters</span>
+    </div>
+    <div class="error-msg" id="errorMsg"></div>
+  </div>
+
+  <div class="loading" id="loading">
+    <div class="loading-dots"><span></span><span></span><span></span></div>
+    <span id="loadingText">thinking</span>
+  </div>
+
+  <div class="response-area" id="responseArea">
+    <div class="response-header">
+      <span class="response-thinker" id="responseThinker"></span>
+      <div class="response-divider"></div>
+    </div>
+    <ul class="questions-list" id="questionsList"></ul>
+    <div class="summary-area" id="summaryArea">
+      <div class="summary-label">The underlying tension</div>
+      <p class="summary-text" id="summaryText"></p>
+    </div>
+    <button class="reset-btn" onclick="resetSession()">Start a new session</button>
+  </div>
+
+</div>
+
+<script>
+const FRAMEWORKS = {
+  socrates: { name:"Socrates", prompt:`You are Socrates. Use the elenctic method to examine the person's decision. Generate exactly 4 questions that expose hidden assumptions, contradictions in their reasoning, and things they claim to know but do not. Each question should make them feel they know less than they thought, which is the beginning of wisdom. After the questions, write one sentence (max 20 words) naming the core tension — label it "TENSION:" on its own line. Respond in JSON: {"thinker":"Socrates","questions":[{"num":"I","question":"...","context":"..."},...],"tension":"..."} Context field: brief note on what assumption the question targets (max 15 words). JSON only.` },
+  epictetus: { name:"Epictetus", prompt:`You are Epictetus. Generate exactly 4 sharp questions forcing the person to distinguish what is within their control from what is not, to examine whether their hesitation comes from fear or wisdom, and to confront what virtue demands. After the questions, write one sentence (max 20 words) naming the core tension — label it "TENSION:" on its own line. Respond in JSON: {"thinker":"Epictetus","questions":[{"num":"I","question":"...","context":"..."},...],"tension":"..."} Context: brief Stoic principle (max 15 words). JSON only.` },
+  marcus: { name:"Marcus Aurelius", prompt:`You are Marcus Aurelius. Generate exactly 4 questions in the spirit of the Meditations — about duty to the whole, the view from above, what will matter in ten years, whether the decision aligns with nature and reason. After the questions, write one sentence (max 20 words) naming the core tension — label it "TENSION:" on its own line. Respond in JSON: {"thinker":"Marcus Aurelius","questions":[{"num":"I","question":"...","context":"..."},...],"tension":"..."} Context: brief Aurelius-style reflection (max 15 words). JSON only.` },
+  nietzsche: { name:"Nietzsche", prompt:`You are Friedrich Nietzsche. Generate exactly 4 questions confronting the person's will to power — whether they choose from strength or resentment, whether they are living as if this moment will recur eternally, whether they are becoming who they truly are, and whether their morality is self-created or inherited from herd mentality. After the questions, write one sentence (max 20 words) naming the core tension — label it "TENSION:" on its own line. Respond in JSON: {"thinker":"Nietzsche","questions":[{"num":"I","question":"...","context":"..."},...],"tension":"..."} Context: brief Nietzschean concept (max 15 words). JSON only.` },
+  sartre: { name:"Sartre", prompt:`You are Jean-Paul Sartre. Generate exactly 4 existentialist questions about bad faith, the weight of radical freedom, what this choice says about how they define themselves, whether they are choosing or letting circumstances choose for them. After the questions, write one sentence (max 20 words) naming the core tension — label it "TENSION:" on its own line. Respond in JSON: {"thinker":"Sartre","questions":[{"num":"I","question":"...","context":"..."},...],"tension":"..."} Context: brief existentialist note (max 15 words). JSON only.` },
+  camus: { name:"Camus", prompt:`You are Albert Camus. Generate exactly 4 absurdist questions — whether they seek false meaning or embrace the absurd, whether they choose revolt over resignation, whether they are truly alive in the present moment, and whether their decision is a form of philosophical suicide. After the questions, write one sentence (max 20 words) naming the core tension — label it "TENSION:" on its own line. Respond in JSON: {"thinker":"Camus","questions":[{"num":"I","question":"...","context":"..."},...],"tension":"..."} Context: brief absurdist note (max 15 words). JSON only.` },
+  arendt: { name:"Hannah Arendt", prompt:`You are Hannah Arendt. Generate exactly 4 questions about action, plurality, and the public realm — whether this decision is an act of genuine beginning, whether they have considered how it appears to others, whether they are thinking or operating on autopilot, and whether they risk the banality of evil by following norms without reflection. After the questions, write one sentence (max 20 words) naming the core tension — label it "TENSION:" on its own line. Respond in JSON: {"thinker":"Hannah Arendt","questions":[{"num":"I","question":"...","context":"..."},...],"tension":"..."} Context: brief Arendtian concept (max 15 words). JSON only.` },
+  simone: { name:"Simone de Beauvoir", prompt:`You are Simone de Beauvoir. Generate exactly 4 questions rooted in the ethics of ambiguity — whether they embrace genuine freedom or flee it, whether they take responsibility for others affected, whether they live authentically or play an assigned role, and whether their idea of the right choice is genuinely their own. After the questions, write one sentence (max 20 words) naming the core tension — label it "TENSION:" on its own line. Respond in JSON: {"thinker":"Simone de Beauvoir","questions":[{"num":"I","question":"...","context":"..."},...],"tension":"..."} Context: brief ethical note (max 15 words). JSON only.` },
+  foucault: { name:"Foucault", prompt:`You are Michel Foucault. Generate exactly 4 questions about power — who benefits from the current arrangement, what invisible norms shape their sense of normal, what systems are producing their desire, and whether their resistance is genuine or absorbed. After the questions, write one sentence (max 20 words) naming the core tension — label it "TENSION:" on its own line. Respond in JSON: {"thinker":"Foucault","questions":[{"num":"I","question":"...","context":"..."},...],"tension":"..."} Context: brief Foucauldian note (max 15 words). JSON only.` },
+  han: { name:"Byung-Chul Han", prompt:`You are Byung-Chul Han. Generate exactly 4 questions probing the achievement society — whether they perform productivity for an invisible audience, whether their exhaustion is mistaken for meaning, whether transparency and optimization colonize what should remain opaque and slow, and whether they have confused burnout with depth. After the questions, write one sentence (max 20 words) naming the core tension — label it "TENSION:" on its own line. Respond in JSON: {"thinker":"Byung-Chul Han","questions":[{"num":"I","question":"...","context":"..."},...],"tension":"..."} Context: brief Han-style note (max 15 words). JSON only.` },
+  fisher: { name:"Mark Fisher", prompt:`You are Mark Fisher. Generate exactly 4 questions in the spirit of Capitalist Realism — about whether they can imagine alternatives or have accepted this is simply how things are, whether their individual struggle is being privatized when it should be collective, what hauntology is at stake, and whether their resignation is being sold back to them as wisdom. After the questions, write one sentence (max 20 words) naming the core tension — label it "TENSION:" on its own line. Respond in JSON: {"thinker":"Mark Fisher","questions":[{"num":"I","question":"...","context":"..."},...],"tension":"..."} Context: brief Fisher-style note (max 15 words). JSON only.` },
+  bauman: { name:"Zygmunt Bauman", prompt:`You are Zygmunt Bauman. Generate exactly 4 questions about liquid modernity — whether they treat this decision as a permanent commitment in a world that rewards flexibility, whether they confuse consumer choice with genuine freedom, whether their sense of identity is solid enough to withstand the fluidity around them, and whether their fear of commitment is a symptom of the age. After the questions, write one sentence (max 20 words) naming the core tension — label it "TENSION:" on its own line. Respond in JSON: {"thinker":"Zygmunt Bauman","questions":[{"num":"I","question":"...","context":"..."},...],"tension":"..."} Context: brief note on liquid modernity (max 15 words). JSON only.` },
+  harari: { name:"Yuval Noah Harari", prompt:`You are Yuval Noah Harari. Generate exactly 4 questions about algorithms, meaning, and the future — whether their decision will make sense in a world shaped by AI and dataism, whether the story they tell themselves is a useful fiction, whether they optimize for biochemical happiness or genuine meaning, and whether they are the author of this decision or an algorithm running on evolutionary code. After the questions, write one sentence (max 20 words) naming the core tension — label it "TENSION:" on its own line. Respond in JSON: {"thinker":"Yuval Noah Harari","questions":[{"num":"I","question":"...","context":"..."},...],"tension":"..."} Context: brief Harari-style note (max 15 words). JSON only.` }
+};
+
+let selectedFramework = null;
+
+let selectedLang = 'en';
+function selectLang(btn) {
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  selectedLang = btn.dataset.lang;
+}
+
+function selectFramework(btn) {
+  document.querySelectorAll('.framework-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  selectedFramework = btn.dataset.id;
+  updateSubmitState();
+}
+
+function updateCount() {
+  const val = document.getElementById('decisionInput').value;
+  document.getElementById('charCount').textContent = val.length + ' characters';
+  updateSubmitState();
+}
+
+function updateSubmitState() {
+  const hasText = document.getElementById('decisionInput').value.trim().length > 20;
+  document.getElementById('submitBtn').disabled = !(hasText && selectedFramework);
+}
+
+const loadingPhrases = ['thinking','reading between the lines','questioning the question','finding the tension'];
+
+async function runSession() {
+  const input = document.getElementById('decisionInput').value.trim();
+  if (!input || !selectedFramework) return;
+  const fw = FRAMEWORKS[selectedFramework];
+  document.getElementById('submitBtn').disabled = true;
+  document.getElementById('errorMsg').classList.remove('visible');
+  document.getElementById('responseArea').classList.remove('visible');
+  const loading = document.getElementById('loading');
+  loading.classList.add('visible');
+  let phraseIdx = 0;
+  const phraseInterval = setInterval(() => {
+    phraseIdx = (phraseIdx+1) % loadingPhrases.length;
+    document.getElementById('loadingText').textContent = loadingPhrases[phraseIdx];
+  }, 1800);
+  try {
+    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+    const response = await fetch(endpoint, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        system_instruction:{parts:[{text:fw.prompt}]},
+        contents:[{role:'user',parts:[{text:input}]}],
+        generationConfig:{temperature:0.8,maxOutputTokens:1000}
+      })
+    });
+    const data = await response.json();
+    if (data.error) throw new Error(data.error.message);
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    const clean = text.replace(/```json|```/g,'').trim();
+    const parsed = JSON.parse(clean);
+    clearInterval(phraseInterval);
+    loading.classList.remove('visible');
+    renderResponse(parsed);
+  } catch(err) {
+    clearInterval(phraseInterval);
+    loading.classList.remove('visible');
+    document.getElementById('submitBtn').disabled = false;
+    const errorEl = document.getElementById('errorMsg');
+    errorEl.textContent = 'Error: ' + (err.message || 'API connection failed. Check your key and try again.');
+    errorEl.classList.add('visible');
+  }
+}
+
+function renderResponse(data) {
+  document.getElementById('responseThinker').textContent = data.thinker;
+  document.getElementById('questionsList').innerHTML = '';
+  const list = document.getElementById('questionsList');
+  data.questions.forEach((q,i) => {
+    const li = document.createElement('li');
+    li.className = 'question-item';
+    li.innerHTML = `<div class="question-num">— ${q.num}</div><div class="question-text">${q.question}</div>${q.context?`<div class="question-context">${q.context}</div>`:''}`;
+    list.appendChild(li);
+    setTimeout(() => li.classList.add('visible'), 100+i*150);
+  });
+  if (data.tension) {
+    document.getElementById('summaryText').textContent = data.tension;
+    setTimeout(() => document.getElementById('summaryArea').classList.add('visible'), 100+data.questions.length*150+200);
+  }
+  document.getElementById('responseArea').classList.add('visible');
+}
+
+function resetSession() {
+  document.querySelectorAll('.framework-btn').forEach(b => b.classList.remove('active'));
+  selectedFramework = null;
+  document.getElementById('decisionInput').value = '';
+  document.getElementById('charCount').textContent = '0 characters';
+  document.getElementById('submitBtn').disabled = true;
+  document.getElementById('responseArea').classList.remove('visible');
+  document.getElementById('summaryArea').classList.remove('visible');
+  document.getElementById('errorMsg').classList.remove('visible');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+
+<script>
+(function() {
+  const canvas = document.getElementById('liquid-bg');
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setClearColor(0x000000, 0);
+  renderer.autoClear = false;
+
+  let W = window.innerWidth, H = window.innerHeight;
+  renderer.setSize(W, H);
+
+  const RES = 0.5;
+  let fW = Math.max(1, Math.round(W * RES));
+  let fH = Math.max(1, Math.round(H * RES));
+
+  const COLORS = ['#5227FF', '#FF9FFC', '#B19EEF'];
+  function makePalette(stops) {
+    const data = new Uint8Array(stops.length * 4);
+    stops.forEach((hex, i) => {
+      const c = new THREE.Color(hex);
+      data[i*4]   = Math.round(c.r * 255);
+      data[i*4+1] = Math.round(c.g * 255);
+      data[i*4+2] = Math.round(c.b * 255);
+      data[i*4+3] = 255;
+    });
+    const t = new THREE.DataTexture(data, stops.length, 1, THREE.RGBAFormat);
+    t.magFilter = t.minFilter = THREE.LinearFilter;
+    t.needsUpdate = true;
+    return t;
+  }
+  const palTex = makePalette(COLORS);
+
+  function makeFBO(w, h) {
+    return new THREE.WebGLRenderTarget(w, h, {
+      type: THREE.FloatType,
+      minFilter: THREE.LinearFilter,
+      magFilter: THREE.LinearFilter,
+      depthBuffer: false,
+      stencilBuffer: false
+    });
+  }
+
+  let vel0 = makeFBO(fW, fH), vel1 = makeFBO(fW, fH);
+  let div  = makeFBO(fW, fH);
+  let p0   = makeFBO(fW, fH), p1   = makeFBO(fW, fH);
+
+  const cam = new THREE.Camera();
+  const quad = new THREE.PlaneGeometry(2, 2);
+
+  function makePass(frag, uniforms) {
+    const mat = new THREE.RawShaderMaterial({
+      vertexShader: `attribute vec3 position; varying vec2 uv; void main(){ uv = position.xy * 0.5 + 0.5; gl_Position = vec4(position, 1.0); }`,
+      fragmentShader: frag,
+      uniforms
+    });
+    const scene = new THREE.Scene();
+    scene.add(new THREE.Mesh(quad, mat));
+    return { scene, mat, uniforms };
+  }
+
+  const advPass = makePass(`
+    precision highp float;
+    uniform sampler2D vel; uniform float dt; uniform vec2 px;
+    varying vec2 uv;
+    void main(){
+      vec2 v = texture2D(vel, uv).xy;
+      vec2 ratio = max(${fW}.0, ${fH}.0) / vec2(${fW}.0, ${fH}.0);
+      vec2 uv2 = uv - v * dt * ratio;
+      gl_FragColor = vec4(texture2D(vel, uv2).xy, 0.0, 1.0);
+    }`, { vel:{value:vel0.texture}, dt:{value:0.014}, px:{value:new THREE.Vector2(1/fW,1/fH)} });
+
+  const forcePass = makePass(`
+    precision highp float;
+    uniform sampler2D vel; uniform vec2 force; uniform vec2 center; uniform float radius;
+    varying vec2 uv;
+    void main(){
+      vec2 v = texture2D(vel, uv).xy;
+      vec2 diff = uv - (center * 0.5 + 0.5);
+      diff.y *= -1.0;
+      float d = 1.0 - min(length(diff) / radius, 1.0);
+      d = d * d;
+      gl_FragColor = vec4(v + force * d, 0.0, 1.0);
+    }`, { vel:{value:vel1.texture}, force:{value:new THREE.Vector2()}, center:{value:new THREE.Vector2()}, radius:{value:0.15} });
+
+  const divPass = makePass(`
+    precision highp float;
+    uniform sampler2D vel; uniform vec2 px; uniform float dt;
+    varying vec2 uv;
+    void main(){
+      float x0 = texture2D(vel, uv - vec2(px.x,0)).x;
+      float x1 = texture2D(vel, uv + vec2(px.x,0)).x;
+      float y0 = texture2D(vel, uv - vec2(0,px.y)).y;
+      float y1 = texture2D(vel, uv + vec2(0,px.y)).y;
+      gl_FragColor = vec4((x1-x0+y1-y0)*0.5/dt);
+    }`, { vel:{value:vel1.texture}, px:{value:new THREE.Vector2(1/fW,1/fH)}, dt:{value:0.014} });
+
+  const poissonPass = makePass(`
+    precision highp float;
+    uniform sampler2D pressure; uniform sampler2D divergence; uniform vec2 px;
+    varying vec2 uv;
+    void main(){
+      float p0 = texture2D(pressure, uv+vec2(px.x*2.,0)).r;
+      float p1 = texture2D(pressure, uv-vec2(px.x*2.,0)).r;
+      float p2 = texture2D(pressure, uv+vec2(0,px.y*2.)).r;
+      float p3 = texture2D(pressure, uv-vec2(0,px.y*2.)).r;
+      float d  = texture2D(divergence, uv).r;
+      gl_FragColor = vec4((p0+p1+p2+p3)/4.0 - d);
+    }`, { pressure:{value:p0.texture}, divergence:{value:div.texture}, px:{value:new THREE.Vector2(1/fW,1/fH)} });
+
+  const projPass = makePass(`
+    precision highp float;
+    uniform sampler2D vel; uniform sampler2D pressure; uniform vec2 px; uniform float dt;
+    varying vec2 uv;
+    void main(){
+      float p0 = texture2D(pressure, uv+vec2(px.x,0)).r;
+      float p1 = texture2D(pressure, uv-vec2(px.x,0)).r;
+      float p2 = texture2D(pressure, uv+vec2(0,px.y)).r;
+      float p3 = texture2D(pressure, uv-vec2(0,px.y)).r;
+      vec2 v = texture2D(vel, uv).xy - vec2(p0-p1, p2-p3)*0.5*dt;
+      gl_FragColor = vec4(v, 0.0, 1.0);
+    }`, { vel:{value:vel1.texture}, pressure:{value:p0.texture}, px:{value:new THREE.Vector2(1/fW,1/fH)}, dt:{value:0.014} });
+
+  const colorScene = new THREE.Scene();
+  const colorMat = new THREE.RawShaderMaterial({
+    vertexShader: `attribute vec3 position; varying vec2 uv; void main(){ uv = position.xy*0.5+0.5; gl_Position = vec4(position,1.0); }`,
+    fragmentShader: `
+      precision highp float;
+      uniform sampler2D vel; uniform sampler2D palette;
+      varying vec2 uv;
+      void main(){
+        vec2 v = texture2D(vel, uv).xy;
+        float len = clamp(length(v), 0.0, 1.0);
+        vec3 c = texture2D(palette, vec2(len, 0.5)).rgb;
+        gl_FragColor = vec4(c, len * 0.85);
+      }`,
+    uniforms: { vel:{value:vel0.texture}, palette:{value:palTex} },
+    transparent: true,
+    depthWrite: false
+  });
+  colorScene.add(new THREE.Mesh(quad, colorMat));
+
+  function runPass(pass, target) {
+    renderer.setRenderTarget(target || null);
+    renderer.render(pass.scene, cam);
+    renderer.setRenderTarget(null);
+  }
+
+  // Mouse / auto driver
+  const mouse = { x:0, y:0, ox:0, oy:0, dx:0, dy:0 };
+  let autoTime = 0, autoTarget = { x:0.3, y:0.3 }, autoCur = { x:0, y:0 };
+  let lastUserTime = -9999;
+
+  window.addEventListener('mousemove', e => {
+    lastUserTime = performance.now();
+    mouse.x = (e.clientX / W) * 2 - 1;
+    mouse.y = -((e.clientY / H) * 2 - 1);
+  });
+  window.addEventListener('touchmove', e => {
+    if (e.touches.length !== 1) return;
+    lastUserTime = performance.now();
+    mouse.x = (e.touches[0].clientX / W) * 2 - 1;
+    mouse.y = -((e.touches[0].clientY / H) * 2 - 1);
+  }, {passive:true});
+
+  function pickAutoTarget() {
+    autoTarget.x = (Math.random() * 2 - 1) * 0.8;
+    autoTarget.y = (Math.random() * 2 - 1) * 0.8;
+  }
+  pickAutoTarget();
+
+  let last = performance.now();
+  function animate() {
+    requestAnimationFrame(animate);
+    const now = performance.now();
+    const dt = Math.min((now - last) / 1000, 0.05);
+    last = now;
+    autoTime += dt;
+
+    const idle = now - lastUserTime > 1000;
+    if (idle) {
+      const spd = 0.4 * dt;
+      const dx = autoTarget.x - autoCur.x;
+      const dy = autoTarget.y - autoCur.y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      if (dist < 0.02) pickAutoTarget();
+      autoCur.x += dx * spd / Math.max(dist, 0.01);
+      autoCur.y += dy * spd / Math.max(dist, 0.01);
+      mouse.dx = (autoCur.x - mouse.ox) * 2.5;
+      mouse.dy = (autoCur.y - mouse.oy) * 2.5;
+      mouse.x = autoCur.x;
+      mouse.y = autoCur.y;
+    } else {
+      mouse.dx = (mouse.x - mouse.ox) * 20;
+      mouse.dy = (mouse.y - mouse.oy) * 20;
+    }
+    mouse.ox = mouse.x;
+    mouse.oy = mouse.y;
+
+    // Advection
+    advPass.uniforms.vel.value = vel0.texture;
+    advPass.uniforms.dt.value = 0.014;
+    runPass(advPass, vel1);
+
+    // Force
+    forcePass.uniforms.vel.value = vel1.texture;
+    forcePass.uniforms.force.value.set(mouse.dx * 0.5, mouse.dy * 0.5);
+    forcePass.uniforms.center.value.set(mouse.x, mouse.y);
+    runPass(forcePass, vel1);
+
+    // Divergence
+    divPass.uniforms.vel.value = vel1.texture;
+    runPass(divPass, div);
+
+    // Poisson iterations
+    for (let i = 0; i < 24; i++) {
+      poissonPass.uniforms.pressure.value = (i%2===0 ? p0 : p1).texture;
+      poissonPass.uniforms.divergence.value = div.texture;
+      runPass(poissonPass, i%2===0 ? p1 : p0);
+    }
+
+    // Projection
+    projPass.uniforms.vel.value = vel1.texture;
+    projPass.uniforms.pressure.value = p1.texture;
+    runPass(projPass, vel0);
+
+    // Render color
+    colorMat.uniforms.vel.value = vel0.texture;
+    renderer.setRenderTarget(null);
+    renderer.render(colorScene, cam);
+  }
+  animate();
+
+  window.addEventListener('resize', () => {
+    W = window.innerWidth; H = window.innerHeight;
+    renderer.setSize(W, H);
+  });
+})();
+</script>
+</body>
+</html>
