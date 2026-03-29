@@ -1062,10 +1062,11 @@ async function runOracleSession(input) {
   if (data1.error === 'FREE_LIMIT_REACHED') { showPaywall(); return null; }
   if (data1.error) throw new Error(data1.error);
   const text1 = data1.candidates?.[0]?.content?.parts?.[0]?.text || '';
-  const clean1 = text1.replace(/```json\n?|```/g,'').trim();
-  const match1 = clean1.match(/\{[\s\S]*\}/);
-  if (!match1) throw new Error('Could not select thinker');
-  const selection = JSON.parse(match1[0]);
+  const clean1 = text1.replace(/```json[\n]?|```/g,'').trim();
+  const jsonStart = clean1.indexOf('{');
+  const jsonEnd = clean1.lastIndexOf('}');
+  if (jsonStart === -1 || jsonEnd === -1) throw new Error('Could not select thinker');
+  const selection = JSON.parse(clean1.slice(jsonStart, jsonEnd + 1));
   const pickedKey = selection.philosopher;
   if (!FRAMEWORKS[pickedKey]) throw new Error('Unknown philosopher: ' + pickedKey);
 
