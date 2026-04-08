@@ -266,6 +266,35 @@
     padding: 16px 20px; background: #f5f5f0; border-radius: 6px;
   }
 
+  .books-section { margin-bottom: 24px; }
+  .book-card {
+    display: flex; gap: 16px; padding: 16px 18px;
+    background: #fff; border: 1px solid #e5e5e0;
+    border-radius: 6px; margin-bottom: 10px;
+    text-decoration: none; color: inherit;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .book-card:hover { border-color: #c9a96e; box-shadow: 0 2px 12px rgba(180,150,80,0.08); }
+  .book-cover {
+    width: 60px; height: 88px; flex-shrink: 0;
+    background: #e5e5e0; border-radius: 3;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px;
+  }
+  .book-info { flex: 1; }
+  .book-title { font-size: 16px; font-weight: 600; line-height: 1.35; margin-bottom: 3px; }
+  .book-author { font-size: 13px; font-family: 'DM Sans', sans-serif; color: #888; margin-bottom: 6px; }
+  .book-why { font-size: 14px; color: #555; line-height: 1.5; }
+  .book-cta {
+    font-size: 12px; font-family: 'DM Sans', sans-serif;
+    font-weight: 600; color: #c9a96e; margin-top: 8px;
+    display: inline-block;
+  }
+  .affiliate-note {
+    font-size: 11px; font-family: 'DM Sans', sans-serif;
+    color: #bbb; font-style: italic; margin-top: 6px;
+  }
+
   footer {
     max-width: 640px; margin: 48px auto 0;
     padding: 20px 24px 40px;
@@ -359,7 +388,7 @@
 </main>
 
 <footer>
-  <a href="/">Tacorari</a> · Haus Tacorari · Krefeld, Germany
+  <a href="https://www.tacorari.eu">Tacorari</a> · Haus Tacorari · Krefeld, Germany
 </footer>
 
 <script>
@@ -391,6 +420,10 @@ const DATA = {
       },
     ],
     verdict: "The English article presents a partial picture. The swap-adjusted reserve figure, which is the center of domestic Turkish debate, is entirely absent. Readers of the NYT piece alone would not know this controversy exists.",
+    books: [
+      { title: "The New Turkey and Its Discontents", author: "Simon Waldman & Emre Caliskan", emoji: "🇹🇷", why: "Essential context on the gap between how Turkey is reported abroad and how it's experienced domestically.", url: "https://www.amazon.com/dp/0190668369?tag=haustacorari-20" },
+      { title: "Turkey's Political Economy in the 21st Century", author: "Ümit Cizre", emoji: "📊", why: "Deep dive into the economic data disputes and institutional tensions behind headlines like this one.", url: "https://www.amazon.com/dp/0367437368?tag=haustacorari-20" },
+    ],
   },
   reuters: {
     article: { title: "Japan's Rapidus On Track for 2nm Chip Production by 2027", outlet: "Reuters", date: "April 6, 2026" },
@@ -412,6 +445,10 @@ const DATA = {
       },
     ],
     verdict: "The Reuters article's 'on track' framing appears significantly at odds with Japanese-language reporting. The yield problems, additional subsidy needs, and engineer departures paint a substantially different picture than English readers are receiving.",
+    books: [
+      { title: "Chip War", author: "Chris Miller", emoji: "🔬", why: "The definitive account of the global semiconductor battle. Context for why Japan's chip ambitions matter geopolitically.", url: "https://www.amazon.com/dp/1982172002?tag=haustacorari-20" },
+      { title: "Asia's Reckoning", author: "Richard McGregor", emoji: "🇯🇵", why: "Japan's industrial strategy doesn't happen in a vacuum. This book maps the regional rivalries driving decisions like Rapidus.", url: "https://www.amazon.com/dp/0399562702?tag=haustacorari-20" },
+    ],
   },
   default: {
     article: { title: "Iran Nuclear Talks Resume in Vienna", outlet: "Associated Press", date: "April 7, 2026" },
@@ -432,6 +469,10 @@ const DATA = {
       },
     ],
     verdict: "English coverage focuses on the diplomatic process in Vienna. Persian-language sources reveal significant domestic political dynamics that would change how readers understand Iran's negotiating position.",
+    books: [
+      { title: "All the Shah's Men", author: "Stephen Kinzer", emoji: "🇮🇷", why: "You cannot understand Iran's negotiating posture without understanding 1953. This is where the distrust started.", url: "https://www.amazon.com/dp/047018549X?tag=haustacorari-20" },
+      { title: "Iran Reframed", author: "Narges Bajoghli", emoji: "📺", why: "How Iranian media shapes and is shaped by politics. Essential for reading between the lines of outlets like Shargh and ISNA.", url: "https://www.amazon.com/dp/1503611191?tag=haustacorari-20" },
+    ],
   },
 };
 
@@ -569,6 +610,26 @@ function renderResults(data) {
       <div class="legend-item"><span class="legend-dot contradiction">⇄</span><span class="legend-text">CONTRADICTED</span></div>
       <div class="legend-item"><span class="legend-dot nuance">△</span><span class="legend-text">REFRAMED</span></div>
     </div>`;
+
+  // Books
+  if (data.books && data.books.length) {
+    html += '<div class="books-section">';
+    html += '<div class="section-label">Go deeper on this topic</div>';
+    data.books.forEach((b) => {
+      html += `
+        <a class="book-card" href="${b.url}" target="_blank" rel="noopener noreferrer">
+          <div class="book-cover">${b.emoji}</div>
+          <div class="book-info">
+            <div class="book-title">${b.title}</div>
+            <div class="book-author">${b.author}</div>
+            <div class="book-why">${b.why}</div>
+            <span class="book-cta">View on Amazon →</span>
+          </div>
+        </a>`;
+    });
+    html += '<div class="affiliate-note">Links are affiliate links. We may earn a small commission at no cost to you.</div>';
+    html += '</div>';
+  }
 
   // CTA
   html += `
