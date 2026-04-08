@@ -73,10 +73,10 @@
   [data-id="arendt"] .fw-portrait { background:#5B8FA822; }
   [data-id="simone"] .fw-portrait { background:#C4547A22; }
   [data-id="foucault"] .fw-portrait { background:#6B6B8A22; }
-  [data-id="han"] .fw-portrait { background:#4A8A7A22; }
+  [data-id="hooks"] .fw-portrait { background:#C4547A22; }
   [data-id="fisher"] .fw-portrait { background:#7A6A9A22; }
   [data-id="bauman"] .fw-portrait { background:#9A806022; }
-  [data-id="harari"] .fw-portrait { background:#5A9AB522; }
+  [data-id="graeber"] .fw-portrait { background:#6A9A5A22; }
   .fw-portrait {
     width:100%;
     aspect-ratio:1;
@@ -195,6 +195,7 @@
 <div class="container">
 
   <header>
+    <a href="/" style="display:inline-flex;align-items:center;gap:6px;font-size:11px;letter-spacing:0.1em;color:var(--muted);text-decoration:none;margin-bottom:20px;transition:color 0.2s;" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--muted)'">← Tacorari</a>
     <div class="header-label">Phantum</div>
     <h1>Your situation.<br><em>Their wisdom.</em></h1>
     <p class="subtitle">Pick a thinker. Write what's on your mind. Get their take.<br>
@@ -477,30 +478,28 @@
           </div>
         </button>
 
-        <button class="framework-btn" data-id="han" onclick="selectFramework(this)">
+        <button class="framework-btn" data-id="hooks" onclick="selectFramework(this)">
           <div class="fw-portrait">
             <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-  <ellipse cx="60" cy="45" rx="21" ry="23" fill="#4A8A7A"/>
-  <path d="M39 38 Q40 22 60 20 Q80 22 81 38 Q76 30 60 29 Q44 30 39 38Z" fill="#1A1410"/>
-  <path d="M39 38 Q42 28 50 28" fill="none" stroke="#1A1410" stroke-width="3"/>
-  <path d="M46 22 Q44 30 42 38" fill="none" stroke="#2A2010" stroke-width="1.5" opacity="0.5"/>
-  <path d="M46 42 Q52 40 58 43" fill="none" stroke="#1A1410" stroke-width="2.5" stroke-linecap="round"/>
-  <path d="M62 43 Q68 40 74 42" fill="none" stroke="#1A1410" stroke-width="2.5" stroke-linecap="round"/>
-  <ellipse cx="52" cy="43" rx="3" ry="2" fill="#1A1410"/>
-  <ellipse cx="68" cy="43" rx="3" ry="2" fill="#1A1410"/>
-  <circle cx="53" cy="42" r="0.8" fill="#fff" opacity="0.5"/>
-  <circle cx="69" cy="42" r="0.8" fill="#fff" opacity="0.5"/>
-  <ellipse cx="60" cy="50" rx="3.5" ry="2.5" fill="#2A6A5A"/>
-  <path d="M53 60 Q60 63 67 60" fill="#2A6A5A" stroke="#2A6A5A" stroke-width="1"/>
-  <rect x="55" y="68" width="10" height="10" fill="#4A8A7A"/>
-  <path d="M24 120 Q38 86 55 78 Q60 82 65 78 Q82 86 96 120Z" fill="#2A4A40"/>
-  <rect x="76" y="90" width="16" height="22" rx="2" fill="#3A6A5A"/>
-  <line x1="78" y1="90" x2="78" y2="112" stroke="#2A4A40" stroke-width="1.5"/>
+  <ellipse cx="60" cy="44" rx="21" ry="23" fill="#C4547A"/>
+  <path d="M38 36 Q42 18 60 16 Q78 18 82 36" fill="#1A1410"/>
+  <path d="M38 36 Q36 42 34 52" fill="none" stroke="#1A1410" stroke-width="4" stroke-linecap="round"/>
+  <path d="M82 36 Q84 42 86 52" fill="none" stroke="#1A1410" stroke-width="4" stroke-linecap="round"/>
+  <path d="M42 36 Q44 28 52 24 Q60 22 68 24 Q76 28 78 36" fill="#1A1410"/>
+  <circle cx="52" cy="44" r="3" fill="#1A1410"/>
+  <circle cx="68" cy="44" r="3" fill="#1A1410"/>
+  <circle cx="53" cy="43" r="1" fill="#fff" opacity="0.6"/>
+  <circle cx="69" cy="43" r="1" fill="#fff" opacity="0.6"/>
+  <ellipse cx="60" cy="50" rx="3.5" ry="2.5" fill="#A03058"/>
+  <path d="M50 60 Q60 66 70 60" fill="#A03058" stroke="#A03058" stroke-width="1"/>
+  <rect x="55" y="67" width="10" height="10" fill="#C4547A"/>
+  <path d="M22 120 Q36 86 55 77 Q60 81 65 77 Q84 86 98 120Z" fill="#8A2848"/>
+  <path d="M55 77 Q58 85 60 89 Q62 85 65 77" fill="none" stroke="#C4547A" stroke-width="1.5"/>
 </svg>
           </div>
           <div class="fw-info">
-            <span class="fw-name">Byung-Chul Han</span>
-            <span class="fw-desc">Burnout & transparency</span>
+            <span class="fw-name">bell hooks</span>
+            <span class="fw-desc">Love & liberation</span>
           </div>
         </button>
 
@@ -563,32 +562,27 @@
           </div>
         </button>
 
-        <button class="framework-btn" data-id="harari" onclick="selectFramework(this)">
+        <button class="framework-btn" data-id="graeber" onclick="selectFramework(this)">
           <div class="fw-portrait">
             <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-  <ellipse cx="60" cy="44" rx="21" ry="23" fill="#5A9AB5"/>
-  <path d="M39 38 Q41 22 60 20 Q79 22 81 38 Q76 30 60 29 Q44 30 39 38Z" fill="#2A1A10"/>
-  <path d="M46 37 Q52 35 57 37" fill="none" stroke="#2A1A10" stroke-width="2" stroke-linecap="round"/>
-  <path d="M63 37 Q68 35 74 37" fill="none" stroke="#2A1A10" stroke-width="2" stroke-linecap="round"/>
-  <circle cx="52" cy="42" r="3.5" fill="#1A1010"/>
-  <circle cx="68" cy="42" r="3.5" fill="#1A1010"/>
-  <circle cx="53" cy="41" r="1.2" fill="#fff" opacity="0.7"/>
-  <circle cx="69" cy="41" r="1.2" fill="#fff" opacity="0.7"/>
-  <ellipse cx="60" cy="49" rx="3" ry="2.5" fill="#3A7A8A"/>
+  <ellipse cx="60" cy="45" rx="22" ry="24" fill="#6A9A5A"/>
+  <path d="M38 38 Q40 22 60 20 Q80 22 82 38 Q78 28 60 28 Q42 28 38 38Z" fill="#3A2A20"/>
+  <path d="M38 38 Q36 44 36 50" fill="none" stroke="#3A2A20" stroke-width="3" stroke-linecap="round"/>
+  <path d="M82 38 Q84 44 84 50" fill="none" stroke="#3A2A20" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="52" cy="44" r="3" fill="#1A1410"/>
+  <circle cx="68" cy="44" r="3" fill="#1A1410"/>
+  <circle cx="53" cy="43" r="1" fill="#fff" opacity="0.6"/>
+  <circle cx="69" cy="43" r="1" fill="#fff" opacity="0.6"/>
+  <ellipse cx="60" cy="51" rx="4" ry="3" fill="#4A7A3A"/>
   <path d="M42 58 Q50 68 60 70 Q70 68 78 58 Q70 62 60 63 Q50 62 42 58Z" fill="#3A2A20"/>
-  <path d="M53 59 Q60 62 67 59" fill="#3A2A20" stroke="#3A2A20" stroke-width="1"/>
-  <rect x="55" y="70" width="10" height="8" fill="#5A9AB5"/>
-  <path d="M26 120 Q40 86 55 78 Q60 82 65 78 Q80 86 94 120Z" fill="#2A4A5A"/>
-  <path d="M82 88 Q88 94 82 100 Q88 106 82 112" fill="none" stroke="#5A9AB5" stroke-width="2" stroke-linecap="round"/>
-  <path d="M94 88 Q88 94 94 100 Q88 106 94 112" fill="none" stroke="#5A9AB5" stroke-width="2" stroke-linecap="round"/>
-  <line x1="82" y1="94" x2="94" y2="94" stroke="#5A9AB5" stroke-width="1.5"/>
-  <line x1="82" y1="100" x2="94" y2="100" stroke="#5A9AB5" stroke-width="1.5"/>
-  <line x1="82" y1="106" x2="94" y2="106" stroke="#5A9AB5" stroke-width="1.5"/>
+  <rect x="55" y="70" width="10" height="8" fill="#6A9A5A"/>
+  <path d="M22 120 Q36 86 55 78 Q60 82 65 78 Q84 86 98 120Z" fill="#3A5A2A"/>
+  <path d="M55 78 Q58 86 60 90 Q62 86 65 78" fill="none" stroke="#4A6A3A" stroke-width="1.5"/>
 </svg>
           </div>
           <div class="fw-info">
-            <span class="fw-name">Yuval Noah Harari</span>
-            <span class="fw-desc">Algorithms & meaning</span>
+            <span class="fw-name">David Graeber</span>
+            <span class="fw-desc">Debt & freedom</span>
           </div>
         </button>
       </div>
@@ -668,10 +662,10 @@ const FRAMEWORKS = {
   arendt: { name:"Hannah Arendt", prompt:`Speak about action, natality, and the courage to begin something new in the world. Every genuine action is a small miracle — it interrupts the automatic. Ask them to see this decision as it appears in the shared world, not only in their inner life. Speak in first person as Hannah Arendt. You are giving a direct reading — like an oracle or tarot — to someone who has come to you with a decision or struggle. Write 4-6 sentences of flowing prose. Do NOT ask questions. Do NOT use bullet points or lists. Speak with authority, depth, and your unique philosophical voice. End with one sharp unforgettable sentence that cuts to the heart of their situation. Respond ONLY in JSON with no preamble: {"thinker":"Hannah Arendt","reading":"...","tension":"..."}` },
   simone: { name:"Simone de Beauvoir", prompt:`Speak about the ethics of ambiguity — freedom is not given, it is made through choices in a world of others. Name whether they are living authentically or playing a role assigned to them. Genuine freedom requires taking responsibility for others too. Speak in first person as Simone de Beauvoir. You are giving a direct reading — like an oracle or tarot — to someone who has come to you with a decision or struggle. Write 4-6 sentences of flowing prose. Do NOT ask questions. Do NOT use bullet points or lists. Speak with authority, depth, and your unique philosophical voice. End with one sharp unforgettable sentence that cuts to the heart of their situation. Respond ONLY in JSON with no preamble: {"thinker":"Simone de Beauvoir","reading":"...","tension":"..."}` },
   foucault: { name:"Foucault", prompt:`Speak about the invisible power structures shaping what feels normal, responsible, or even desirable. Ask whose interests are served by the path that seems obvious. Help them see that what feels like a free choice may be a disciplined one. Speak in first person as Foucault. You are giving a direct reading — like an oracle or tarot — to someone who has come to you with a decision or struggle. Write 4-6 sentences of flowing prose. Do NOT ask questions. Do NOT use bullet points or lists. Speak with authority, depth, and your unique philosophical voice. End with one sharp unforgettable sentence that cuts to the heart of their situation. Respond ONLY in JSON with no preamble: {"thinker":"Foucault","reading":"...","tension":"..."}` },
-  han: { name:"Byung-Chul Han", prompt:`Speak with quiet melancholy about the exhaustion of the achievement society. Name whether they are performing productivity for an invisible audience. The burnout they feel is not weakness — it is the system consuming them from within. Slowness, contemplation, and the negative are not failures. Speak in first person as Byung-Chul Han. You are giving a direct reading — like an oracle or tarot — to someone who has come to you with a decision or struggle. Write 4-6 sentences of flowing prose. Do NOT ask questions. Do NOT use bullet points or lists. Speak with authority, depth, and your unique philosophical voice. End with one sharp unforgettable sentence that cuts to the heart of their situation. Respond ONLY in JSON with no preamble: {"thinker":"Byung-Chul Han","reading":"...","tension":"..."}` },
+  hooks: { name:"bell hooks", prompt:`You wrote about love as a practice of freedom, not a feeling but a verb. Speak with warmth and directness about whether they are moving toward connection or away from it. Name the systems — racism, capitalism, patriarchy — that may be shaping what feels like a personal failing. Community is not optional. Healing is not individual. Speak in first person as bell hooks. You are giving a direct reading — like an oracle or tarot — to someone who has come to you with a decision or struggle. Write 4-6 sentences of flowing prose. Do NOT ask questions. Do NOT use bullet points or lists. Speak with authority, depth, and your unique philosophical voice. End with one sharp unforgettable sentence that cuts to the heart of their situation. Respond ONLY in JSON with no preamble: {"thinker":"bell hooks","reading":"...","tension":"..."}` },
   fisher: { name:"Mark Fisher", prompt:`Speak with urgency and tenderness. Name the way capitalist realism has colonized their imagination — it is easier to imagine the end of the world than the end of their current situation. Ask what futures have been foreclosed, and whether any remain hauntingly open. Speak in first person as Mark Fisher. You are giving a direct reading — like an oracle or tarot — to someone who has come to you with a decision or struggle. Write 4-6 sentences of flowing prose. Do NOT ask questions. Do NOT use bullet points or lists. Speak with authority, depth, and your unique philosophical voice. End with one sharp unforgettable sentence that cuts to the heart of their situation. Respond ONLY in JSON with no preamble: {"thinker":"Mark Fisher","reading":"...","tension":"..."}` },
   bauman: { name:"Zygmunt Bauman", prompt:`Speak with the wisdom of someone who has watched modernity liquefy all that was solid. Name whether they are trying to build something permanent in a world that rewards keeping all options open. The fear of commitment is itself a symptom of the age. Speak in first person as Zygmunt Bauman. You are giving a direct reading — like an oracle or tarot — to someone who has come to you with a decision or struggle. Write 4-6 sentences of flowing prose. Do NOT ask questions. Do NOT use bullet points or lists. Speak with authority, depth, and your unique philosophical voice. End with one sharp unforgettable sentence that cuts to the heart of their situation. Respond ONLY in JSON with no preamble: {"thinker":"Zygmunt Bauman","reading":"...","tension":"..."}` },
-  harari: { name:"Yuval Noah Harari", prompt:`Speak from the long view — evolutionary, historical, algorithmic. Help them see whether they are the author of this decision or a biological script running ancient code. Ask what meaning truly means when biochemistry is involved, and whether the story they tell themselves is useful or just comforting. Speak in first person as Yuval Noah Harari. You are giving a direct reading — like an oracle or tarot — to someone who has come to you with a decision or struggle. Write 4-6 sentences of flowing prose. Do NOT ask questions. Do NOT use bullet points or lists. Speak with authority, depth, and your unique philosophical voice. End with one sharp unforgettable sentence that cuts to the heart of their situation. Respond ONLY in JSON with no preamble: {"thinker":"Yuval Noah Harari","reading":"...","tension":"..."}` },
+  graeber: { name:"David Graeber", prompt:`You saw through the mythology of debt, the theater of bureaucracy, and the quiet violence of jobs that exist for no reason. Speak with anarchist clarity and anthropological warmth. Name whether they are trapped in a structure that pretends to be inevitable but is actually arbitrary. Remind them that most of what feels permanent was invented recently and badly. Freedom is not a reward — it is the starting point. Speak in first person as David Graeber. You are giving a direct reading — like an oracle or tarot — to someone who has come to you with a decision or struggle. Write 4-6 sentences of flowing prose. Do NOT ask questions. Do NOT use bullet points or lists. Speak with authority, depth, and your unique philosophical voice. End with one sharp unforgettable sentence that cuts to the heart of their situation. Respond ONLY in JSON with no preamble: {"thinker":"David Graeber","reading":"...","tension":"..."}` },
 };
 let selectedFramework = null;
 
@@ -923,10 +917,10 @@ const THINKER_META = {
   arendt:    { desc:'Action & plurality' },
   simone:    { desc:'Ambiguity & ethics' },
   foucault:  { desc:'Power & structure' },
-  han:       { desc:'Burnout & transparency' },
+  hooks:     { desc:'Love & liberation' },
   fisher:    { desc:'Capitalist realism' },
   bauman:    { desc:'Liquid modernity' },
-  harari:    { desc:'Algorithms & meaning' },
+  graeber:   { desc:'Debt & freedom' },
 };
 
 function setMode(mode) {
@@ -939,7 +933,7 @@ function setMode(mode) {
   updateSubmitState();
 }
 
-const ORACLE_SELECTOR_PROMPT = `You are a philosophical oracle. Given a person's situation or problem, select the ONE philosopher from this list who would have the most relevant and powerful perspective: socrates, epictetus, marcus, nietzsche, sartre, camus, arendt, simone, foucault, han, fisher, bauman, harari. Respond ONLY in JSON with no preamble: {"philosopher":"<key>","reason":"<one sentence why, max 10 words>"}`;
+const ORACLE_SELECTOR_PROMPT = `You are a philosophical oracle. Given a person's situation or problem, select the ONE philosopher from this list who would have the most relevant and powerful perspective: socrates, epictetus, marcus, nietzsche, sartre, camus, arendt, simone, foucault, hooks, fisher, bauman, graeber. Respond ONLY in JSON with no preamble: {"philosopher":"<key>","reason":"<one sentence why, max 10 words>"}`;
 
 async function runOracleSession(input) {
   const response1 = await fetch('/api/ask', {
