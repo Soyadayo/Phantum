@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tacorari</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    background: #faf9f6;
+    font-family: 'Source Serif 4', Georgia, serif;
+    color: #1a1a1a;
+  }
+  .wrap { max-width: 600px; margin: 0 auto; padding: 0 24px; }
+  header { padding-top: 48px; }
+  header h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.01em; line-height: 1.1; }
+  .rule { width: 40px; height: 2px; background: #1a1a1a; margin: 14px 0; }
+  header p {
+    font-size: 18px; line-height: 1.6; color: #555;
+    font-weight: 300; font-style: italic;
+  }
+  main { padding: 44px 0; }
+  .cards { display: flex; flex-direction: column; gap: 20px; }
+
+  .card {
+    background: #fff;
+    border: 1px solid #e5e5e0;
+    border-radius: 6px;
+    padding: 28px 28px 24px;
+    cursor: pointer;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+  .card:hover { border-color: var(--accent); box-shadow: 0 2px 20px color-mix(in srgb, var(--accent) 8%, transparent); }
+  .card-inner { display: flex; align-items: flex-start; gap: 18px; }
+  .card-icon { flex-shrink: 0; margin-top: 2px; opacity: 0.7; transition: opacity 0.25s; }
+  .card:hover .card-icon { opacity: 1; }
+  .card-body { flex: 1; }
+
+  .card-title-row { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; flex-wrap: wrap; }
+  .card-name { font-size: 22px; font-weight: 600; }
+  .badge {
+    font-size: 11px; font-family: 'DM Sans', sans-serif;
+    font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.08em; padding: 2px 8px;
+    border-radius: 3px;
+  }
+  .badge-live { color: #16a34a; background: #f0fdf4; border: 1px solid #bbf7d0; }
+  .badge-soon { color: #999; background: #f5f5f0; border: 1px solid #e5e5e0; }
+
+  .card-tagline {
+    font-size: 15px; color: #888; font-style: italic; margin-bottom: 10px;
+  }
+  .card-desc { font-size: 16px; line-height: 1.6; color: #444; }
+  .card-link {
+    margin-top: 16px; display: flex; align-items: center; gap: 6px;
+  }
+  .card-link-text {
+    font-size: 14px; font-family: 'DM Sans', sans-serif;
+    font-weight: 600; color: #999; transition: color 0.25s;
+  }
+  .card:hover .card-link-text { color: var(--accent); }
+  .card-link-arrow {
+    font-size: 16px; color: #ccc; transition: color 0.25s, transform 0.25s;
+    display: inline-block;
+  }
+  .card:hover .card-link-arrow { color: var(--accent); transform: translateX(4px); }
+
+  .future {
+    margin-top: 20px; padding: 20px 28px;
+    border: 1px dashed #ddd; border-radius: 6px;
+    text-align: center;
+    font-size: 14px; color: #bbb;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  footer {
+    margin-top: 48px; padding: 20px 0 48px;
+    border-top: 1px solid #e5e5e0;
+    display: flex; justify-content: space-between;
+    align-items: center; flex-wrap: wrap; gap: 8px;
+    font-size: 13px; font-family: 'DM Sans', sans-serif; color: #bbb;
+  }
+</style>
+</head>
+<body>
+  <header class="wrap">
+    <h1>Tacorari</h1>
+    <div class="rule"></div>
+    <p>Tools for seeing what isn't shown.</p>
+  </header>
+
+  <main class="wrap">
+    <div class="cards">
+
+      <!-- Phantum -->
+      <a href="/phantum" class="card" style="--accent: #8b5cf6;">
+        <div class="card-inner">
+          <div class="card-icon">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+              <circle cx="16" cy="16" r="14" stroke="#8b5cf6" stroke-width="1.5"/>
+              <circle cx="16" cy="16" r="6" stroke="#8b5cf6" stroke-width="1.5"/>
+              <line x1="16" y1="2" x2="16" y2="10" stroke="#8b5cf6" stroke-width="1.5"/>
+              <line x1="16" y1="22" x2="16" y2="30" stroke="#8b5cf6" stroke-width="1.5"/>
+              <line x1="2" y1="16" x2="10" y2="16" stroke="#8b5cf6" stroke-width="1.5"/>
+              <line x1="22" y1="16" x2="30" y2="16" stroke="#8b5cf6" stroke-width="1.5"/>
+            </svg>
+          </div>
+          <div class="card-body">
+            <div class="card-title-row">
+              <span class="card-name">Phantum</span>
+              <span class="badge badge-live">Live</span>
+            </div>
+            <div class="card-tagline">A philosophical oracle</div>
+            <div class="card-desc">Ask a question. Get an answer drawn from Stoicism, Existentialism, Critical Theory, and contemporary thinkers. Not advice. A lens.</div>
+            <div class="card-link">
+              <span class="card-link-text">tacorari.eu/phantum</span>
+              <span class="card-link-arrow">→</span>
+            </div>
+          </div>
+        </div>
+      </a>
+
+      <!-- TranslationGap -->
+      <a href="/translationgap" class="card" style="--accent: #b91c1c;">
+        <div class="card-inner">
+          <div class="card-icon">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+              <rect x="2" y="4" width="12" height="16" rx="1.5" stroke="#b91c1c" stroke-width="1.5"/>
+              <rect x="18" y="12" width="12" height="16" rx="1.5" stroke="#b91c1c" stroke-width="1.5"/>
+              <path d="M14 14 L18 18" stroke="#b91c1c" stroke-width="1.5"/>
+              <line x1="5" y1="9" x2="11" y2="9" stroke="#b91c1c" stroke-width="1" opacity="0.5"/>
+              <line x1="5" y1="12" x2="11" y2="12" stroke="#b91c1c" stroke-width="1" opacity="0.5"/>
+              <line x1="5" y1="15" x2="9" y2="15" stroke="#b91c1c" stroke-width="1" opacity="0.5"/>
+              <line x1="21" y1="17" x2="27" y2="17" stroke="#b91c1c" stroke-width="1" opacity="0.5"/>
+              <line x1="21" y1="20" x2="27" y2="20" stroke="#b91c1c" stroke-width="1" opacity="0.5"/>
+              <line x1="21" y1="23" x2="25" y2="23" stroke="#b91c1c" stroke-width="1" opacity="0.5"/>
+            </svg>
+          </div>
+          <div class="card-body">
+            <div class="card-title-row">
+              <span class="card-name">TranslationGap</span>
+              <span class="badge badge-soon">Coming soon</span>
+            </div>
+            <div class="card-tagline">What English news left out</div>
+            <div class="card-desc">Paste an English news article. We find the original sources in Turkish, Arabic, Japanese, Persian, Hindi, or Portuguese and show you what got lost in translation.</div>
+            <div class="card-link">
+              <span class="card-link-text">tacorari.eu/translationgap</span>
+              <span class="card-link-arrow">→</span>
+            </div>
+          </div>
+        </div>
+      </a>
+
+    </div>
+
+    <div class="future">More tools in development.</div>
+  </main>
+
+  <footer class="wrap">
+    <span>Haus Tacorari</span>
+    <span>Krefeld, Germany</span>
+  </footer>
+</body>
+</html>
