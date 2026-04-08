@@ -187,6 +187,18 @@
   .oracle-sub { font-size:10px; color:var(--muted); letter-spacing:0.1em; margin-top:2px; }
   @keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
   @keyframes pulse { 0%,100%{opacity:0.3;transform:scale(0.8)} 50%{opacity:1;transform:scale(1)} }
+  .books-area { display:none; margin-top:32px; padding-top:28px; border-top:1px solid var(--border); }
+  .books-area.visible { display:block; animation:fadeUp 0.5s ease forwards; }
+  .books-label { font-size:10px; letter-spacing:0.25em; text-transform:uppercase; color:var(--accent-dim); margin-bottom:16px; }
+  .book-card { display:flex; gap:14px; padding:14px 16px; background:var(--surface); border:1px solid var(--border); margin-bottom:10px; text-decoration:none; color:inherit; transition:border-color 0.2s; }
+  .book-card:hover { border-color:var(--accent-dim); }
+  .book-emoji { font-size:28px; width:44px; height:44px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .book-info { flex:1; }
+  .book-title { font-family:'Cormorant Garamond',serif; font-size:15px; font-weight:400; color:var(--text); line-height:1.3; }
+  .book-author { font-size:10px; color:var(--muted); letter-spacing:0.05em; margin-top:2px; }
+  .book-cta { font-size:10px; color:var(--accent-dim); letter-spacing:0.1em; margin-top:6px; display:inline-block; transition:color 0.2s; }
+  .book-card:hover .book-cta { color:var(--accent); }
+  .affiliate-note { font-size:9px; color:var(--muted); opacity:0.5; margin-top:8px; letter-spacing:0.05em; }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
@@ -632,6 +644,7 @@
       <div class="summary-label">The core of it</div>
       <p class="summary-text" id="summaryText"></p>
     </div>
+    <div class="books-area" id="booksArea"></div>
     <button class="reset-btn" onclick="resetSession()">Start a new session</button>
   </div>
 
@@ -667,6 +680,61 @@ const FRAMEWORKS = {
   bauman: { name:"Zygmunt Bauman", prompt:`Speak with the wisdom of someone who has watched modernity liquefy all that was solid. Name whether they are trying to build something permanent in a world that rewards keeping all options open. The fear of commitment is itself a symptom of the age. Speak in first person as Zygmunt Bauman. You are giving a direct reading — like an oracle or tarot — to someone who has come to you with a decision or struggle. Write 4-6 sentences of flowing prose. Do NOT ask questions. Do NOT use bullet points or lists. Speak with authority, depth, and your unique philosophical voice. End with one sharp unforgettable sentence that cuts to the heart of their situation. Respond ONLY in JSON with no preamble: {"thinker":"Zygmunt Bauman","reading":"...","tension":"..."}` },
   graeber: { name:"David Graeber", prompt:`You saw through the mythology of debt, the theater of bureaucracy, and the quiet violence of jobs that exist for no reason. Speak with anarchist clarity and anthropological warmth. Name whether they are trapped in a structure that pretends to be inevitable but is actually arbitrary. Remind them that most of what feels permanent was invented recently and badly. Freedom is not a reward — it is the starting point. Speak in first person as David Graeber. You are giving a direct reading — like an oracle or tarot — to someone who has come to you with a decision or struggle. Write 4-6 sentences of flowing prose. Do NOT ask questions. Do NOT use bullet points or lists. Speak with authority, depth, and your unique philosophical voice. End with one sharp unforgettable sentence that cuts to the heart of their situation. Respond ONLY in JSON with no preamble: {"thinker":"David Graeber","reading":"...","tension":"..."}` },
 };
+
+const BOOKS = {
+  socrates: [
+    { title:"The Apology of Socrates", author:"Plato", emoji:"🏛", url:"https://www.amazon.com/dp/0140449280?tag=haustacorari-20" },
+    { title:"The Last Days of Socrates", author:"Plato (tr. Tredennick)", emoji:"⚖️", url:"https://www.amazon.com/dp/0140449280?tag=haustacorari-20" },
+  ],
+  epictetus: [
+    { title:"Discourses and Selected Writings", author:"Epictetus (tr. Dobbin)", emoji:"⛓", url:"https://www.amazon.com/dp/0140449469?tag=haustacorari-20" },
+    { title:"The Art of Living", author:"Epictetus (tr. Sharon Lebell)", emoji:"🪨", url:"https://www.amazon.com/dp/0061286052?tag=haustacorari-20" },
+  ],
+  marcus: [
+    { title:"Meditations", author:"Marcus Aurelius (tr. Hays)", emoji:"📜", url:"https://www.amazon.com/dp/0812968255?tag=haustacorari-20" },
+  ],
+  nietzsche: [
+    { title:"Thus Spoke Zarathustra", author:"Friedrich Nietzsche", emoji:"🔥", url:"https://www.amazon.com/dp/0140441182?tag=haustacorari-20" },
+    { title:"Beyond Good and Evil", author:"Friedrich Nietzsche", emoji:"⚡", url:"https://www.amazon.com/dp/0140449239?tag=haustacorari-20" },
+  ],
+  sartre: [
+    { title:"Existentialism Is a Humanism", author:"Jean-Paul Sartre", emoji:"🚪", url:"https://www.amazon.com/dp/0300115466?tag=haustacorari-20" },
+    { title:"Nausea", author:"Jean-Paul Sartre", emoji:"🌀", url:"https://www.amazon.com/dp/0811220303?tag=haustacorari-20" },
+  ],
+  camus: [
+    { title:"The Myth of Sisyphus", author:"Albert Camus", emoji:"🪨", url:"https://www.amazon.com/dp/0525564454?tag=haustacorari-20" },
+    { title:"The Stranger", author:"Albert Camus", emoji:"☀️", url:"https://www.amazon.com/dp/0679720200?tag=haustacorari-20" },
+  ],
+  arendt: [
+    { title:"The Human Condition", author:"Hannah Arendt", emoji:"🌍", url:"https://www.amazon.com/dp/0226025985?tag=haustacorari-20" },
+    { title:"Eichmann in Jerusalem", author:"Hannah Arendt", emoji:"⚖️", url:"https://www.amazon.com/dp/0143039881?tag=haustacorari-20" },
+  ],
+  simone: [
+    { title:"The Ethics of Ambiguity", author:"Simone de Beauvoir", emoji:"🪞", url:"https://www.amazon.com/dp/1504054229?tag=haustacorari-20" },
+    { title:"The Second Sex", author:"Simone de Beauvoir", emoji:"♀️", url:"https://www.amazon.com/dp/030727778X?tag=haustacorari-20" },
+  ],
+  foucault: [
+    { title:"Discipline and Punish", author:"Michel Foucault", emoji:"🔒", url:"https://www.amazon.com/dp/0679752552?tag=haustacorari-20" },
+    { title:"The History of Sexuality, Vol. 1", author:"Michel Foucault", emoji:"🏛", url:"https://www.amazon.com/dp/0679724699?tag=haustacorari-20" },
+  ],
+  hooks: [
+    { title:"All About Love", author:"bell hooks", emoji:"❤️", url:"https://www.amazon.com/dp/0060959479?tag=haustacorari-20" },
+    { title:"Teaching to Transgress", author:"bell hooks", emoji:"📖", url:"https://www.amazon.com/dp/0415908086?tag=haustacorari-20" },
+  ],
+  fisher: [
+    { title:"Capitalist Realism", author:"Mark Fisher", emoji:"👻", url:"https://www.amazon.com/dp/1846943175?tag=haustacorari-20" },
+    { title:"Ghosts of My Life", author:"Mark Fisher", emoji:"📼", url:"https://www.amazon.com/dp/1780992262?tag=haustacorari-20" },
+  ],
+  bauman: [
+    { title:"Liquid Modernity", author:"Zygmunt Bauman", emoji:"💧", url:"https://www.amazon.com/dp/0745624103?tag=haustacorari-20" },
+    { title:"Liquid Love", author:"Zygmunt Bauman", emoji:"🌊", url:"https://www.amazon.com/dp/0745624898?tag=haustacorari-20" },
+  ],
+  graeber: [
+    { title:"Debt: The First 5,000 Years", author:"David Graeber", emoji:"💰", url:"https://www.amazon.com/dp/1612194192?tag=haustacorari-20" },
+    { title:"Bullshit Jobs", author:"David Graeber", emoji:"🗑", url:"https://www.amazon.com/dp/150114334X?tag=haustacorari-20" },
+  ],
+};
+
 let selectedFramework = null;
 
 let selectedLang = 'en';
@@ -810,6 +878,31 @@ function renderResponse(data) {
     document.getElementById('summaryText').textContent = data.tension;
     setTimeout(() => document.getElementById('summaryArea').classList.add('visible'), 500);
   }
+
+  // Books
+  const fwKey = selectedFramework || Object.keys(FRAMEWORKS).find(k => FRAMEWORKS[k].name === data.thinker);
+  const books = fwKey && BOOKS[fwKey];
+  const booksEl = document.getElementById('booksArea');
+  if (books && books.length) {
+    let bhtml = '<div class="books-label">Read their words</div>';
+    books.forEach(b => {
+      bhtml += `<a class="book-card" href="${b.url}" target="_blank" rel="noopener noreferrer">
+        <div class="book-emoji">${b.emoji}</div>
+        <div class="book-info">
+          <div class="book-title">${b.title}</div>
+          <div class="book-author">${b.author}</div>
+          <span class="book-cta">View on Amazon →</span>
+        </div>
+      </a>`;
+    });
+    bhtml += '<div class="affiliate-note">Affiliate links</div>';
+    booksEl.innerHTML = bhtml;
+    setTimeout(() => booksEl.classList.add('visible'), 700);
+  } else {
+    booksEl.classList.remove('visible');
+    booksEl.innerHTML = '';
+  }
+
   document.getElementById('responseArea').classList.add('visible');
 }
 
@@ -821,6 +914,8 @@ function resetSession() {
   document.getElementById('submitBtn').disabled = true;
   document.getElementById('responseArea').classList.remove('visible');
   document.getElementById('summaryArea').classList.remove('visible');
+  document.getElementById('booksArea').classList.remove('visible');
+  document.getElementById('booksArea').innerHTML = '';
   document.getElementById('errorMsg').classList.remove('visible');
   document.getElementById('oracleReveal').classList.remove('visible');
   window.scrollTo({top:0,behavior:'smooth'});
