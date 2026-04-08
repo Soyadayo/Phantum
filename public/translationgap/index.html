@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TranslationGap · Tacorari</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    background: #faf9f6;
+    font-family: 'Source Serif 4', Georgia, serif;
+    color: #1a1a1a;
+  }
+  .wrap { max-width: 640px; margin: 0 auto; padding: 0 24px; }
+
+  /* Header */
+  header { padding-top: 36px; }
+  .back {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 13px; font-family: 'DM Sans', sans-serif;
+    color: #999; text-decoration: none; margin-bottom: 16px;
+    transition: color 0.2s;
+  }
+  .back:hover { color: #1a1a1a; }
+  header h1 {
+    font-size: 32px; font-weight: 700; line-height: 1.15;
+    border-bottom: 3px double #1a1a1a; padding-bottom: 14px;
+  }
+
+  /* Intro */
+  .intro {
+    font-size: 21px; line-height: 1.55; color: #444;
+    font-weight: 300; font-style: italic;
+    margin: 28px 0 32px;
+  }
+
+  /* How it works */
+  .how-box {
+    background: #fff; border: 1px solid #e5e5e0;
+    border-radius: 6px; padding: 28px 28px 24px; margin-bottom: 36px;
+  }
+  .section-label {
+    font-size: 13px; font-family: 'DM Sans', sans-serif;
+    font-weight: 700; color: #999; text-transform: uppercase;
+    letter-spacing: 0.08em; margin-bottom: 20px;
+  }
+  .steps { display: flex; flex-direction: column; gap: 18px; }
+  .step { display: flex; gap: 14px; align-items: flex-start; }
+  .step-num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 28px; height: 28px; border-radius: 50%;
+    background: #1a1a1a; color: #faf9f6;
+    font-size: 14px; font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+    flex-shrink: 0;
+  }
+  .step-text { font-size: 17px; line-height: 1.5; padding-top: 2px; }
+
+  /* Input */
+  .input-label { font-size: 17px; font-weight: 600; margin-bottom: 10px; }
+  #url-input {
+    width: 100%; padding: 16px 18px; font-size: 18px;
+    font-family: 'Source Serif 4', Georgia, serif;
+    border: 1px solid #ccc; border-radius: 4px;
+    background: #fff; color: #1a1a1a; outline: none;
+    transition: border-color 0.2s;
+  }
+  #url-input:focus { border-color: #1a1a1a; }
+  #check-btn {
+    width: 100%; padding: 16px; margin-top: 12px;
+    font-size: 17px; font-family: 'DM Sans', sans-serif;
+    font-weight: 600; background: #1a1a1a; color: #faf9f6;
+    border: none; border-radius: 4px; cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  #check-btn:disabled { background: #ccc; cursor: default; }
+
+  /* Examples */
+  .examples-box {
+    background: #f5f5f0; border-radius: 6px;
+    padding: 20px 24px; margin-top: 28px;
+  }
+  .examples-label {
+    font-size: 14px; font-family: 'DM Sans', sans-serif;
+    font-weight: 600; color: #888; margin-bottom: 14px;
+  }
+  .example-cards { display: flex; flex-direction: column; gap: 10px; }
+  .example-card {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 16px; background: #fff;
+    border: 1px solid #e5e5e0; border-radius: 4px;
+    cursor: pointer; transition: border-color 0.2s;
+    text-decoration: none; color: inherit;
+  }
+  .example-card:hover { border-color: #1a1a1a; }
+  .example-flag { font-size: 24px; }
+  .example-name { font-size: 16px; font-weight: 600; }
+  .example-hint {
+    font-size: 12px; font-family: 'DM Sans', sans-serif;
+    color: #999; margin-top: 2px;
+  }
+  .example-arrow { margin-left: auto; font-size: 18px; color: #ccc; }
+
+  /* Loading */
+  .loading-box {
+    background: #fff; border: 1px solid #e5e5e0;
+    border-radius: 6px; padding: 32px 28px;
+    margin: 60px 0;
+  }
+  .load-step {
+    display: flex; gap: 14px; align-items: center;
+    padding: 10px 0; transition: opacity 0.5s;
+  }
+  .load-step.inactive { opacity: 0.25; }
+  .load-circle {
+    width: 22px; height: 22px; border-radius: 50%;
+    border: 2px solid #ddd; display: flex;
+    align-items: center; justify-content: center;
+    flex-shrink: 0; transition: all 0.4s;
+  }
+  .load-circle.done { border-color: #22c55e; background: #22c55e; }
+  .load-circle.active { border-color: #1a1a1a; }
+  .load-circle.done::after { content: '✓'; color: #fff; font-size: 12px; font-weight: 700; }
+  .load-circle.active::after {
+    content: ''; width: 8px; height: 8px; border-radius: 50%;
+    background: #1a1a1a; display: block;
+    animation: pulse 1s ease-in-out infinite;
+  }
+  .load-label { font-size: 16px; color: #bbb; transition: color 0.3s, font-weight 0.3s; }
+  .load-step.reached .load-label { color: #1a1a1a; }
+  .load-step.current .load-label { color: #1a1a1a; font-weight: 600; }
+  @keyframes pulse { 0%,100% { opacity: .4; } 50% { opacity: 1; } }
+
+  /* Results */
+  .result-area { animation: fadeUp 0.5s ease; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+  .summary-bar {
+    display: flex; gap: 16px; margin-bottom: 28px;
+    padding: 16px 20px; background: #fff;
+    border: 1px solid #e5e5e0; border-radius: 6px;
+    align-items: center; flex-wrap: wrap;
+  }
+  .summary-left { flex: 1; min-width: 200px; }
+  .summary-small {
+    font-size: 13px; font-family: 'DM Sans', sans-serif;
+    color: #999; text-transform: uppercase;
+    letter-spacing: 0.06em; font-weight: 600; margin-bottom: 4px;
+  }
+  .summary-title { font-size: 17px; font-weight: 600; line-height: 1.3; }
+  .summary-meta { font-size: 14px; color: #888; margin-top: 4px; }
+  .summary-stats { display: flex; gap: 20px; flex-shrink: 0; }
+  .stat-num { font-size: 28px; font-weight: 700; text-align: center; }
+  .stat-label {
+    font-size: 11px; font-family: 'DM Sans', sans-serif;
+    color: #999; text-transform: uppercase;
+    letter-spacing: 0.05em; text-align: center;
+  }
+
+  .verdict {
+    padding: 24px 28px; background: #1a1a1a; color: #faf9f6;
+    border-radius: 6px; margin-bottom: 32px;
+    font-size: 18px; line-height: 1.6; font-weight: 300;
+  }
+  .verdict-label {
+    font-size: 12px; font-family: 'DM Sans', sans-serif;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    font-weight: 600; color: #aaa; margin-bottom: 10px;
+  }
+
+  .source-card {
+    background: #fff; border: 1px solid #e5e5e0;
+    border-radius: 6px; padding: 24px 28px; margin-bottom: 16px;
+  }
+  .source-header { display: flex; align-items: center; gap: 12px; margin-bottom: 4px; flex-wrap: wrap; }
+  .source-flag { font-size: 26px; }
+  .source-name { font-size: 21px; font-weight: 600; }
+  .source-lang {
+    font-size: 13px; font-family: 'DM Sans', sans-serif;
+    color: #999; background: #f5f5f0;
+    padding: 3px 10px; border-radius: 3px;
+  }
+  .source-lean {
+    font-size: 14px; font-family: 'DM Sans', sans-serif;
+    color: #999; font-style: italic;
+    margin-bottom: 18px; padding-left: 38px;
+  }
+  .findings { display: flex; flex-direction: column; gap: 12px; }
+
+  .finding { padding: 18px 20px; border-radius: 5px; }
+  .finding.missing { background: #fef2f2; border: 1px solid #fecaca; }
+  .finding.contradiction { background: #faf5ff; border: 1px solid #e9d5ff; }
+  .finding.nuance { background: #fffbeb; border: 1px solid #fde68a; }
+  .finding-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+  .finding-icon {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 24px; height: 24px; border-radius: 50%;
+    font-size: 13px; font-weight: 700; flex-shrink: 0;
+  }
+  .finding-icon.missing { border: 2px solid #b91c1c; color: #b91c1c; }
+  .finding-icon.contradiction { border: 2px solid #9333ea; color: #9333ea; }
+  .finding-icon.nuance { border: 2px solid #b45309; color: #b45309; }
+  .finding-label {
+    font-size: 14px; font-weight: 700;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .finding-label.missing { color: #b91c1c; }
+  .finding-label.contradiction { color: #9333ea; }
+  .finding-label.nuance { color: #b45309; }
+  .finding-text { font-size: 17px; line-height: 1.6; color: #1a1a1a; }
+
+  .legend {
+    display: flex; gap: 20px; flex-wrap: wrap;
+    padding: 16px 20px; background: #f5f5f0;
+    border-radius: 6px; margin-top: 8px; margin-bottom: 32px;
+  }
+  .legend-title {
+    font-size: 12px; font-family: 'DM Sans', sans-serif;
+    font-weight: 600; color: #888; align-self: center; margin-right: 4px;
+  }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+  .legend-dot {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 18px; height: 18px; border-radius: 50%;
+    font-size: 10px; font-weight: 700;
+  }
+  .legend-dot.missing { border: 2px solid #b91c1c; color: #b91c1c; }
+  .legend-dot.contradiction { border: 2px solid #9333ea; color: #9333ea; }
+  .legend-dot.nuance { border: 2px solid #b45309; color: #b45309; }
+  .legend-text { font-size: 12px; font-family: 'DM Sans', sans-serif; color: #666; }
+
+  .cta-box {
+    padding: 28px 32px; background: #fff;
+    border: 1px solid #e5e5e0; border-radius: 6px;
+    text-align: center; margin-bottom: 20px;
+  }
+  .cta-title { font-size: 21px; font-weight: 600; margin-bottom: 8px; }
+  .cta-desc { font-size: 16px; color: #777; line-height: 1.5; margin-bottom: 20px; }
+  .cta-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn-primary {
+    padding: 14px 40px; font-size: 16px;
+    font-family: 'DM Sans', sans-serif; font-weight: 600;
+    background: #1a1a1a; color: #faf9f6;
+    border: none; border-radius: 4px; cursor: pointer;
+  }
+  .btn-secondary {
+    padding: 14px 40px; font-size: 16px;
+    font-family: 'DM Sans', sans-serif; font-weight: 600;
+    background: transparent; color: #1a1a1a;
+    border: 1px solid #ccc; border-radius: 4px; cursor: pointer;
+  }
+
+  .ad-placeholder {
+    padding: 14px 20px; background: #f5f5f0;
+    border: 1px dashed #ddd; border-radius: 4px;
+    text-align: center; margin-bottom: 20px;
+    font-size: 11px; font-family: 'DM Sans', sans-serif;
+    color: #bbb; text-transform: uppercase; letter-spacing: 0.1em;
+  }
+
+  .disclaimer {
+    font-size: 14px; font-family: 'DM Sans', sans-serif;
+    color: #aaa; line-height: 1.55;
+    padding: 16px 20px; background: #f5f5f0; border-radius: 6px;
+  }
+
+  footer {
+    max-width: 640px; margin: 48px auto 0;
+    padding: 20px 24px 40px;
+    border-top: 1px solid #e5e5e0;
+    text-align: center;
+    font-size: 13px; font-family: 'DM Sans', sans-serif; color: #bbb;
+  }
+  footer a { color: #999; text-decoration: underline; text-underline-offset: 3px; }
+
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+
+<header class="wrap">
+  <a href="/" class="back">← Tacorari</a>
+  <h1>TranslationGap</h1>
+</header>
+
+<main class="wrap" style="padding-top: 28px; padding-bottom: 28px;">
+
+  <!-- LANDING -->
+  <div id="landing">
+    <div class="intro">
+      English news articles are often based on sources written in other languages. When they get translated, details get dropped, emphasis shifts, and sometimes the meaning changes entirely. This tool checks what got lost.
+    </div>
+
+    <div class="how-box">
+      <div class="section-label">How it works</div>
+      <div class="steps">
+        <div class="step">
+          <span class="step-num">1</span>
+          <span class="step-text">You paste the link to an English news article below.</span>
+        </div>
+        <div class="step">
+          <span class="step-num">2</span>
+          <span class="step-text">We find the original sources in Turkish, Arabic, Japanese, Persian, Hindi, or Portuguese.</span>
+        </div>
+        <div class="step">
+          <span class="step-num">3</span>
+          <span class="step-text">We compare them and show you what the English version left out, got wrong, or framed differently.</span>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="input-label">Paste an article link here</div>
+      <input type="text" id="url-input" placeholder="https://nytimes.com/2026/...">
+      <button id="check-btn" disabled onclick="doSearch()">Check this article</button>
+    </div>
+
+    <div class="examples-box">
+      <div class="examples-label">Don't have an article handy? Try one of these:</div>
+      <div class="example-cards">
+        <div class="example-card" onclick="runExample('nyt')">
+          <span class="example-flag">🇹🇷</span>
+          <div>
+            <div class="example-name">NYT on Turkey's economy</div>
+            <div class="example-hint">Click to check this article</div>
+          </div>
+          <span class="example-arrow">→</span>
+        </div>
+        <div class="example-card" onclick="runExample('reuters')">
+          <span class="example-flag">🇯🇵</span>
+          <div>
+            <div class="example-name">Reuters on Japan's chip industry</div>
+            <div class="example-hint">Click to check this article</div>
+          </div>
+          <span class="example-arrow">→</span>
+        </div>
+        <div class="example-card" onclick="runExample('default')">
+          <span class="example-flag">🇮🇷</span>
+          <div>
+            <div class="example-name">AP on Iran nuclear talks</div>
+            <div class="example-hint">Click to check this article</div>
+          </div>
+          <span class="example-arrow">→</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOADING -->
+  <div id="loading" class="hidden">
+    <div class="loading-box" id="loading-steps"></div>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="results" class="hidden"></div>
+
+</main>
+
+<footer>
+  <a href="/">Tacorari</a> · Haus Tacorari · Krefeld, Germany
+</footer>
+
+<script>
+const STEPS = [
+  "Reading the article you pasted...",
+  "Finding the original-language sources...",
+  "Translating and comparing...",
+  "Writing your report...",
+];
+
+const DATA = {
+  nyt: {
+    article: { title: "Turkey's Central Bank Holds Rates Amid Inflation Concerns", outlet: "The New York Times", date: "April 7, 2026" },
+    sources: [
+      {
+        outlet: "Cumhuriyet", lang: "Turkish", flag: "🇹🇷",
+        type: "Opposition daily, secular-Kemalist",
+        findings: [
+          { cat: "missing", label: "Missing from the English article", text: "Cumhuriyet reports that net reserves, excluding swap agreements, show a $12 billion gap from the headline figure. This swap-adjusted figure is central to the Turkish opposition's economic criticism but does not appear in the NYT piece." },
+          { cat: "missing", label: "Missing from the English article", text: "Three opposition economists quoted by Cumhuriyet argue the methodology was changed specifically to obscure reserve deterioration. None of these sources appear in Western coverage." },
+        ],
+      },
+      {
+        outlet: "Hürriyet", lang: "Turkish", flag: "🇹🇷",
+        type: "Mainstream, historically centrist, now pro-government leaning",
+        findings: [
+          { cat: "nuance", label: "Framed differently in English", text: "Hürriyet's coverage leads with the same rate hold but frames it as a stabilization success, quoting government economic advisors not cited in the NYT. The tone is cautious optimism, quite different from the NYT's concern framing." },
+        ],
+      },
+    ],
+    verdict: "The English article presents a partial picture. The swap-adjusted reserve figure, which is the center of domestic Turkish debate, is entirely absent. Readers of the NYT piece alone would not know this controversy exists.",
+  },
+  reuters: {
+    article: { title: "Japan's Rapidus On Track for 2nm Chip Production by 2027", outlet: "Reuters", date: "April 6, 2026" },
+    sources: [
+      {
+        outlet: "Nikkei", lang: "Japanese", flag: "🇯🇵",
+        type: "Business daily, center-right, Japan's leading financial paper",
+        findings: [
+          { cat: "contradiction", label: "Contradicts the English article", text: "Nikkei's sources within Rapidus indicate the Chitose fab's 2nm pilot line is running at sub-20% yield, well below the 60% threshold needed for commercial viability. Internal targets have reportedly been pushed back to late 2027. This directly contradicts the 'on track' framing in the Reuters headline." },
+          { cat: "missing", label: "Missing from the English article", text: "Nikkei reports that Japanese government officials are privately concerned about an additional ¥800 billion in subsidies that may be required, beyond the ¥3.3 trillion already committed. This figure does not appear in any English-language reporting." },
+        ],
+      },
+      {
+        outlet: "Asahi Shimbun", lang: "Japanese", flag: "🇯🇵",
+        type: "Center-left, quality broadsheet",
+        findings: [
+          { cat: "missing", label: "Missing from the English article", text: "Asahi's industry column notes that several key engineers recruited from TSMC have left Rapidus in the past quarter, citing management disagreements. This personnel detail is absent from all English coverage." },
+        ],
+      },
+    ],
+    verdict: "The Reuters article's 'on track' framing appears significantly at odds with Japanese-language reporting. The yield problems, additional subsidy needs, and engineer departures paint a substantially different picture than English readers are receiving.",
+  },
+  default: {
+    article: { title: "Iran Nuclear Talks Resume in Vienna", outlet: "Associated Press", date: "April 7, 2026" },
+    sources: [
+      {
+        outlet: "Shargh Daily", lang: "Persian", flag: "🇮🇷",
+        type: "Reformist, sometimes censored by authorities",
+        findings: [
+          { cat: "missing", label: "Missing from the English article", text: "Shargh reports that a closed-door Majlis session saw 40+ MPs push for decoupling economic reform from nuclear negotiations. This domestic political dimension is entirely absent from the AP's Vienna-focused coverage." },
+        ],
+      },
+      {
+        outlet: "ISNA", lang: "Persian", flag: "🇮🇷",
+        type: "Semi-official news agency, sometimes more candid than IRNA",
+        findings: [
+          { cat: "nuance", label: "Framed differently in English", text: "ISNA's coverage frames the talks not as a resumption but as a continuation under new preconditions set by Tehran. The word 'resume' implies a pause and restart. ISNA's framing implies Iran considers the process unbroken but the terms changed." },
+        ],
+      },
+    ],
+    verdict: "English coverage focuses on the diplomatic process in Vienna. Persian-language sources reveal significant domestic political dynamics that would change how readers understand Iran's negotiating position.",
+  },
+};
+
+const ICONS = { missing: "✕", contradiction: "⇄", nuance: "△" };
+const LABELS = { missing: "MISSING", contradiction: "CONTRADICTED", nuance: "REFRAMED" };
+
+const input = document.getElementById("url-input");
+const btn = document.getElementById("check-btn");
+
+input.addEventListener("input", () => { btn.disabled = !input.value.trim(); });
+input.addEventListener("keydown", (e) => { if (e.key === "Enter" && input.value.trim()) doSearch(); });
+
+function show(id) {
+  ["landing", "loading", "results"].forEach((s) => {
+    document.getElementById(s).classList.toggle("hidden", s !== id);
+  });
+}
+
+function runExample(key) {
+  input.value = key === "nyt" ? "https://nytimes.com/turkey" : key === "reuters" ? "https://reuters.com/rapidus" : "https://apnews.com/iran";
+  doSearch(key);
+}
+
+function doSearch(forceKey) {
+  const val = input.value.toLowerCase();
+  let key = forceKey || "default";
+  if (!forceKey) {
+    if (val.includes("nyt") || val.includes("turkey")) key = "nyt";
+    else if (val.includes("reuters") || val.includes("japan") || val.includes("rapidus") || val.includes("chip")) key = "reuters";
+  }
+
+  show("loading");
+  renderLoading();
+
+  let step = 0;
+  const iv = setInterval(() => {
+    step++;
+    if (step < STEPS.length) updateLoading(step);
+  }, 1600);
+
+  setTimeout(() => {
+    clearInterval(iv);
+    renderResults(DATA[key]);
+    show("results");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, 6500);
+}
+
+function renderLoading() {
+  const box = document.getElementById("loading-steps");
+  box.innerHTML = STEPS.map((s, i) => `
+    <div class="load-step ${i === 0 ? "reached current" : "inactive"}" id="lstep-${i}">
+      <div class="load-circle ${i === 0 ? "active" : ""}" id="lcircle-${i}"></div>
+      <span class="load-label">${s}</span>
+    </div>
+  `).join("");
+}
+
+function updateLoading(current) {
+  STEPS.forEach((_, i) => {
+    const step = document.getElementById("lstep-" + i);
+    const circle = document.getElementById("lcircle-" + i);
+    step.className = "load-step" + (i <= current ? " reached" : " inactive") + (i === current ? " current" : "");
+    circle.className = "load-circle" + (i < current ? " done" : "") + (i === current ? " active" : "");
+  });
+}
+
+function resetToLanding() {
+  input.value = "";
+  btn.disabled = true;
+  show("landing");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function renderResults(data) {
+  const totalFindings = data.sources.reduce((a, s) => a + s.findings.length, 0);
+  const el = document.getElementById("results");
+
+  let html = '<div class="result-area">';
+
+  // Summary bar
+  html += `
+    <div class="summary-bar">
+      <div class="summary-left">
+        <div class="summary-small">You checked</div>
+        <div class="summary-title">${data.article.title}</div>
+        <div class="summary-meta">${data.article.outlet} · ${data.article.date}</div>
+      </div>
+      <div class="summary-stats">
+        <div><div class="stat-num">${totalFindings}</div><div class="stat-label">gaps found</div></div>
+        <div><div class="stat-num">${data.sources.length}</div><div class="stat-label">sources</div></div>
+      </div>
+    </div>`;
+
+  // Section label + verdict
+  html += `
+    <div class="section-label">What the English version left out</div>
+    <div class="verdict">
+      <div class="verdict-label">Our assessment</div>
+      ${data.verdict}
+    </div>`;
+
+  // Source label
+  html += '<div class="section-label">Source-by-source breakdown</div>';
+
+  // Sources
+  data.sources.forEach((src) => {
+    html += `
+      <div class="source-card">
+        <div class="source-header">
+          <span class="source-flag">${src.flag}</span>
+          <span class="source-name">${src.outlet}</span>
+          <span class="source-lang">${src.lang}</span>
+        </div>
+        <div class="source-lean">Editorial lean: ${src.type}</div>
+        <div class="findings">`;
+    src.findings.forEach((f) => {
+      html += `
+          <div class="finding ${f.cat}">
+            <div class="finding-header">
+              <span class="finding-icon ${f.cat}">${ICONS[f.cat]}</span>
+              <span class="finding-label ${f.cat}">${f.label}</span>
+            </div>
+            <div class="finding-text">${f.text}</div>
+          </div>`;
+    });
+    html += '</div></div>';
+  });
+
+  // Legend
+  html += `
+    <div class="legend">
+      <div class="legend-title">Legend:</div>
+      <div class="legend-item"><span class="legend-dot missing">✕</span><span class="legend-text">MISSING</span></div>
+      <div class="legend-item"><span class="legend-dot contradiction">⇄</span><span class="legend-text">CONTRADICTED</span></div>
+      <div class="legend-item"><span class="legend-dot nuance">△</span><span class="legend-text">REFRAMED</span></div>
+    </div>`;
+
+  // CTA
+  html += `
+    <div class="cta-box">
+      <div class="cta-title">Make this a habit.</div>
+      <div class="cta-desc">You have 2 free checks remaining this month.<br>For unlimited checks, subscribe for $9.99/month.</div>
+      <div class="cta-buttons">
+        <button class="btn-primary">Subscribe</button>
+        <button class="btn-secondary" onclick="resetToLanding()">Check another article</button>
+      </div>
+    </div>`;
+
+  // Ad placeholder
+  html += '<div class="ad-placeholder">Advertisement · Subscribers see no ads</div>';
+
+  // Disclaimer
+  html += '<div class="disclaimer">We translate and compare. We do not editorialize. Every source is named with its editorial lean noted so you can judge for yourself. All findings can be verified using the outlets and dates mentioned above.</div>';
+
+  html += '</div>';
+  el.innerHTML = html;
+}
+</script>
+</body>
+</html>
