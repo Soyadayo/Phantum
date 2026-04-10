@@ -64,23 +64,10 @@
   .framework-btn:hover { border-color:var(--accent-dim); background:#1a1914; }
   .framework-btn.active { border-color:var(--accent); background:#1a1812; }
 
-  [data-id="socrates"] .fw-portrait { background:#E8C54722; }
-  [data-id="epictetus"] .fw-portrait { background:#7B9E8722; }
-  [data-id="marcus"] .fw-portrait { background:#9B6B9B22; }
-  [data-id="nietzsche"] .fw-portrait { background:#C4543C22; }
-  [data-id="sartre"] .fw-portrait { background:#4A7FB522; }
-  [data-id="camus"] .fw-portrait { background:#D4904A22; }
-  [data-id="arendt"] .fw-portrait { background:#5B8FA822; }
-  [data-id="simone"] .fw-portrait { background:#C4547A22; }
-  [data-id="foucault"] .fw-portrait { background:#6B6B8A22; }
-  [data-id="hooks"] .fw-portrait { background:#C4547A22; }
-  [data-id="fisher"] .fw-portrait { background:#7A6A9A22; }
-  [data-id="bauman"] .fw-portrait { background:#9A806022; }
-  [data-id="graeber"] .fw-portrait { background:#6A9A5A22; }
   .fw-portrait {
     width:100%;
     aspect-ratio:1;
-    background:#111009;
+    background:#0a0908;
     display:flex;
     align-items:center;
     justify-content:center;
@@ -88,7 +75,7 @@
     position:relative;
     border-bottom:1px solid var(--border);
   }
-  .fw-portrait svg { width:100%; height:100%; }
+  .fw-portrait img { width:100%; height:100%; object-fit:cover; display:block; }
   .framework-btn.active .fw-portrait { border-bottom-color:var(--accent-dim); }
 
   .framework-btn.active::after {
@@ -264,7 +251,7 @@
       <div class="frameworks">
         <button class="framework-btn" data-id="socrates" onclick="selectFramework(this)">
           <div class="fw-portrait">
-            <img src="/phantum/Socrates.jpg" alt="socrates" style="width:100%;height:100%;object-fit:cover;">
+            <img src="/phantum/Socrates.jpg" alt="socrates">
           </div>
           <div class="fw-info">
             <span class="fw-name">Socrates</span>
@@ -274,7 +261,7 @@
 
         <button class="framework-btn" data-id="epictetus" onclick="selectFramework(this)">
           <div class="fw-portrait">
-            <img src="/phantum/Epictetus.jpg" alt="epictetus" style="width:100%;height:100%;object-fit:cover;">
+            <img src="/phantum/Epictetus.jpg" alt="epictetus">
           </div>
           <div class="fw-info">
             <span class="fw-name">Epictetus</span>
@@ -284,7 +271,7 @@
 
         <button class="framework-btn" data-id="marcus" onclick="selectFramework(this)">
           <div class="fw-portrait">
-            <img src="/phantum/Marcus_Aurelius.jpg" alt="marcus" style="width:100%;height:100%;object-fit:cover;">
+            <img src="/phantum/Marcus_Aurelius.jpg" alt="marcus">
           </div>
           <div class="fw-info">
             <span class="fw-name">Marcus Aurelius</span>
@@ -299,7 +286,7 @@
       <div class="frameworks">
         <button class="framework-btn" data-id="nietzsche" onclick="selectFramework(this)">
           <div class="fw-portrait">
-            <img src="/phantum/Nietzsche.jpg" alt="nietzsche" style="width:100%;height:100%;object-fit:cover;">
+            <img src="/phantum/Nietzsche.jpg" alt="nietzsche">
           </div>
           <div class="fw-info">
             <span class="fw-name">Nietzsche</span>
@@ -309,7 +296,7 @@
 
         <button class="framework-btn" data-id="sartre" onclick="selectFramework(this)">
           <div class="fw-portrait">
-            <img src="/phantum/Sartre.jpg" alt="sartre" style="width:100%;height:100%;object-fit:cover;">
+            <img src="/phantum/Sartre.jpg" alt="sartre">
           </div>
           <div class="fw-info">
             <span class="fw-name">Sartre</span>
@@ -319,7 +306,7 @@
 
         <button class="framework-btn" data-id="camus" onclick="selectFramework(this)">
           <div class="fw-portrait">
-            <img src="/phantum/Camus.jpg" alt="camus" style="width:100%;height:100%;object-fit:cover;">
+            <img src="/phantum/Camus.jpg" alt="camus">
           </div>
           <div class="fw-info">
             <span class="fw-name">Camus</span>
@@ -329,7 +316,7 @@
 
         <button class="framework-btn" data-id="arendt" onclick="selectFramework(this)">
           <div class="fw-portrait">
-            <img src="/phantum/Hannah_Arendt.jpg" alt="arendt" style="width:100%;height:100%;object-fit:cover;">
+            <img src="/phantum/Hannah_Arendt.jpg" alt="arendt">
           </div>
           <div class="fw-info">
             <span class="fw-name">Hannah Arendt</span>
@@ -339,7 +326,7 @@
 
         <button class="framework-btn" data-id="simone" onclick="selectFramework(this)">
           <div class="fw-portrait">
-            <img src="/phantum/Simone_de_Beauvoir.jpg" alt="simone" style="width:100%;height:100%;object-fit:cover;">
+            <img src="/phantum/Simone_de_Beauvoir.jpg" alt="simone">
           </div>
           <div class="fw-info">
             <span class="fw-name">Simone de Beauvoir</span>
@@ -354,7 +341,7 @@
       <div class="frameworks">
         <button class="framework-btn" data-id="foucault" onclick="selectFramework(this)">
           <div class="fw-portrait">
-            <img src="/phantum/Foucault.jpg" alt="foucault" style="width:100%;height:100%;object-fit:cover;">
+            <img src="/phantum/Foucault.jpg" alt="foucault">
           </div>
           <div class="fw-info">
             <span class="fw-name">Foucault</span>
@@ -364,7 +351,7 @@
 
         <button class="framework-btn" data-id="hooks" onclick="selectFramework(this)">
           <div class="fw-portrait">
-            <img src="/phantum/bell_hooks.jpg" alt="hooks" style="width:100%;height:100%;object-fit:cover;">
+            <img src="/phantum/bell_hooks.jpg" alt="hooks">
           </div>
           <div class="fw-info">
             <span class="fw-name">bell hooks</span>
@@ -374,7 +361,7 @@
 
         <button class="framework-btn" data-id="fisher" onclick="selectFramework(this)">
           <div class="fw-portrait">
-            <img src="/phantum/Mark_Fisher.jpg" alt="fisher" style="width:100%;height:100%;object-fit:cover;">
+            <img src="/phantum/Mark_Fisher.jpg" alt="fisher">
           </div>
           <div class="fw-info">
             <span class="fw-name">Mark Fisher</span>
@@ -384,7 +371,7 @@
 
         <button class="framework-btn" data-id="bauman" onclick="selectFramework(this)">
           <div class="fw-portrait">
-            <img src="/phantum/Zygmunt_Bauman.jpg" alt="bauman" style="width:100%;height:100%;object-fit:cover;">
+            <img src="/phantum/Zygmunt_Bauman.jpg" alt="bauman">
           </div>
           <div class="fw-info">
             <span class="fw-name">Zygmunt Bauman</span>
@@ -394,7 +381,7 @@
 
         <button class="framework-btn" data-id="graeber" onclick="selectFramework(this)">
           <div class="fw-portrait">
-            <img src="/phantum/David_Graeber.jpg" alt="graeber" style="width:100%;height:100%;object-fit:cover;">
+            <img src="/phantum/David_Graeber.jpg" alt="graeber">
           </div>
           <div class="fw-info">
             <span class="fw-name">David Graeber</span>
