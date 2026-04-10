@@ -85,6 +85,85 @@
     align-items: center; flex-wrap: wrap; gap: 8px;
     font-size: 13px; font-family: 'DM Sans', sans-serif; color: #bbb;
   }
+  .footer-links { display: flex; gap: 16px; }
+  .footer-links a {
+    color: #bbb; text-decoration: none; cursor: pointer;
+    transition: color 0.2s;
+  }
+  .footer-links a:hover { color: #666; }
+
+  /* Legal / Privacy / Contact modals */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 1000;
+    align-items: flex-start; justify-content: center;
+    overflow-y: auto; padding: 48px 20px;
+  }
+  .modal-overlay.visible { display: flex; }
+  .modal-box {
+    background: #faf9f6; border: 1px solid #e5e5e0;
+    border-radius: 6px;
+    padding: 40px 36px; max-width: 560px; width: 100%;
+  }
+  .modal-box h2 {
+    font-size: 22px; font-weight: 600; margin-bottom: 20px;
+  }
+  .modal-box h3 {
+    font-size: 13px; font-family: 'DM Sans', sans-serif;
+    font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: #999;
+    margin-top: 24px; margin-bottom: 8px;
+  }
+  .modal-box p {
+    font-size: 15px; line-height: 1.7; color: #555; margin-bottom: 8px;
+  }
+  .modal-box a { color: #8b5cf6; text-decoration: underline; text-underline-offset: 2px; }
+  .modal-box a:hover { color: #6d28d9; }
+  .modal-close {
+    background: none; border: 1px solid #e5e5e0; border-radius: 4px;
+    color: #999; font-family: 'DM Sans', sans-serif;
+    font-size: 13px; font-weight: 500;
+    padding: 8px 20px; cursor: pointer; margin-top: 28px;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .modal-close:hover { border-color: #999; color: #333; }
+
+  /* Contact form */
+  .contact-field {
+    display: flex; flex-direction: column; gap: 4px;
+    margin-bottom: 16px;
+  }
+  .contact-field label {
+    font-size: 13px; font-family: 'DM Sans', sans-serif;
+    font-weight: 500; color: #999;
+  }
+  .contact-field input,
+  .contact-field textarea {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 15px; color: #1a1a1a;
+    background: #fff; border: 1px solid #e5e5e0; border-radius: 4px;
+    padding: 10px 12px; outline: none;
+    transition: border-color 0.2s;
+  }
+  .contact-field input:focus,
+  .contact-field textarea:focus { border-color: #8b5cf6; }
+  .contact-field textarea { resize: vertical; min-height: 100px; }
+  .contact-submit {
+    background: #1a1a1a; color: #faf9f6; border: none; border-radius: 4px;
+    font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600;
+    letter-spacing: 0.04em; text-transform: uppercase;
+    padding: 10px 24px; cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .contact-submit:hover { opacity: 0.8; }
+  .contact-submit:disabled { opacity: 0.4; cursor: not-allowed; }
+  .contact-status {
+    font-size: 14px; color: #16a34a; margin-top: 12px;
+    font-family: 'DM Sans', sans-serif; display: none;
+  }
+  .contact-status.visible { display: block; }
+  .contact-status.error { color: #b91c1c; }
 </style>
 </head>
 <body>
@@ -163,7 +242,250 @@
 
   <footer class="wrap">
     <span>Haus Tacorari</span>
-    <span>Krefeld, Germany</span>
+    <div class="footer-links">
+      <a onclick="openModal('contact')">Contact</a>
+      <a onclick="openModal('legal')">Legal Notice</a>
+      <a onclick="openModal('privacy')">Privacy</a>
+    </div>
   </footer>
+
+<!-- ====== Legal Notice ====== -->
+<div class="modal-overlay" id="modal-legal">
+  <div class="modal-box">
+    <h2>Legal Notice</h2>
+
+    <h3>Service Provider</h3>
+    <p>
+      Soya Arakawa<br>
+      c/o Block Services<br>
+      Stuttgarter Str. 106<br>
+      70736 Fellbach, Germany
+    </p>
+
+    <h3>Contact</h3>
+    <p>
+      Email: haustacorari@gmail.com
+    </p>
+
+    <h3>Tax Information</h3>
+    <p>
+      Tax number (Steuernummer): 117/5007/3459<br>
+      VAT is not charged in accordance with §19 UStG (Kleinunternehmerregelung).
+    </p>
+
+    <h3>Responsible for Content</h3>
+    <p>
+      Soya Arakawa (address as above)<br>
+      in accordance with §18 Abs. 2 MStV.
+    </p>
+
+    <h3>Dispute Resolution</h3>
+    <p>
+      The European Commission provides a platform for online dispute resolution (OS):
+      <a href="https://ec.europa.eu/consumers/odr/" target="_blank" rel="noopener">ec.europa.eu/consumers/odr</a>.
+      We are not willing or obliged to participate in dispute resolution proceedings
+      before a consumer arbitration board.
+    </p>
+
+    <button class="modal-close" onclick="closeModal('legal')">Close</button>
+  </div>
+</div>
+
+<!-- ====== Privacy Policy ====== -->
+<div class="modal-overlay" id="modal-privacy">
+  <div class="modal-box">
+    <h2>Privacy Policy</h2>
+
+    <h3>1. Overview</h3>
+    <p>
+      This privacy policy explains how Tacorari and its tools
+      (including Phantum) collect, use, and protect your data.
+    </p>
+
+    <h3>2. Service Provider</h3>
+    <p>
+      Soya Arakawa<br>
+      c/o Block Services<br>
+      Stuttgarter Str. 106<br>
+      70736 Fellbach, Germany<br>
+      Email: haustacorari@gmail.com
+    </p>
+
+    <h3>3. Data We Collect</h3>
+    <p>
+      <strong>Usage data.</strong>
+      When you use Phantum, a random anonymous user ID is generated and stored
+      in your browser's local storage. This ID is used solely to track your
+      reading credits. It is not linked to your name or identity.
+    </p>
+    <p>
+      <strong>IP address.</strong>
+      Your IP address is temporarily used for rate limiting (to enforce the
+      daily free reading limit). It is stored with a key that
+      expires at midnight UTC each day. We do not use IP addresses for tracking
+      or profiling.
+    </p>
+    <p>
+      <strong>Input text.</strong>
+      The text you submit for a reading is sent to Google's Gemini API for
+      processing. We do not store your input text on our servers. Google's
+      data handling is governed by their
+      <a href="https://ai.google.dev/gemini-api/terms" target="_blank" rel="noopener">Gemini API Terms of Service</a>.
+    </p>
+    <p>
+      <strong>Payment data.</strong>
+      If you purchase readings, payment is processed by Stripe. We do not
+      store your credit card details. Stripe may collect your email address,
+      payment method, and billing information. See
+      <a href="https://stripe.com/privacy" target="_blank" rel="noopener">Stripe's Privacy Policy</a>.
+    </p>
+    <p>
+      <strong>Contact form.</strong>
+      If you send us a message through the contact form, your name, email address,
+      and message are sent to us via email. We use this data only to respond to
+      your inquiry.
+    </p>
+
+    <h3>4. Third-Party Services</h3>
+    <p>
+      <strong>Vercel</strong> (hosting) —
+      <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener">Privacy Policy</a><br>
+      <strong>Upstash</strong> (database) —
+      <a href="https://upstash.com/trust/privacy.html" target="_blank" rel="noopener">Privacy Policy</a><br>
+      <strong>Google Gemini API</strong> (AI text generation) —
+      <a href="https://ai.google.dev/gemini-api/terms" target="_blank" rel="noopener">Terms</a><br>
+      <strong>Stripe</strong> (payments) —
+      <a href="https://stripe.com/privacy" target="_blank" rel="noopener">Privacy Policy</a><br>
+      <strong>Google Fonts</strong> (web fonts) —
+      <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Privacy Policy</a><br>
+      <strong>Web3Forms</strong> (contact form delivery) —
+      <a href="https://web3forms.com/privacy" target="_blank" rel="noopener">Privacy Policy</a>
+    </p>
+
+    <h3>5. Cookies and Local Storage</h3>
+    <p>
+      Tacorari does not use cookies. Phantum uses browser local storage to save
+      your anonymous user ID and paid credit count. This data stays in your
+      browser and is not transmitted to third parties.
+    </p>
+
+    <h3>6. Your Rights</h3>
+    <p>
+      Under the GDPR, you have the right to access, rectify, delete, and restrict
+      the processing of your personal data, as well as the right to data portability.
+      Since we store minimal data (an anonymous user ID and a temporarily stored IP address),
+      most of these rights are fulfilled by design. To exercise your rights or ask
+      questions, contact us at haustacorari@gmail.com.
+    </p>
+
+    <h3>7. Data Retention</h3>
+    <p>
+      Free usage counters (IP-based) expire daily at midnight UTC.
+      Paid credit balances are retained until used.
+      We do not retain your reading input text.
+    </p>
+
+    <h3>8. Changes</h3>
+    <p>
+      We may update this policy as the service evolves. The current version is
+      always available on this page.
+    </p>
+    <p>Last updated: April 10, 2026</p>
+
+    <button class="modal-close" onclick="closeModal('privacy')">Close</button>
+  </div>
+</div>
+
+<!-- ====== Contact ====== -->
+<div class="modal-overlay" id="modal-contact">
+  <div class="modal-box">
+    <h2>Contact</h2>
+    <p>Questions, feedback, or just want to say hello.</p>
+
+    <div style="margin-top: 20px;">
+      <div class="contact-field">
+        <label for="contactName">Name</label>
+        <input type="text" id="contactName" placeholder="Your name">
+      </div>
+      <div class="contact-field">
+        <label for="contactEmail">Email</label>
+        <input type="email" id="contactEmail" placeholder="your@email.com">
+      </div>
+      <div class="contact-field">
+        <label for="contactMessage">Message</label>
+        <textarea id="contactMessage" placeholder="What's on your mind?"></textarea>
+      </div>
+      <button class="contact-submit" id="contactSubmit" onclick="submitContact()">Send</button>
+      <div class="contact-status" id="contactStatus"></div>
+    </div>
+
+    <button class="modal-close" onclick="closeModal('contact')" style="margin-top:20px;">Close</button>
+  </div>
+</div>
+
+<script>
+function openModal(id) {
+  document.getElementById('modal-' + id).classList.add('visible');
+}
+function closeModal(id) {
+  document.getElementById('modal-' + id).classList.remove('visible');
+}
+// Close on overlay click
+document.querySelectorAll('.modal-overlay').forEach(el => {
+  el.addEventListener('click', e => {
+    if (e.target === el) el.classList.remove('visible');
+  });
+});
+
+// Contact form via Web3Forms (free, no signup needed for basic use)
+// ★ Web3Formsのアクセスキーを取得して YOUR_WEB3FORMS_ACCESS_KEY を差し替える
+// https://web3forms.com で無料登録、haustacorari@gmail.com を入れるとキーが発行される
+async function submitContact() {
+  const name = document.getElementById('contactName').value.trim();
+  const email = document.getElementById('contactEmail').value.trim();
+  const message = document.getElementById('contactMessage').value.trim();
+  const status = document.getElementById('contactStatus');
+  const btn = document.getElementById('contactSubmit');
+
+  if (!name || !email || !message) {
+    status.textContent = 'Please fill in all fields.';
+    status.className = 'contact-status visible error';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Sending...';
+  status.className = 'contact-status';
+
+  try {
+    const res = await fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        access_key: 'a7b20a69-0a6a-4e70-a9d4-894c6caf1826',
+        subject: 'Tacorari contact form',
+        from_name: name,
+        email: email,
+        message: message
+      })
+    });
+    const data = await res.json();
+    if (data.success) {
+      status.textContent = 'Sent. Thank you.';
+      status.className = 'contact-status visible';
+      document.getElementById('contactName').value = '';
+      document.getElementById('contactEmail').value = '';
+      document.getElementById('contactMessage').value = '';
+    } else {
+      throw new Error(data.message || 'Failed to send.');
+    }
+  } catch (err) {
+    status.textContent = 'Something went wrong. Try emailing haustacorari@gmail.com directly.';
+    status.className = 'contact-status visible error';
+  }
+  btn.disabled = false;
+  btn.textContent = 'Send';
+}
+</script>
 </body>
 </html>
