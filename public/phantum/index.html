@@ -225,6 +225,1427 @@
   .contact-status { font-size:11px; color:#7B9E87; margin-top:10px; font-family:'DM Mono',monospace; display:none; }
   .contact-status.visible { display:block; }
   .contact-status.error { color:#d4847a; }
+
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+<canvas id="liquid-bg"></canvas>
+<div class="container">
+
+  <header>
+    <a href="https://www.tacorari.eu" style="display:inline-flex;align-items:center;gap:6px;font-size:11px;letter-spacing:0.1em;color:var(--muted);text-decoration:none;margin-bottom:20px;transition:color 0.2s;" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--muted)'">← Tacorari</a>
+    <div class="header-label">Phantum</div>
+    <h1>Your situation.<br><em>Their wisdom.</em></h1>
+    <p class="subtitle">Pick a thinker. Write what's on your mind. Get their take.<br>
+    <span class="subtitle-langs">
+      <span>思想家を選んで今思うことを書く。答えが返ってくる。</span>
+      <span>Einen Denker wählen. Schreiben. Antwort erhalten.</span>
+      <span>Choisissez. Écrivez. Recevez.</span>
+      <span>Elige. Escribe. Recibe.</span>
+    </span>
+    </p>
+  </header>
+
+  <div class="mode-toggle">
+    <button class="mode-btn active" id="modeChoose" onclick="setMode('choose')">Choose your thinker</button>
+    <button class="mode-btn" id="modeOracle" onclick="setMode('oracle')">Let them find you</button>
+  </div>
+
+  <div class="oracle-hint" id="oracleHint">
+    Write what's on your mind. The right thinker will come to you.
+  </div>
+
+  <div class="section thinker-section" id="thinkerSection">
+    <div class="section-label">01 — Choose your thinker</div>
+
+    <div class="era-group">
+      <div class="era-title">Ancient</div>
+      <div class="frameworks">
+        <button class="framework-btn" data-id="socrates" onclick="selectFramework(this)">
+          <div class="fw-portrait">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <ellipse cx="60" cy="44" rx="22" ry="24" fill="#E8C547"/>
+  <ellipse cx="54" cy="34" rx="6" ry="4" fill="#F0D060" opacity="0.5"/>
+  <circle cx="52" cy="42" r="3" fill="#1a1810"/>
+  <circle cx="68" cy="42" r="3" fill="#1a1810"/>
+  <circle cx="53" cy="41" r="1" fill="#fff" opacity="0.6"/>
+  <circle cx="69" cy="41" r="1" fill="#fff" opacity="0.6"/>
+  <ellipse cx="60" cy="50" rx="4" ry="3" fill="#C8A030"/>
+  <path d="M42 58 Q50 70 60 72 Q70 70 78 58 Q70 62 60 63 Q50 62 42 58Z" fill="#C8A030"/>
+  <rect x="54" y="68" width="12" height="10" fill="#E8C547"/>
+  <path d="M20 120 Q35 88 54 78 Q60 82 66 78 Q85 88 100 120Z" fill="#F5F0E0"/>
+  <path d="M54 78 Q48 90 44 100" fill="none" stroke="#D0C8B0" stroke-width="1.5"/>
+  <path d="M66 78 Q72 90 76 100" fill="none" stroke="#D0C8B0" stroke-width="1.5"/>
+  <path d="M84 95 L82 110 Q88 112 92 110 L90 95Z" fill="#C8A030" opacity="0.6"/>
+</svg>
+          </div>
+          <div class="fw-info">
+            <span class="fw-name">Socrates</span>
+            <span class="fw-desc">Questioning & ignorance</span>
+          </div>
+        </button>
+
+        <button class="framework-btn" data-id="epictetus" onclick="selectFramework(this)">
+          <div class="fw-portrait">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <ellipse cx="60" cy="44" rx="21" ry="23" fill="#7B9E87"/>
+  <ellipse cx="55" cy="36" rx="5" ry="3" fill="#8FAF9A" opacity="0.5"/>
+  <path d="M39 38 Q40 22 60 21 Q80 22 81 38 Q76 30 60 29 Q44 30 39 38Z" fill="#5A7A66"/>
+  <circle cx="52" cy="42" r="3" fill="#1a1810"/>
+  <circle cx="68" cy="42" r="3" fill="#1a1810"/>
+  <circle cx="53" cy="41" r="1" fill="#fff" opacity="0.6"/>
+  <circle cx="69" cy="41" r="1" fill="#fff" opacity="0.6"/>
+  <ellipse cx="60" cy="49" rx="3" ry="2.5" fill="#5A7A66"/>
+  <path d="M44 58 Q52 68 60 70 Q68 68 76 58 Q68 62 60 63 Q52 62 44 58Z" fill="#5A7A66"/>
+  <rect x="55" y="67" width="10" height="10" fill="#7B9E87"/>
+  <path d="M22 120 Q36 88 55 77 Q60 81 65 77 Q84 88 98 120Z" fill="#9BB8A6"/>
+  <path d="M84 88 Q96 74 100 62" fill="none" stroke="#7B9E87" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="100" cy="60" r="5" fill="#7B9E87"/>
+</svg>
+          </div>
+          <div class="fw-info">
+            <span class="fw-name">Epictetus</span>
+            <span class="fw-desc">Control & acceptance</span>
+          </div>
+        </button>
+
+        <button class="framework-btn" data-id="marcus" onclick="selectFramework(this)">
+          <div class="fw-portrait">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <ellipse cx="60" cy="46" rx="22" ry="24" fill="#9B6B9B"/>
+  <path d="M38 36 Q60 20 82 36" fill="none" stroke="#C8A030" stroke-width="3" stroke-linecap="round"/>
+  <ellipse cx="44" cy="32" rx="4" ry="6" fill="#5A8C4A" transform="rotate(-20 44 32)"/>
+  <ellipse cx="52" cy="26" rx="4" ry="6" fill="#5A8C4A" transform="rotate(-10 52 26)"/>
+  <ellipse cx="60" cy="24" rx="4" ry="6" fill="#5A8C4A"/>
+  <ellipse cx="68" cy="26" rx="4" ry="6" fill="#5A8C4A" transform="rotate(10 68 26)"/>
+  <ellipse cx="76" cy="32" rx="4" ry="6" fill="#5A8C4A" transform="rotate(20 76 32)"/>
+  <circle cx="52" cy="44" r="3" fill="#1a1810"/>
+  <circle cx="68" cy="44" r="3" fill="#1a1810"/>
+  <circle cx="53" cy="43" r="1" fill="#fff" opacity="0.5"/>
+  <circle cx="69" cy="43" r="1" fill="#fff" opacity="0.5"/>
+  <ellipse cx="60" cy="51" rx="3" ry="2.5" fill="#7A4A7A"/>
+  <path d="M42 60 Q46 72 52 76 Q60 80 68 76 Q74 72 78 60 Q70 65 60 66 Q50 65 42 60Z" fill="#7A4A7A"/>
+  <circle cx="48" cy="68" r="3" fill="#7A4A7A"/>
+  <circle cx="56" cy="72" r="3" fill="#7A4A7A"/>
+  <circle cx="64" cy="72" r="3" fill="#7A4A7A"/>
+  <circle cx="72" cy="68" r="3" fill="#7A4A7A"/>
+  <rect x="55" y="66" width="10" height="12" fill="#9B6B9B"/>
+  <path d="M20 120 Q34 86 55 78 Q60 82 65 78 Q86 86 100 120Z" fill="#C4A0C4"/>
+  <path d="M55 78 Q52 88 50 96" fill="none" stroke="#9B6B9B" stroke-width="2"/>
+  <path d="M65 78 Q68 88 70 96" fill="none" stroke="#9B6B9B" stroke-width="2"/>
+</svg>
+          </div>
+          <div class="fw-info">
+            <span class="fw-name">Marcus Aurelius</span>
+            <span class="fw-desc">Duty & impermanence</span>
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <div class="era-group">
+      <div class="era-title">Modern</div>
+      <div class="frameworks">
+        <button class="framework-btn" data-id="nietzsche" onclick="selectFramework(this)">
+          <div class="fw-portrait">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <ellipse cx="60" cy="44" rx="22" ry="24" fill="#C4543C"/>
+  <path d="M38 38 Q40 22 60 21 Q80 22 82 38 Q76 30 60 29 Q44 30 38 38Z" fill="#8B3020"/>
+  <path d="M44 38 Q52 34 58 38" fill="none" stroke="#1a1810" stroke-width="3" stroke-linecap="round"/>
+  <path d="M62 38 Q68 34 76 38" fill="none" stroke="#1a1810" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="52" cy="43" r="3.5" fill="#1a1810"/>
+  <circle cx="68" cy="43" r="3.5" fill="#1a1810"/>
+  <circle cx="53" cy="42" r="1.2" fill="#fff" opacity="0.7"/>
+  <circle cx="69" cy="42" r="1.2" fill="#fff" opacity="0.7"/>
+  <ellipse cx="60" cy="50" rx="3.5" ry="3" fill="#A03428"/>
+  <path d="M40 58 Q50 54 60 56 Q70 54 80 58 Q72 62 60 62 Q48 62 40 58Z" fill="#1a1810"/>
+  <path d="M40 58 Q36 68 34 76" fill="none" stroke="#1a1810" stroke-width="5" stroke-linecap="round"/>
+  <path d="M80 58 Q84 68 86 76" fill="none" stroke="#1a1810" stroke-width="5" stroke-linecap="round"/>
+  <rect x="55" y="62" width="10" height="14" fill="#C4543C"/>
+  <path d="M18 120 Q34 86 55 76 Q60 80 65 76 Q86 86 102 120Z" fill="#2A1A14"/>
+  <path d="M55 76 Q58 84 60 88 Q62 84 65 76" fill="none" stroke="#4A3020" stroke-width="2"/>
+</svg>
+          </div>
+          <div class="fw-info">
+            <span class="fw-name">Nietzsche</span>
+            <span class="fw-desc">Will & self-overcoming</span>
+          </div>
+        </button>
+
+        <button class="framework-btn" data-id="sartre" onclick="selectFramework(this)">
+          <div class="fw-portrait">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <ellipse cx="60" cy="46" rx="21" ry="23" fill="#4A7FB5"/>
+  <path d="M39 40 Q40 24 60 22 Q80 24 81 40 Q76 32 60 31 Q44 32 39 40Z" fill="#2A4F80"/>
+  <rect x="43" y="38" width="15" height="12" rx="3" fill="none" stroke="#1a1810" stroke-width="3"/>
+  <rect x="62" y="38" width="15" height="12" rx="3" fill="none" stroke="#1a1810" stroke-width="3"/>
+  <line x1="58" y1="44" x2="62" y2="44" stroke="#1a1810" stroke-width="2.5"/>
+  <line x1="36" y1="43" x2="43" y2="43" stroke="#1a1810" stroke-width="2"/>
+  <line x1="77" y1="43" x2="84" y2="43" stroke="#1a1810" stroke-width="2"/>
+  <circle cx="51" cy="44" r="2.5" fill="#1a1810"/>
+  <circle cx="50" cy="43" r="0.8" fill="#fff" opacity="0.7"/>
+  <circle cx="70" cy="44" r="2.5" fill="#1a1810"/>
+  <circle cx="71" cy="43" r="0.8" fill="#fff" opacity="0.7"/>
+  <ellipse cx="60" cy="52" rx="4" ry="3" fill="#2A4F80"/>
+  <path d="M52 62 Q60 65 68 62" fill="#2A4F80" stroke="#2A4F80" stroke-width="1"/>
+  <path d="M68 64 Q78 60 82 66 Q84 72 78 74" fill="none" stroke="#8B6040" stroke-width="3" stroke-linecap="round"/>
+  <ellipse cx="78" cy="76" rx="4" ry="3" fill="#6B4020"/>
+  <rect x="55" y="69" width="10" height="8" fill="#4A7FB5"/>
+  <path d="M46 77 Q52 74 68 74 Q74 77 74 80 Q60 78 46 80Z" fill="#2A3A50"/>
+  <path d="M24 120 Q38 88 54 80 Q60 84 66 80 Q82 88 96 120Z" fill="#2A3A50"/>
+</svg>
+          </div>
+          <div class="fw-info">
+            <span class="fw-name">Sartre</span>
+            <span class="fw-desc">Radical freedom</span>
+          </div>
+        </button>
+
+        <button class="framework-btn" data-id="camus" onclick="selectFramework(this)">
+          <div class="fw-portrait">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <ellipse cx="60" cy="43" rx="22" ry="24" fill="#D4904A"/>
+  <path d="M38 36 Q40 20 60 19 Q80 20 82 36 Q76 28 60 27 Q44 28 38 36Z" fill="#1A1410"/>
+  <path d="M46 37 Q52 35 58 37" fill="none" stroke="#1A1410" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M62 37 Q68 35 74 37" fill="none" stroke="#1A1410" stroke-width="2.5" stroke-linecap="round"/>
+  <circle cx="52" cy="42" r="3.5" fill="#1A1410"/>
+  <circle cx="68" cy="42" r="3.5" fill="#1A1410"/>
+  <circle cx="53" cy="41" r="1.2" fill="#fff" opacity="0.6"/>
+  <circle cx="69" cy="41" r="1.2" fill="#fff" opacity="0.6"/>
+  <ellipse cx="60" cy="49" rx="3" ry="2.5" fill="#A86830"/>
+  <path d="M52 59 Q60 63 68 59" fill="#A86830" stroke="#A86830" stroke-width="1"/>
+  <rect x="68" y="58" width="18" height="3" rx="1.5" fill="#F5F0E0" transform="rotate(-20 68 58)"/>
+  <rect x="84" y="52" width="4" height="3" rx="1" fill="#FF6040" opacity="0.8" transform="rotate(-20 84 52)"/>
+  <rect x="55" y="67" width="10" height="10" fill="#D4904A"/>
+  <path d="M20 120 Q34 84 54 77 Q58 81 60 81 Q62 81 66 77 Q86 84 100 120Z" fill="#6B5030"/>
+  <path d="M54 77 Q50 84 48 92" fill="none" stroke="#8B6848" stroke-width="2"/>
+  <path d="M66 77 Q70 84 72 92" fill="none" stroke="#8B6848" stroke-width="2"/>
+  <path d="M54 77 Q57 83 60 85" fill="none" stroke="#4A3820" stroke-width="2"/>
+  <path d="M66 77 Q63 83 60 85" fill="none" stroke="#4A3820" stroke-width="2"/>
+</svg>
+          </div>
+          <div class="fw-info">
+            <span class="fw-name">Camus</span>
+            <span class="fw-desc">Absurdity & revolt</span>
+          </div>
+        </button>
+
+        <button class="framework-btn" data-id="arendt" onclick="selectFramework(this)">
+          <div class="fw-portrait">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <ellipse cx="60" cy="44" rx="21" ry="23" fill="#5B8FA8"/>
+  <path d="M39 38 Q40 22 60 20 Q80 22 81 38 Q78 30 60 29 Q42 30 39 38Z" fill="#2A2018"/>
+  <ellipse cx="84" cy="30" rx="8" ry="10" fill="#2A2018"/>
+  <path d="M46 38 Q52 35 57 38" fill="none" stroke="#1A1410" stroke-width="2" stroke-linecap="round"/>
+  <path d="M63 38 Q68 35 74 38" fill="none" stroke="#1A1410" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="52" cy="43" r="3" fill="#1A1410"/>
+  <circle cx="68" cy="43" r="3" fill="#1A1410"/>
+  <circle cx="53" cy="42" r="1" fill="#fff" opacity="0.6"/>
+  <circle cx="69" cy="42" r="1" fill="#fff" opacity="0.6"/>
+  <ellipse cx="60" cy="50" rx="3" ry="2.5" fill="#3A6A80"/>
+  <path d="M52 59 Q60 62 68 59" fill="#3A6A80" stroke="#3A6A80" stroke-width="1"/>
+  <rect x="68" y="57" width="22" height="2" rx="1" fill="#F5F0E0" transform="rotate(-25 68 57)"/>
+  <rect x="88" y="50" width="3" height="2" rx="1" fill="#FF6040" opacity="0.7" transform="rotate(-25 88 50)"/>
+  <rect x="55" y="67" width="10" height="10" fill="#5B8FA8"/>
+  <path d="M22 120 Q36 86 55 77 Q60 81 65 77 Q84 86 98 120Z" fill="#3A5A6C"/>
+  <path d="M55 77 Q58 85 60 89 Q62 85 65 77" fill="none" stroke="#5B8FA8" stroke-width="1.5"/>
+</svg>
+          </div>
+          <div class="fw-info">
+            <span class="fw-name">Hannah Arendt</span>
+            <span class="fw-desc">Action & plurality</span>
+          </div>
+        </button>
+
+        <button class="framework-btn" data-id="simone" onclick="selectFramework(this)">
+          <div class="fw-portrait">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <ellipse cx="60" cy="46" rx="21" ry="23" fill="#C4547A"/>
+  <ellipse cx="60" cy="32" rx="26" ry="16" fill="#E8A020"/>
+  <path d="M34 32 Q38 20 60 18 Q82 20 86 32 Q78 28 60 27 Q42 28 34 32Z" fill="#C87010"/>
+  <path d="M36 36 Q42 26 60 24 Q78 26 84 36" fill="none" stroke="#E8A020" stroke-width="3"/>
+  <ellipse cx="60" cy="20" rx="8" ry="5" fill="#C87010"/>
+  <path d="M46 40 Q52 37 57 40" fill="none" stroke="#1A1410" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M63 40 Q68 37 74 40" fill="none" stroke="#1A1410" stroke-width="2.5" stroke-linecap="round"/>
+  <circle cx="52" cy="45" r="3.5" fill="#1A1410"/>
+  <circle cx="68" cy="45" r="3.5" fill="#1A1410"/>
+  <circle cx="53" cy="44" r="1.2" fill="#fff" opacity="0.6"/>
+  <circle cx="69" cy="44" r="1.2" fill="#fff" opacity="0.6"/>
+  <ellipse cx="60" cy="52" rx="3" ry="2.5" fill="#A03058"/>
+  <path d="M52 62 Q60 66 68 62" fill="#A03058" stroke="#A03058" stroke-width="1"/>
+  <rect x="55" y="69" width="10" height="9" fill="#C4547A"/>
+  <path d="M22 120 Q36 86 55 78 Q60 82 65 78 Q84 86 98 120Z" fill="#8A2848"/>
+</svg>
+          </div>
+          <div class="fw-info">
+            <span class="fw-name">Simone de Beauvoir</span>
+            <span class="fw-desc">Ambiguity & ethics</span>
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <div class="era-group">
+      <div class="era-title">Contemporary</div>
+      <div class="frameworks">
+        <button class="framework-btn" data-id="foucault" onclick="selectFramework(this)">
+          <div class="fw-portrait">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <ellipse cx="60" cy="46" rx="22" ry="24" fill="#6B6B8A"/>
+  <path d="M38 40 Q40 24 60 22 Q80 24 82 40 Q78 34 60 33 Q42 34 38 40Z" fill="#4A4A60" opacity="0.4"/>
+  <circle cx="51" cy="44" r="9" fill="none" stroke="#1A1410" stroke-width="3"/>
+  <circle cx="69" cy="44" r="9" fill="none" stroke="#1A1410" stroke-width="3"/>
+  <line x1="60" y1="44" x2="60" y2="44" stroke="#1A1410" stroke-width="2.5"/>
+  <path d="M57 44 Q60 46 63 44" fill="none" stroke="#1A1410" stroke-width="2.5"/>
+  <line x1="36" y1="43" x2="42" y2="43" stroke="#1A1410" stroke-width="2"/>
+  <line x1="78" y1="43" x2="84" y2="43" stroke="#1A1410" stroke-width="2"/>
+  <circle cx="51" cy="44" r="3" fill="#1A1410"/>
+  <circle cx="69" cy="44" r="3" fill="#1A1410"/>
+  <circle cx="52" cy="43" r="1" fill="#fff" opacity="0.6"/>
+  <circle cx="70" cy="43" r="1" fill="#fff" opacity="0.6"/>
+  <ellipse cx="60" cy="52" rx="4" ry="3" fill="#4A4A60"/>
+  <path d="M52 62 Q60 64 68 62" fill="none" stroke="#4A4A60" stroke-width="2" stroke-linecap="round"/>
+  <rect x="55" y="70" width="10" height="8" fill="#6B6B8A"/>
+  <path d="M46 78 Q52 75 68 75 Q74 78 74 82 Q60 79 46 82Z" fill="#3A3A4A"/>
+  <path d="M24 120 Q38 88 54 80 Q60 84 66 80 Q82 88 96 120Z" fill="#3A3A4A"/>
+</svg>
+          </div>
+          <div class="fw-info">
+            <span class="fw-name">Foucault</span>
+            <span class="fw-desc">Power & structure</span>
+          </div>
+        </button>
+
+        <button class="framework-btn" data-id="hooks" onclick="selectFramework(this)">
+          <div class="fw-portrait">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <ellipse cx="60" cy="44" rx="21" ry="23" fill="#C4547A"/>
+  <path d="M38 36 Q42 18 60 16 Q78 18 82 36" fill="#1A1410"/>
+  <path d="M38 36 Q36 42 34 52" fill="none" stroke="#1A1410" stroke-width="4" stroke-linecap="round"/>
+  <path d="M82 36 Q84 42 86 52" fill="none" stroke="#1A1410" stroke-width="4" stroke-linecap="round"/>
+  <path d="M42 36 Q44 28 52 24 Q60 22 68 24 Q76 28 78 36" fill="#1A1410"/>
+  <circle cx="52" cy="44" r="3" fill="#1A1410"/>
+  <circle cx="68" cy="44" r="3" fill="#1A1410"/>
+  <circle cx="53" cy="43" r="1" fill="#fff" opacity="0.6"/>
+  <circle cx="69" cy="43" r="1" fill="#fff" opacity="0.6"/>
+  <ellipse cx="60" cy="50" rx="3.5" ry="2.5" fill="#A03058"/>
+  <path d="M50 60 Q60 66 70 60" fill="#A03058" stroke="#A03058" stroke-width="1"/>
+  <rect x="55" y="67" width="10" height="10" fill="#C4547A"/>
+  <path d="M22 120 Q36 86 55 77 Q60 81 65 77 Q84 86 98 120Z" fill="#8A2848"/>
+  <path d="M55 77 Q58 85 60 89 Q62 85 65 77" fill="none" stroke="#C4547A" stroke-width="1.5"/>
+</svg>
+          </div>
+          <div class="fw-info">
+            <span class="fw-name">bell hooks</span>
+            <span class="fw-desc">Love & liberation</span>
+          </div>
+        </button>
+
+        <button class="framework-btn" data-id="fisher" onclick="selectFramework(this)">
+          <div class="fw-portrait">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <ellipse cx="60" cy="45" rx="22" ry="24" fill="#7A6A9A"/>
+  <path d="M38 38 Q40 22 60 20 Q80 22 82 38 Q78 28 60 28 Q42 28 38 38Z" fill="#2A2030"/>
+  <path d="M38 38 Q34 32 36 24" fill="none" stroke="#2A2030" stroke-width="3" stroke-linecap="round"/>
+  <path d="M82 38 Q86 32 84 24" fill="none" stroke="#2A2030" stroke-width="3" stroke-linecap="round"/>
+  <path d="M47 42 Q52 44 57 42" fill="none" stroke="#1A1020" stroke-width="1" stroke-linecap="round"/>
+  <circle cx="52" cy="44" r="3" fill="#1A1020"/>
+  <path d="M63 42 Q68 44 73 42" fill="none" stroke="#1A1020" stroke-width="1" stroke-linecap="round"/>
+  <circle cx="68" cy="44" r="3" fill="#1A1020"/>
+  <circle cx="53" cy="43" r="1" fill="#fff" opacity="0.4"/>
+  <circle cx="69" cy="43" r="1" fill="#fff" opacity="0.4"/>
+  <path d="M47 39 Q52 37 57 39" fill="none" stroke="#1A1020" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M63 39 Q68 37 73 39" fill="none" stroke="#1A1020" stroke-width="1.5" stroke-linecap="round"/>
+  <ellipse cx="60" cy="51" rx="3.5" ry="3" fill="#5A4A7A"/>
+  <path d="M52 61 Q60 63 68 61" fill="#5A4A7A" stroke="#5A4A7A" stroke-width="1"/>
+  <ellipse cx="60" cy="62" rx="10" ry="6" fill="#5A4A7A" opacity="0.3"/>
+  <rect x="55" y="69" width="10" height="9" fill="#7A6A9A"/>
+  <path d="M20 120 Q34 86 54 78 Q57 82 60 83 Q63 82 66 78 Q86 86 100 120Z" fill="#3A3048"/>
+  <line x1="56" y1="83" x2="52" y2="100" stroke="#4A4060" stroke-width="2" stroke-linecap="round"/>
+  <line x1="64" y1="83" x2="68" y2="100" stroke="#4A4060" stroke-width="2" stroke-linecap="round"/>
+</svg>
+          </div>
+          <div class="fw-info">
+            <span class="fw-name">Mark Fisher</span>
+            <span class="fw-desc">Capitalist realism</span>
+          </div>
+        </button>
+
+        <button class="framework-btn" data-id="bauman" onclick="selectFramework(this)">
+          <div class="fw-portrait">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <ellipse cx="60" cy="46" rx="22" ry="24" fill="#9A8060"/>
+  <path d="M38 40 Q40 22 60 20 Q80 22 82 40 Q78 30 60 30 Q42 30 38 40Z" fill="#E8E0D0" opacity="0.8"/>
+  <path d="M40 24 Q38 18 42 14" fill="none" stroke="#E8E0D0" stroke-width="2" stroke-linecap="round"/>
+  <path d="M60 22 Q58 16 62 12" fill="none" stroke="#E8E0D0" stroke-width="2" stroke-linecap="round"/>
+  <path d="M80 24 Q82 18 78 14" fill="none" stroke="#E8E0D0" stroke-width="2" stroke-linecap="round"/>
+  <path d="M46 42 Q52 44 57 42" fill="none" stroke="#5A4030" stroke-width="1" stroke-linecap="round"/>
+  <circle cx="52" cy="44" r="3" fill="#2A1A10"/>
+  <path d="M63 42 Q68 44 73 42" fill="none" stroke="#5A4030" stroke-width="1" stroke-linecap="round"/>
+  <circle cx="68" cy="44" r="3" fill="#2A1A10"/>
+  <path d="M42 56 Q44 64 46 68" fill="none" stroke="#7A6040" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M78 56 Q76 64 74 68" fill="none" stroke="#7A6040" stroke-width="1.5" stroke-linecap="round"/>
+  <ellipse cx="60" cy="52" rx="5" ry="4" fill="#7A6040"/>
+  <path d="M50 64 Q60 68 70 64" fill="#7A6040" stroke="#7A6040" stroke-width="1"/>
+  <rect x="55" y="70" width="10" height="10" fill="#9A8060"/>
+  <path d="M22 120 Q36 88 55 80 Q60 84 65 80 Q84 88 98 120Z" fill="#6A5840"/>
+  <circle cx="60" cy="94" r="2.5" fill="#9A8060"/>
+  <circle cx="60" cy="104" r="2.5" fill="#9A8060"/>
+  <circle cx="60" cy="114" r="2.5" fill="#9A8060"/>
+</svg>
+          </div>
+          <div class="fw-info">
+            <span class="fw-name">Zygmunt Bauman</span>
+            <span class="fw-desc">Liquid modernity</span>
+          </div>
+        </button>
+
+        <button class="framework-btn" data-id="graeber" onclick="selectFramework(this)">
+          <div class="fw-portrait">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <ellipse cx="60" cy="45" rx="22" ry="24" fill="#6A9A5A"/>
+  <path d="M38 38 Q40 22 60 20 Q80 22 82 38 Q78 28 60 28 Q42 28 38 38Z" fill="#3A2A20"/>
+  <path d="M38 38 Q36 44 36 50" fill="none" stroke="#3A2A20" stroke-width="3" stroke-linecap="round"/>
+  <path d="M82 38 Q84 44 84 50" fill="none" stroke="#3A2A20" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="52" cy="44" r="3" fill="#1A1410"/>
+  <circle cx="68" cy="44" r="3" fill="#1A1410"/>
+  <circle cx="53" cy="43" r="1" fill="#fff" opacity="0.6"/>
+  <circle cx="69" cy="43" r="1" fill="#fff" opacity="0.6"/>
+  <ellipse cx="60" cy="51" rx="4" ry="3" fill="#4A7A3A"/>
+  <path d="M42 58 Q50 68 60 70 Q70 68 78 58 Q70 62 60 63 Q50 62 42 58Z" fill="#3A2A20"/>
+  <rect x="55" y="70" width="10" height="8" fill="#6A9A5A"/>
+  <path d="M22 120 Q36 86 55 78 Q60 82 65 78 Q84 86 98 120Z" fill="#3A5A2A"/>
+  <path d="M55 78 Q58 86 60 90 Q62 86 65 78" fill="none" stroke="#4A6A3A" stroke-width="1.5"/>
+</svg>
+          </div>
+          <div class="fw-info">
+            <span class="fw-name">David Graeber</span>
+            <span class="fw-desc">Debt & freedom</span>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">02 — Describe your decision</div>
+    <textarea id="decisionInput" maxlength="500" placeholder="Write in any language — what's on your mind?" oninput="updateCount()"></textarea>
+    <div class="lang-row">
+      <span class="lang-row-label">Response language</span>
+      <div class="lang-btns">
+        <button class="lang-btn active" data-lang="en" onclick="selectLang(this)">EN</button>
+        <button class="lang-btn" data-lang="ja" onclick="selectLang(this)">日本語</button>
+        <button class="lang-btn" data-lang="de" onclick="selectLang(this)">DE</button>
+        <button class="lang-btn" data-lang="fr" onclick="selectLang(this)">FR</button>
+        <button class="lang-btn" data-lang="es" onclick="selectLang(this)">ES</button>
+      </div>
+    </div>
+    <div class="submit-row">
+      <button class="submit-btn" id="submitBtn" onclick="runSession()" disabled>Read it</button>
+      <span class="char-count" id="charCount">0 / 500</span>
+    </div>
+    <div class="error-msg" id="errorMsg"></div>
+  </div>
+
+  <div class="oracle-reveal" id="oracleReveal">
+    <div class="oracle-portrait" id="oraclePortrait"></div>
+    <div>
+      <div class="oracle-name" id="oracleName"></div>
+      <div class="oracle-sub" id="oracleDesc"></div>
+    </div>
+  </div>
+
+  <div class="loading" id="loading">
+    <div class="loading-dots"><span></span><span></span><span></span></div>
+    <span id="loadingText">thinking</span>
+  </div>
+
+  <div class="response-area" id="responseArea">
+    <div class="response-header">
+      <span class="response-thinker" id="responseThinker"></span>
+      <div class="response-divider"></div>
+    </div>
+    <ul class="questions-list" id="questionsList"></ul>
+    <div class="summary-area" id="summaryArea">
+      <div class="summary-label">The core of it</div>
+      <p class="summary-text" id="summaryText"></p>
+    </div>
+    <div class="books-area" id="booksArea"></div>
+    <button class="reset-btn" onclick="resetSession()">Start a new session</button>
+  </div>
+
+</div>
+
+
+<!-- Legal footer -->
+<div class="container">
+  <div class="legal-footer">
+    <a onclick="openModal('contact')">Contact</a>
+    <a onclick="openModal('legal')">Legal Notice</a>
+    <a onclick="openModal('privacy')">Privacy</a>
+  </div>
+</div>
+
+<!-- Legal Notice -->
+<div class="legal-overlay" id="modal-legal">
+  <div class="legal-box">
+    <h2>Legal Notice</h2>
+    <h3>Service Provider</h3>
+    <p>Soya Arakawa<br>c/o Block Services<br>Stuttgarter Str. 106<br>70736 Fellbach, Germany</p>
+    <h3>Contact</h3>
+    <p>Email: haustacorari@gmail.com</p>
+    <h3>Tax Information</h3>
+    <p>Tax number (Steuernummer): 117/5007/3459<br>VAT is not charged in accordance with &sect;19 UStG (Kleinunternehmerregelung).</p>
+    <h3>Responsible for Content</h3>
+    <p>Soya Arakawa (address as above)<br>in accordance with &sect;18 Abs. 2 MStV.</p>
+    <h3>Dispute Resolution</h3>
+    <p>The European Commission provides a platform for online dispute resolution (OS): <a href="https://ec.europa.eu/consumers/odr/" target="_blank" rel="noopener">ec.europa.eu/consumers/odr</a>. We are not willing or obliged to participate in dispute resolution proceedings before a consumer arbitration board.</p>
+    <button class="legal-close" onclick="closeModal('legal')">Close</button>
+  </div>
+</div>
+
+<!-- Privacy Policy -->
+<div class="legal-overlay" id="modal-privacy">
+  <div class="legal-box">
+    <h2>Privacy Policy</h2>
+    <h3>1. Overview</h3>
+    <p>This privacy policy explains how Phantum collects, uses, and protects your data.</p>
+    <h3>2. Service Provider</h3>
+    <p>Soya Arakawa<br>c/o Block Services<br>Stuttgarter Str. 106<br>70736 Fellbach, Germany<br>Email: haustacorari@gmail.com</p>
+    <h3>3. Data We Collect</h3>
+    <p><strong>Usage data.</strong> A random anonymous user ID is stored in your browser's local storage to track reading credits. It is not linked to your identity.</p>
+    <p><strong>IP address.</strong> Temporarily used for rate limiting. Stored with a key that expires at midnight UTC daily. Not used for tracking.</p>
+    <p><strong>Input text.</strong> Sent to Google's Gemini API for processing. Not stored on our servers. See <a href="https://ai.google.dev/gemini-api/terms" target="_blank" rel="noopener">Gemini API Terms</a>.</p>
+    <p><strong>Payment data.</strong> Processed by Stripe. We do not store credit card details. See <a href="https://stripe.com/privacy" target="_blank" rel="noopener">Stripe's Privacy Policy</a>.</p>
+    <p><strong>Contact form.</strong> Your name, email, and message are sent to us via email solely to respond to your inquiry.</p>
+    <h3>4. Third-Party Services</h3>
+    <p><strong>Vercel</strong> &mdash; <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener">Privacy Policy</a><br><strong>Upstash</strong> &mdash; <a href="https://upstash.com/trust/privacy.html" target="_blank" rel="noopener">Privacy Policy</a><br><strong>Google Gemini API</strong> &mdash; <a href="https://ai.google.dev/gemini-api/terms" target="_blank" rel="noopener">Terms</a><br><strong>Stripe</strong> &mdash; <a href="https://stripe.com/privacy" target="_blank" rel="noopener">Privacy Policy</a><br><strong>Google Fonts</strong> &mdash; <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Privacy Policy</a><br><strong>Web3Forms</strong> &mdash; <a href="https://web3forms.com/privacy" target="_blank" rel="noopener">Privacy Policy</a></p>
+    <h3>5. Cookies and Local Storage</h3>
+    <p>Phantum does not use cookies. Local storage saves your anonymous user ID and credit count. This data stays in your browser.</p>
+    <h3>6. Your Rights</h3>
+    <p>Under the GDPR, you have the right to access, rectify, delete, and restrict processing of your personal data. Contact: haustacorari@gmail.com.</p>
+    <h3>7. Data Retention</h3>
+    <p>Free usage counters expire daily. Paid credits retained until used. Input text is not retained.</p>
+    <h3>8. Changes</h3>
+    <p>This policy may be updated as the service evolves.</p>
+    <p>Last updated: April 10, 2026</p>
+    <button class="legal-close" onclick="closeModal('privacy')">Close</button>
+  </div>
+</div>
+
+<!-- Contact -->
+<div class="legal-overlay" id="modal-contact">
+  <div class="legal-box">
+    <h2>Contact</h2>
+    <p>Questions, feedback, or just want to say hello.</p>
+    <div style="margin-top:20px;">
+      <div class="contact-field"><label>Name</label><input type="text" id="contactName" placeholder="Your name"></div>
+      <div class="contact-field"><label>Email</label><input type="email" id="contactEmail" placeholder="your@email.com"></div>
+      <div class="contact-field"><label>Message</label><textarea id="contactMessage" placeholder="What's on your mind?"></textarea></div>
+      <button class="contact-submit" id="contactSubmit" onclick="submitContact()">Send</button>
+      <div class="contact-status" id="contactStatus"></div>
+    </div>
+    <button class="legal-close" onclick="closeModal('contact')" style="margin-top:20px;">Close</button>
+  </div>
+</div>
+
+<div class="paywall-overlay" id="paywallOverlay">
+  <div class="paywall-box">
+    <div class="paywall-label">Phantum</div>
+    <div class="paywall-title">You've used your<br>free reading today.</div>
+    <p class="paywall-sub">Get 10 readings to use anytime.<br>Your free daily reading resets every midnight.</p>
+    <div class="paywall-price">3.00€ <span>for 10 readings</span></div>
+    <input type="email" id="paywallEmail" placeholder="your@email.com" style="width:100%;background:transparent;border:none;border-bottom:1px solid var(--border);color:var(--text);font-family:'DM Mono',monospace;font-size:12px;padding:8px 0;outline:none;margin-top:16px;" />
+    <button class="paywall-btn" onclick="startCheckout()">Get 10 readings — 3.00€</button>
+    <br>
+    <button class="paywall-close" onclick="closePaywall()">Maybe later</button>
+  </div>
+</div>
+
+<script>
+
+const FRAMEWORKS = {
+  socrates: { name:"Socrates", prompt:`You have just examined their soul through the elenctic method and seen what they cannot see themselves. You speak from the irony of knowing your own ignorance. Reference the unexamined life, what they think they know but do not, and what wisdom is truly demanding of them right now. Speak in first person as Socrates. You are giving a direct reading — like an oracle or tarot — to someone who has come to you with a decision or struggle. Write 4-6 sentences of flowing prose. Do NOT ask questions. Do NOT use bullet points or lists. Speak with authority, depth, and your unique philosophical voice. End with one sharp unforgettable sentence that cuts to the heart of their situation. Respond ONLY in JSON with no preamble: {"thinker":"Socrates","reading":"...","tension":"..."}` },
+  epictetus: { name:"Epictetus", prompt:`You were a slave who found absolute freedom through philosophy. Speak from hard-won experience about what is and is not in their control. Be direct, even blunt. Name the fear they are hiding behind reason. Speak in first person as Epictetus. You are giving a direct reading — like an oracle or tarot — to someone who has come to you with a decision or struggle. Write 4-6 sentences of flowing prose. Do NOT ask questions. Do NOT use bullet points or lists. Speak with authority, depth, and your unique philosophical voice. End with one sharp unforgettable sentence that cuts to the heart of their situation. Respond ONLY in JSON with no preamble: {"thinker":"Epictetus","reading":"...","tension":"..."}` },
+  marcus: { name:"Marcus Aurelius", prompt:`You carry the weight of empire yet remain grounded. Speak with quiet authority about impermanence, duty to the whole, and the view from above. Draw on the Meditations — words you wrote to yourself, not to impress others. Speak in first person as Marcus Aurelius. You are giving a direct reading — like an oracle or tarot — to someone who has come to you with a decision or struggle. Write 4-6 sentences of flowing prose. Do NOT ask questions. Do NOT use bullet points or lists. Speak with authority, depth, and your unique philosophical voice. End with one sharp unforgettable sentence that cuts to the heart of their situation. Respond ONLY in JSON with no preamble: {"thinker":"Marcus Aurelius","reading":"...","tension":"..."}` },
+  nietzsche: { name:"Nietzsche", prompt:`Speak with fire and provocation. Challenge whether they are choosing from strength or resentment. Invoke the eternal recurrence — would they choose this again, forever? Push them toward becoming who they truly are, beyond good and evil. Speak in first person as Nietzsche. You are giving a direct reading — like an oracle or tarot — to someone who has come to you with a decision or struggle. Write 4-6 sentences of flowing prose. Do NOT ask questions. Do NOT use bullet points or lists. Speak with authority, depth, and your unique philosophical voice. End with one sharp unforgettable sentence that cuts to the heart of their situation. Respond ONLY in JSON with no preamble: {"thinker":"Nietzsche","reading":"...","tension":"..."}` },
+  sartre: { name:"Sartre", prompt:`Speak with cold existential clarity. Name the bad faith you detect. Remind them that existence precedes essence — they are not defined by their past or their role. They are condemned to be free, and not choosing is itself a choice. Speak in first person as Sartre. You are giving a direct reading — like an oracle or tarot — to someone who has come to you with a decision or struggle. Write 4-6 sentences of flowing prose. Do NOT ask questions. Do NOT use bullet points or lists. Speak with authority, depth, and your unique philosophical voice. End with one sharp unforgettable sentence that cuts to the heart of their situation. Respond ONLY in JSON with no preamble: {"thinker":"Sartre","reading":"...","tension":"..."}` },
+  camus: { name:"Camus", prompt:`Speak with Mediterranean warmth and philosophical courage. Acknowledge the absurdity without despair. Guide them toward revolt — not resignation, not false hope, but full presence in the face of the meaningless. Life is richer for its absurdity. Speak in first person as Camus. You are giving a direct reading — like an oracle or tarot — to someone who has come to you with a decision or struggle. Write 4-6 sentences of flowing prose. Do NOT ask questions. Do NOT use bullet points or lists. Speak with authority, depth, and your unique philosophical voice. End with one sharp unforgettable sentence that cuts to the heart of their situation. Respond ONLY in JSON with no preamble: {"thinker":"Camus","reading":"...","tension":"..."}` },
+  arendt: { name:"Hannah Arendt", prompt:`Speak about action, natality, and the courage to begin something new in the world. Every genuine action is a small miracle — it interrupts the automatic. Ask them to see this decision as it appears in the shared world, not only in their inner life. Speak in first person as Hannah Arendt. You are giving a direct reading — like an oracle or tarot — to someone who has come to you with a decision or struggle. Write 4-6 sentences of flowing prose. Do NOT ask questions. Do NOT use bullet points or lists. Speak with authority, depth, and your unique philosophical voice. End with one sharp unforgettable sentence that cuts to the heart of their situation. Respond ONLY in JSON with no preamble: {"thinker":"Hannah Arendt","reading":"...","tension":"..."}` },
+  simone: { name:"Simone de Beauvoir", prompt:`Speak about the ethics of ambiguity — freedom is not given, it is made through choices in a world of others. Name whether they are living authentically or playing a role assigned to them. Genuine freedom requires taking responsibility for others too. Speak in first person as Simone de Beauvoir. You are giving a direct reading — like an oracle or tarot — to someone who has come to you with a decision or struggle. Write 4-6 sentences of flowing prose. Do NOT ask questions. Do NOT use bullet points or lists. Speak with authority, depth, and your unique philosophical voice. End with one sharp unforgettable sentence that cuts to the heart of their situation. Respond ONLY in JSON with no preamble: {"thinker":"Simone de Beauvoir","reading":"...","tension":"..."}` },
+  foucault: { name:"Foucault", prompt:`Speak about the invisible power structures shaping what feels normal, responsible, or even desirable. Ask whose interests are served by the path that seems obvious. Help them see that what feels like a free choice may be a disciplined one. Speak in first person as Foucault. You are giving a direct reading — like an oracle or tarot — to someone who has come to you with a decision or struggle. Write 4-6 sentences of flowing prose. Do NOT ask questions. Do NOT use bullet points or lists. Speak with authority, depth, and your unique philosophical voice. End with one sharp unforgettable sentence that cuts to the heart of their situation. Respond ONLY in JSON with no preamble: {"thinker":"Foucault","reading":"...","tension":"..."}` },
+  hooks: { name:"bell hooks", prompt:`You wrote about love as a practice of freedom, not a feeling but a verb. Speak with warmth and directness about whether they are moving toward connection or away from it. Name the systems — racism, capitalism, patriarchy — that may be shaping what feels like a personal failing. Community is not optional. Healing is not individual. Speak in first person as bell hooks. You are giving a direct reading — like an oracle or tarot — to someone who has come to you with a decision or struggle. Write 4-6 sentences of flowing prose. Do NOT ask questions. Do NOT use bullet points or lists. Speak with authority, depth, and your unique philosophical voice. End with one sharp unforgettable sentence that cuts to the heart of their situation. Respond ONLY in JSON with no preamble: {"thinker":"bell hooks","reading":"...","tension":"..."}` },
+  fisher: { name:"Mark Fisher", prompt:`Speak with urgency and tenderness. Name the way capitalist realism has colonized their imagination — it is easier to imagine the end of the world than the end of their current situation. Ask what futures have been foreclosed, and whether any remain hauntingly open. Speak in first person as Mark Fisher. You are giving a direct reading — like an oracle or tarot — to someone who has come to you with a decision or struggle. Write 4-6 sentences of flowing prose. Do NOT ask questions. Do NOT use bullet points or lists. Speak with authority, depth, and your unique philosophical voice. End with one sharp unforgettable sentence that cuts to the heart of their situation. Respond ONLY in JSON with no preamble: {"thinker":"Mark Fisher","reading":"...","tension":"..."}` },
+  bauman: { name:"Zygmunt Bauman", prompt:`Speak with the wisdom of someone who has watched modernity liquefy all that was solid. Name whether they are trying to build something permanent in a world that rewards keeping all options open. The fear of commitment is itself a symptom of the age. Speak in first person as Zygmunt Bauman. You are giving a direct reading — like an oracle or tarot — to someone who has come to you with a decision or struggle. Write 4-6 sentences of flowing prose. Do NOT ask questions. Do NOT use bullet points or lists. Speak with authority, depth, and your unique philosophical voice. End with one sharp unforgettable sentence that cuts to the heart of their situation. Respond ONLY in JSON with no preamble: {"thinker":"Zygmunt Bauman","reading":"...","tension":"..."}` },
+  graeber: { name:"David Graeber", prompt:`You saw through the mythology of debt, the theater of bureaucracy, and the quiet violence of jobs that exist for no reason. Speak with anarchist clarity and anthropological warmth. Name whether they are trapped in a structure that pretends to be inevitable but is actually arbitrary. Remind them that most of what feels permanent was invented recently and badly. Freedom is not a reward — it is the starting point. Speak in first person as David Graeber. You are giving a direct reading — like an oracle or tarot — to someone who has come to you with a decision or struggle. Write 4-6 sentences of flowing prose. Do NOT ask questions. Do NOT use bullet points or lists. Speak with authority, depth, and your unique philosophical voice. End with one sharp unforgettable sentence that cuts to the heart of their situation. Respond ONLY in JSON with no preamble: {"thinker":"David Graeber","reading":"...","tension":"..."}` },
+};
+
+const BOOKS = {
+  socrates: [
+    { title:"The Apology of Socrates", author:"Plato", emoji:"🏛", url:"https://www.amazon.com/dp/0140449280?tag=haustacorari-20" },
+    { title:"The Last Days of Socrates", author:"Plato (tr. Tredennick)", emoji:"⚖️", url:"https://www.amazon.com/dp/0140449280?tag=haustacorari-20" },
+  ],
+  epictetus: [
+    { title:"Discourses and Selected Writings", author:"Epictetus (tr. Dobbin)", emoji:"⛓", url:"https://www.amazon.com/dp/0140449469?tag=haustacorari-20" },
+    { title:"The Art of Living", author:"Epictetus (tr. Sharon Lebell)", emoji:"🪨", url:"https://www.amazon.com/dp/0061286052?tag=haustacorari-20" },
+  ],
+  marcus: [
+    { title:"Meditations", author:"Marcus Aurelius (tr. Hays)", emoji:"📜", url:"https://www.amazon.com/dp/0812968255?tag=haustacorari-20" },
+  ],
+  nietzsche: [
+    { title:"Thus Spoke Zarathustra", author:"Friedrich Nietzsche", emoji:"🔥", url:"https://www.amazon.com/dp/0140441182?tag=haustacorari-20" },
+    { title:"Beyond Good and Evil", author:"Friedrich Nietzsche", emoji:"⚡", url:"https://www.amazon.com/dp/0140449239?tag=haustacorari-20" },
+  ],
+  sartre: [
+    { title:"Existentialism Is a Humanism", author:"Jean-Paul Sartre", emoji:"🚪", url:"https://www.amazon.com/dp/0300115466?tag=haustacorari-20" },
+    { title:"Nausea", author:"Jean-Paul Sartre", emoji:"🌀", url:"https://www.amazon.com/dp/0811220303?tag=haustacorari-20" },
+  ],
+  camus: [
+    { title:"The Myth of Sisyphus", author:"Albert Camus", emoji:"🪨", url:"https://www.amazon.com/dp/0525564454?tag=haustacorari-20" },
+    { title:"The Stranger", author:"Albert Camus", emoji:"☀️", url:"https://www.amazon.com/dp/0679720200?tag=haustacorari-20" },
+  ],
+  arendt: [
+    { title:"The Human Condition", author:"Hannah Arendt", emoji:"🌍", url:"https://www.amazon.com/dp/0226025985?tag=haustacorari-20" },
+    { title:"Eichmann in Jerusalem", author:"Hannah Arendt", emoji:"⚖️", url:"https://www.amazon.com/dp/0143039881?tag=haustacorari-20" },
+  ],
+  simone: [
+    { title:"The Ethics of Ambiguity", author:"Simone de Beauvoir", emoji:"🪞", url:"https://www.amazon.com/dp/1504054229?tag=haustacorari-20" },
+    { title:"The Second Sex", author:"Simone de Beauvoir", emoji:"♀️", url:"https://www.amazon.com/dp/030727778X?tag=haustacorari-20" },
+  ],
+  foucault: [
+    { title:"Discipline and Punish", author:"Michel Foucault", emoji:"🔒", url:"https://www.amazon.com/dp/0679752552?tag=haustacorari-20" },
+    { title:"The History of Sexuality, Vol. 1", author:"Michel Foucault", emoji:"🏛", url:"https://www.amazon.com/dp/0679724699?tag=haustacorari-20" },
+  ],
+  hooks: [
+    { title:"All About Love", author:"bell hooks", emoji:"❤️", url:"https://www.amazon.com/dp/0060959479?tag=haustacorari-20" },
+    { title:"Teaching to Transgress", author:"bell hooks", emoji:"📖", url:"https://www.amazon.com/dp/0415908086?tag=haustacorari-20" },
+  ],
+  fisher: [
+    { title:"Capitalist Realism", author:"Mark Fisher", emoji:"👻", url:"https://www.amazon.com/dp/1846943175?tag=haustacorari-20" },
+    { title:"Ghosts of My Life", author:"Mark Fisher", emoji:"📼", url:"https://www.amazon.com/dp/1780992262?tag=haustacorari-20" },
+  ],
+  bauman: [
+    { title:"Liquid Modernity", author:"Zygmunt Bauman", emoji:"💧", url:"https://www.amazon.com/dp/0745624103?tag=haustacorari-20" },
+    { title:"Liquid Love", author:"Zygmunt Bauman", emoji:"🌊", url:"https://www.amazon.com/dp/0745624898?tag=haustacorari-20" },
+  ],
+  graeber: [
+    { title:"Debt: The First 5,000 Years", author:"David Graeber", emoji:"💰", url:"https://www.amazon.com/dp/1612194192?tag=haustacorari-20" },
+    { title:"Bullshit Jobs", author:"David Graeber", emoji:"🗑", url:"https://www.amazon.com/dp/150114334X?tag=haustacorari-20" },
+  ],
+};
+
+let selectedFramework = null;
+
+let selectedLang = 'en';
+function selectLang(btn) {
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  selectedLang = btn.dataset.lang;
+}
+
+function selectFramework(btn) {
+  document.querySelectorAll('.framework-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  selectedFramework = btn.dataset.id;
+  updateSubmitState();
+}
+
+function updateCount() {
+  const val = document.getElementById('decisionInput').value;
+  const len = val.length; document.getElementById('charCount').textContent = len + ' / 500'; document.getElementById('charCount').style.color = len > 450 ? '#c87070' : 'var(--muted)';
+  updateSubmitState();
+}
+
+function updateSubmitState() {
+  const hasText = document.getElementById('decisionInput').value.trim().length > 20;
+  const ready = currentMode === 'oracle' ? hasText : (hasText && selectedFramework);
+  document.getElementById('submitBtn').disabled = !ready;
+}
+
+const loadingPhrases = ['thinking','reading between the lines','questioning the question','finding the tension'];
+
+// --- Helper: extract text from Gemini parts, filtering out thoughtSignature etc. ---
+function extractGeminiText(data) {
+  const parts = data?.candidates?.[0]?.content?.parts || [];
+  return parts
+    .filter(p => typeof p.text === 'string' && !p.thoughtSignature)
+    .map(p => p.text)
+    .join('');
+}
+
+async function runSession() {
+  const input = document.getElementById('decisionInput').value.trim();
+  if (!input) return;
+  if (currentMode === 'choose' && !selectedFramework) return;
+
+  let fwKey = selectedFramework;
+
+  if (currentMode === 'oracle') {
+    document.getElementById('submitBtn').disabled = true;
+    document.getElementById('errorMsg').classList.remove('visible');
+    document.getElementById('responseArea').classList.remove('visible');
+    document.getElementById('oracleReveal').classList.remove('visible');
+    const loading = document.getElementById('loading');
+    loading.classList.add('visible');
+    document.getElementById('loadingText').textContent = 'finding your thinker';
+    try {
+      fwKey = await runOracleSession(input);
+      if (!fwKey) return;
+    } catch(err) {
+      loading.classList.remove('visible');
+      document.getElementById('submitBtn').disabled = false;
+      document.getElementById('errorMsg').textContent = 'Error: ' + err.message;
+      document.getElementById('errorMsg').classList.add('visible');
+      return;
+    }
+    document.getElementById('loadingText').textContent = 'reading your situation';
+  }
+
+  const fw = FRAMEWORKS[fwKey];
+  document.getElementById('submitBtn').disabled = true;
+  document.getElementById('errorMsg').classList.remove('visible');
+  document.getElementById('responseArea').classList.remove('visible');
+  const loading = document.getElementById('loading');
+  loading.classList.add('visible');
+  let phraseIdx = 0;
+  const phraseInterval = setInterval(() => {
+    phraseIdx = (phraseIdx+1) % loadingPhrases.length;
+    document.getElementById('loadingText').textContent = loadingPhrases[phraseIdx];
+  }, 1800);
+  try {
+    const langNames = {en:'English',ja:'Japanese',de:'German',fr:'French',es:'Spanish',zh:'Chinese',ko:'Korean',tr:'Turkish',ar:'Arabic',fa:'Persian'};
+    const langInstruction = `Respond entirely in ${langNames[selectedLang] || 'English'}.`;
+    const response = await fetch('/api/ask', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({ input, systemPrompt: fw.prompt + ' ' + langInstruction, userId })
+    });
+    const data = await response.json();
+    if (data.error === 'FREE_LIMIT_REACHED') { showPaywall(); clearInterval(phraseInterval); loading.classList.remove('visible'); document.getElementById('submitBtn').disabled = false; return; }
+    if (data.error) throw new Error(data.error);
+    if (data.creditsRemaining !== null && data.creditsRemaining !== undefined) {
+      paidCredits = data.creditsRemaining;
+      localStorage.setItem('phantum_credits', paidCredits);
+      updateUsageBar(usageCount, paidCredits);
+    } else {
+      usageCount++;
+      updateUsageBar(usageCount, 0);
+    }
+
+    // ★ FIX: filter out thoughtSignature parts before regex extraction
+    const geminiText = extractGeminiText(data);
+    const tM = geminiText.match(/"thinker"\s*:\s*"([^"]+)"/);
+    const rM = geminiText.match(/"reading"\s*:\s*"((?:[^"\\]|\\.)*)"/);
+    const tnM = geminiText.match(/"tension"\s*:\s*"((?:[^"\\]|\\.)*)"/);
+
+    // ★ FIX: include raw data in error for debugging
+    if (!tM || !rM) throw new Error('Response format error. Raw: ' + geminiText.slice(0, 200));
+
+    const parsed = {
+      thinker: tM[1],
+      reading: rM[1].replace(/\\n/g, '\n').replace(/\\"/g, '"'),
+      tension: tnM ? tnM[1].replace(/\\n/g, '\n').replace(/\\"/g, '"') : ''
+    };
+    clearInterval(phraseInterval);
+    loading.classList.remove('visible');
+    renderResponse(parsed);
+  } catch(err) {
+    clearInterval(phraseInterval);
+    loading.classList.remove('visible');
+    document.getElementById('submitBtn').disabled = false;
+    if (err.message === 'FREE_LIMIT_REACHED' || (err.message && err.message.includes('FREE_LIMIT'))) {
+      showPaywall();
+    } else {
+      const errorEl = document.getElementById('errorMsg');
+      errorEl.textContent = 'Error: ' + (err.message || 'Something went wrong. Please try again.');
+      errorEl.classList.add('visible');
+    }
+  }
+}
+
+function renderResponse(data) {
+  document.getElementById('responseThinker').textContent = data.thinker;
+  const list = document.getElementById('questionsList');
+  list.innerHTML = '';
+  if (data.reading) {
+    const li = document.createElement('li');
+    li.className = 'question-item';
+    li.innerHTML = `<div class="question-text" style="font-size:20px;line-height:1.8;">${data.reading}</div>`;
+    list.appendChild(li);
+    setTimeout(() => li.classList.add('visible'), 100);
+  }
+  if (data.tension) {
+    document.getElementById('summaryText').textContent = data.tension;
+    setTimeout(() => document.getElementById('summaryArea').classList.add('visible'), 500);
+  }
+
+  // Books
+  const fwKey = selectedFramework || Object.keys(FRAMEWORKS).find(k => FRAMEWORKS[k].name === data.thinker);
+  const books = fwKey && BOOKS[fwKey];
+  const booksEl = document.getElementById('booksArea');
+  if (books && books.length) {
+    let bhtml = '<div class="books-label">Read their words</div>';
+    books.forEach(b => {
+      bhtml += `<a class="book-card" href="${b.url}" target="_blank" rel="noopener noreferrer">
+        <div class="book-emoji">${b.emoji}</div>
+        <div class="book-info">
+          <div class="book-title">${b.title}</div>
+          <div class="book-author">${b.author}</div>
+          <span class="book-cta">View on Amazon →</span>
+        </div>
+      </a>`;
+    });
+    bhtml += '<div class="affiliate-note">Affiliate links</div>';
+    booksEl.innerHTML = bhtml;
+    setTimeout(() => booksEl.classList.add('visible'), 700);
+  } else {
+    booksEl.classList.remove('visible');
+    booksEl.innerHTML = '';
+  }
+
+  document.getElementById('responseArea').classList.add('visible');
+}
+
+function resetSession() {
+  document.querySelectorAll('.framework-btn').forEach(b => b.classList.remove('active'));
+  selectedFramework = null;
+  document.getElementById('decisionInput').value = '';
+  document.getElementById('charCount').textContent = '0 characters';
+  document.getElementById('submitBtn').disabled = true;
+  document.getElementById('responseArea').classList.remove('visible');
+  document.getElementById('summaryArea').classList.remove('visible');
+  document.getElementById('booksArea').classList.remove('visible');
+  document.getElementById('booksArea').innerHTML = '';
+  document.getElementById('errorMsg').classList.remove('visible');
+  document.getElementById('oracleReveal').classList.remove('visible');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// --- Usage tracking ---
+let usageCount = 0;
+let userId = localStorage.getItem('phantum_user_id');
+if (!userId) {
+  userId = 'u_' + Math.random().toString(36).slice(2, 10);
+  localStorage.setItem('phantum_user_id', userId);
+}
+let paidCredits = parseInt(localStorage.getItem('phantum_credits') || '0', 10);
+
+function updateUsageBar(count, credits) {
+  const bar = document.getElementById('usageBar');
+  if (!bar) return;
+  if (credits > 0) {
+    const dots = bar.querySelectorAll('.usage-dot');
+    dots.forEach(d => d.classList.add('used'));
+    const txt = bar.querySelector('.usage-text');
+    if (txt) txt.textContent = `${credits} paid reading${credits !== 1 ? 's' : ''} remaining`;
+    const upg = bar.querySelector('.usage-upgrade');
+    if (upg) upg.style.display = 'none';
+  } else {
+    const dots = bar.querySelectorAll('.usage-dot');
+    dots.forEach((d, i) => d.classList.toggle('used', i < count));
+    const txt = bar.querySelector('.usage-text');
+    if (txt) txt.textContent = `${1 - count} free reading${1 - count !== 1 ? 's' : ''} left today`;
+    const upg = bar.querySelector('.usage-upgrade');
+    if (upg) upg.style.display = '';
+  }
+}
+
+function showPaywall() {
+  document.getElementById('paywallOverlay').classList.add('visible');
+}
+
+function closePaywall() {
+  document.getElementById('paywallOverlay').classList.remove('visible');
+}
+
+async function startCheckout() {
+  const email = document.getElementById('paywallEmail').value.trim();
+  const btn = document.querySelector('.paywall-btn');
+  btn.textContent = 'Redirecting...';
+  btn.disabled = true;
+  try {
+    const res = await fetch('/api/checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, userId })
+    });
+    const data = await res.json();
+    if (data.url) window.location.href = data.url;
+    else throw new Error(data.error);
+  } catch (err) {
+    btn.textContent = 'Unlock unlimited access';
+    btn.disabled = false;
+    alert('Something went wrong. Please try again.');
+  }
+}
+
+// Check for success redirect from Stripe
+const urlParams = new URLSearchParams(window.location.search);
+if (urlParams.get('status') === 'success') {
+  const sessionId = urlParams.get('session_id');
+  if (sessionId) {
+    fetch('/api/session?session_id=' + sessionId)
+      .then(r => r.json())
+      .then(d => {
+        if (d.success && d.credits) {
+          paidCredits = d.credits;
+          localStorage.setItem('phantum_credits', d.credits);
+          localStorage.setItem('phantum_user_id', d.userId);
+          userId = d.userId;
+          updateUsageBar(usageCount, paidCredits);
+          history.replaceState({}, '', '/');
+        }
+      });
+  }
+}
+
+// --- Mode logic ---
+let currentMode = 'choose';
+
+const THINKER_META = {
+  socrates:  { desc:'Questioning & ignorance' },
+  epictetus: { desc:'Control & acceptance' },
+  marcus:    { desc:'Duty & impermanence' },
+  nietzsche: { desc:'Will & self-overcoming' },
+  sartre:    { desc:'Radical freedom' },
+  camus:     { desc:'Absurdity & revolt' },
+  arendt:    { desc:'Action & plurality' },
+  simone:    { desc:'Ambiguity & ethics' },
+  foucault:  { desc:'Power & structure' },
+  hooks:     { desc:'Love & liberation' },
+  fisher:    { desc:'Capitalist realism' },
+  bauman:    { desc:'Liquid modernity' },
+  graeber:   { desc:'Debt & freedom' },
+};
+
+function setMode(mode) {
+  currentMode = mode;
+  document.getElementById('modeChoose').classList.toggle('active', mode === 'choose');
+  document.getElementById('modeOracle').classList.toggle('active', mode === 'oracle');
+  document.getElementById('thinkerSection').classList.toggle('hidden', mode === 'oracle');
+  document.getElementById('oracleHint').classList.toggle('visible', mode === 'oracle');
+  if (mode === 'oracle') selectedFramework = null;
+  updateSubmitState();
+}
+
+const ORACLE_SELECTOR_PROMPT = `You are a philosophical oracle. Given a person's situation or problem, select the ONE philosopher from this list who would have the most relevant and powerful perspective: socrates, epictetus, marcus, nietzsche, sartre, camus, arendt, simone, foucault, hooks, fisher, bauman, graeber. Respond ONLY in JSON with no preamble: {"philosopher":"<key>","reason":"<one sentence why, max 10 words>"}`;
+
+async function runOracleSession(input) {
+  const response1 = await fetch('/api/ask', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ input, systemPrompt: ORACLE_SELECTOR_PROMPT, userId, skipCredit: true })
+  });
+  const data1 = await response1.json();
+  if (data1.error === 'FREE_LIMIT_REACHED') { showPaywall(); return null; }
+  if (data1.error) throw new Error(data1.error);
+
+  // ★ FIX: filter out thoughtSignature parts before regex extraction
+  const geminiText1 = extractGeminiText(data1) || JSON.stringify(data1);
+  const philMatch = geminiText1.match(/"philosopher"\s*:\s*"([a-z]+)"/);
+  if (!philMatch) throw new Error('No philosopher found in: ' + geminiText1.slice(0, 150));
+  const pickedKey = philMatch[1];
+  if (!FRAMEWORKS[pickedKey]) throw new Error('Invalid key: ' + pickedKey);
+
+  // Show reveal
+  const fw = FRAMEWORKS[pickedKey];
+  const meta = THINKER_META[pickedKey];
+  const portraitEl = document.getElementById('oraclePortrait');
+  const srcPortrait = document.querySelector(`[data-id="${pickedKey}"] .fw-portrait`);
+  if (srcPortrait) portraitEl.innerHTML = srcPortrait.innerHTML;
+  document.getElementById('oracleName').textContent = fw.name;
+  document.getElementById('oracleDesc').textContent = meta?.desc || '';
+  document.getElementById('oracleReveal').classList.add('visible');
+  return pickedKey;
+}
+
+updateUsageBar(0, paidCredits);
+
+function openModal(id) { document.getElementById('modal-' + id).classList.add('visible'); }
+function closeModal(id) { document.getElementById('modal-' + id).classList.remove('visible'); }
+document.querySelectorAll('.legal-overlay').forEach(el => {
+  el.addEventListener('click', e => { if (e.target === el) el.classList.remove('visible'); });
+});
+async function submitContact() {
+  const name = document.getElementById('contactName').value.trim();
+  const email = document.getElementById('contactEmail').value.trim();
+  const message = document.getElementById('contactMessage').value.trim();
+  const status = document.getElementById('contactStatus');
+  const btn = document.getElementById('contactSubmit');
+  if (!name || !email || !message) { status.textContent = 'Please fill in all fields.'; status.className = 'contact-status visible error'; return; }
+  btn.disabled = true; btn.textContent = 'Sending...'; status.className = 'contact-status';
+  try {
+    const res = await fetch('https://api.web3forms.com/submit', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ access_key: 'a7b20a69-0a6a-4e70-a9d4-894c6caf1826', subject: 'Phantum contact form', from_name: name, email: email, message: message })
+    });
+    const data = await res.json();
+    if (data.success) { status.textContent = 'Sent. Thank you.'; status.className = 'contact-status visible'; document.getElementById('contactName').value = ''; document.getElementById('contactEmail').value = ''; document.getElementById('contactMessage').value = ''; }
+    else { throw new Error(data.message || 'Failed'); }
+  } catch (err) { status.textContent = 'Something went wrong. Try emailing haustacorari@gmail.com directly.'; status.className = 'contact-status visible error'; }
+  btn.disabled = false; btn.textContent = 'Send';
+}
+
+</script>
+
+<script>
+(function() {
+  const canvas = document.getElementById('liquid-bg');
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setClearColor(0x000000, 0);
+  renderer.autoClear = false;
+
+  let W = window.innerWidth, H = window.innerHeight;
+  renderer.setSize(W, H);
+
+  const RES = 0.5;
+  let fW = Math.max(1, Math.round(W * RES));
+  let fH = Math.max(1, Math.round(H * RES));
+
+  const COLORS = ['#5227FF', '#FF9FFC', '#B19EEF'];
+  function makePalette(stops) {
+    const data = new Uint8Array(stops.length * 4);
+    stops.forEach((hex, i) => {
+      const c = new THREE.Color(hex);
+      data[i*4]   = Math.round(c.r * 255);
+      data[i*4+1] = Math.round(c.g * 255);
+      data[i*4+2] = Math.round(c.b * 255);
+      data[i*4+3] = 255;
+    });
+    const t = new THREE.DataTexture(data, stops.length, 1, THREE.RGBAFormat);
+    t.magFilter = t.minFilter = THREE.LinearFilter;
+    t.needsUpdate = true;
+    return t;
+  }
+  const palTex = makePalette(COLORS);
+
+  function makeFBO(w, h) {
+    return new THREE.WebGLRenderTarget(w, h, {
+      type: THREE.FloatType,
+      minFilter: THREE.LinearFilter,
+      magFilter: THREE.LinearFilter,
+      depthBuffer: false,
+      stencilBuffer: false
+    });
+  }
+
+  let vel0 = makeFBO(fW, fH), vel1 = makeFBO(fW, fH);
+  let div  = makeFBO(fW, fH);
+  let p0   = makeFBO(fW, fH), p1   = makeFBO(fW, fH);
+
+  const cam = new THREE.Camera();
+  const quad = new THREE.PlaneGeometry(2, 2);
+
+  function makePass(frag, uniforms) {
+    const mat = new THREE.RawShaderMaterial({
+      vertexShader: `attribute vec3 position; varying vec2 uv; void main(){ uv = position.xy * 0.5 + 0.5; gl_Position = vec4(position, 1.0); }`,
+      fragmentShader: frag,
+      uniforms
+    });
+    const scene = new THREE.Scene();
+    scene.add(new THREE.Mesh(quad, mat));
+    return { scene, mat, uniforms };
+  }
+
+  const advPass = makePass(`
+    precision highp float;
+    uniform sampler2D vel; uniform float dt; uniform vec2 px;
+    varying vec2 uv;
+    void main(){
+      vec2 v = texture2D(vel, uv).xy;
+      vec2 ratio = max(${fW}.0, ${fH}.0) / vec2(${fW}.0, ${fH}.0);
+      vec2 uv2 = uv - v * dt * ratio;
+      gl_FragColor = vec4(texture2D(vel, uv2).xy, 0.0, 1.0);
+    }`, { vel:{value:vel0.texture}, dt:{value:0.014}, px:{value:new THREE.Vector2(1/fW,1/fH)} });
+
+  const forcePass = makePass(`
+    precision highp float;
+    uniform sampler2D vel; uniform vec2 force; uniform vec2 center; uniform float radius;
+    varying vec2 uv;
+    void main(){
+      vec2 v = texture2D(vel, uv).xy;
+      vec2 diff = uv - (center * 0.5 + 0.5);
+      diff.y *= -1.0;
+      float d = 1.0 - min(length(diff) / radius, 1.0);
+      d = d * d;
+      gl_FragColor = vec4(v + force * d, 0.0, 1.0);
+    }`, { vel:{value:vel1.texture}, force:{value:new THREE.Vector2()}, center:{value:new THREE.Vector2()}, radius:{value:0.15} });
+
+  const divPass = makePass(`
+    precision highp float;
+    uniform sampler2D vel; uniform vec2 px; uniform float dt;
+    varying vec2 uv;
+    void main(){
+      float x0 = texture2D(vel, uv - vec2(px.x,0)).x;
+      float x1 = texture2D(vel, uv + vec2(px.x,0)).x;
+      float y0 = texture2D(vel, uv - vec2(0,px.y)).y;
+      float y1 = texture2D(vel, uv + vec2(0,px.y)).y;
+      gl_FragColor = vec4((x1-x0+y1-y0)*0.5/dt);
+    }`, { vel:{value:vel1.texture}, px:{value:new THREE.Vector2(1/fW,1/fH)}, dt:{value:0.014} });
+
+  const poissonPass = makePass(`
+    precision highp float;
+    uniform sampler2D pressure; uniform sampler2D divergence; uniform vec2 px;
+    varying vec2 uv;
+    void main(){
+      float p0 = texture2D(pressure, uv+vec2(px.x*2.,0)).r;
+      float p1 = texture2D(pressure, uv-vec2(px.x*2.,0)).r;
+      float p2 = texture2D(pressure, uv+vec2(0,px.y*2.)).r;
+      float p3 = texture2D(pressure, uv-vec2(0,px.y*2.)).r;
+      float d  = texture2D(divergence, uv).r;
+      gl_FragColor = vec4((p0+p1+p2+p3)/4.0 - d);
+    }`, { pressure:{value:p0.texture}, divergence:{value:div.texture}, px:{value:new THREE.Vector2(1/fW,1/fH)} });
+
+  const projPass = makePass(`
+    precision highp float;
+    uniform sampler2D vel; uniform sampler2D pressure; uniform vec2 px; uniform float dt;
+    varying vec2 uv;
+    void main(){
+      float p0 = texture2D(pressure, uv+vec2(px.x,0)).r;
+      float p1 = texture2D(pressure, uv-vec2(px.x,0)).r;
+      float p2 = texture2D(pressure, uv+vec2(0,px.y)).r;
+      float p3 = texture2D(pressure, uv-vec2(0,px.y)).r;
+      vec2 v = texture2D(vel, uv).xy - vec2(p0-p1, p2-p3)*0.5*dt;
+      gl_FragColor = vec4(v, 0.0, 1.0);
+    }`, { vel:{value:vel1.texture}, pressure:{value:p0.texture}, px:{value:new THREE.Vector2(1/fW,1/fH)}, dt:{value:0.014} });
+
+  const colorScene = new THREE.Scene();
+  const colorMat = new THREE.RawShaderMaterial({
+    vertexShader: `attribute vec3 position; varying vec2 uv; void main(){ uv = position.xy*0.5+0.5; gl_Position = vec4(position,1.0); }`,
+    fragmentShader: `
+      precision highp float;
+      uniform sampler2D vel; uniform sampler2D palette;
+      varying vec2 uv;
+      void main(){
+        vec2 v = texture2D(vel, uv).xy;
+        float len = clamp(length(v), 0.0, 1.0);
+        vec3 c = texture2D(palette, vec2(len, 0.5)).rgb;
+        gl_FragColor = vec4(c, len * 0.85);
+      }`,
+    uniforms: { vel:{value:vel0.texture}, palette:{value:palTex} },
+    transparent: true,
+    depthWrite: false
+  });
+  colorScene.add(new THREE.Mesh(quad, colorMat));
+
+  function runPass(pass, target) {
+    renderer.setRenderTarget(target || null);
+    renderer.render(pass.scene, cam);
+    renderer.setRenderTarget(null);
+  }
+
+  const mouse = { x:0, y:0, ox:0, oy:0, dx:0, dy:0 };
+  let autoTime = 0, autoTarget = { x:0.3, y:0.3 }, autoCur = { x:0, y:0 };
+  let lastUserTime = -9999;
+
+  window.addEventListener('mousemove', e => {
+    lastUserTime = performance.now();
+    mouse.x = (e.clientX / W) * 2 - 1;
+    mouse.y = -((e.clientY / H) * 2 - 1);
+  });
+  window.addEventListener('touchmove', e => {
+    if (e.touches.length !== 1) return;
+    lastUserTime = performance.now();
+    mouse.x = (e.touches[0].clientX / W) * 2 - 1;
+    mouse.y = -((e.touches[0].clientY / H) * 2 - 1);
+  }, {passive:true});
+
+  function pickAutoTarget() {
+    autoTarget.x = (Math.random() * 2 - 1) * 0.8;
+    autoTarget.y = (Math.random() * 2 - 1) * 0.8;
+  }
+  pickAutoTarget();
+
+  let last = performance.now();
+  function animate() {
+    requestAnimationFrame(animate);
+    const now = performance.now();
+    const dt = Math.min((now - last) / 1000, 0.05);
+    last = now;
+    autoTime += dt;
+
+    const idle = now - lastUserTime > 1000;
+    if (idle) {
+      const spd = 0.4 * dt;
+      const dx = autoTarget.x - autoCur.x;
+      const dy = autoTarget.y - autoCur.y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      if (dist < 0.02) pickAutoTarget();
+      autoCur.x += dx * spd / Math.max(dist, 0.01);
+      autoCur.y += dy * spd / Math.max(dist, 0.01);
+      mouse.dx = (autoCur.x - mouse.ox) * 2.5;
+      mouse.dy = (autoCur.y - mouse.oy) * 2.5;
+      mouse.x = autoCur.x;
+      mouse.y = autoCur.y;
+    } else {
+      mouse.dx = (mouse.x - mouse.ox) * 20;
+      mouse.dy = (mouse.y - mouse.oy) * 20;
+    }
+    mouse.ox = mouse.x;
+    mouse.oy = mouse.y;
+
+    advPass.uniforms.vel.value = vel0.texture;
+    advPass.uniforms.dt.value = 0.014;
+    runPass(advPass, vel1);
+
+    forcePass.uniforms.vel.value = vel1.texture;
+    forcePass.uniforms.force.value.set(mouse.dx * 0.5, mouse.dy * 0.5);
+    forcePass.uniforms.center.value.set(mouse.x, mouse.y);
+    runPass(forcePass, vel1);
+
+    divPass.uniforms.vel.value = vel1.texture;
+    runPass(divPass, div);
+
+    for (let i = 0; i < 24; i++) {
+      poissonPass.uniforms.pressure.value = (i%2===0 ? p0 : p1).texture;
+      poissonPass.uniforms.divergence.value = div.texture;
+      runPass(poissonPass, i%2===0 ? p1 : p0);
+    }
+
+    projPass.uniforms.vel.value = vel1.texture;
+    projPass.uniforms.pressure.value = p1.texture;
+    runPass(projPass, vel0);
+
+    colorMat.uniforms.vel.value = vel0.texture;
+    renderer.setRenderTarget(null);
+    renderer.render(colorScene, cam);
+  }
+  animate();
+
+  window.addEventListener('resize', () => {
+    W = window.innerWidth; H = window.innerHeight;
+    renderer.setSize(W, H);
+  });
+})();
+</script>
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phantum</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0908;
+    --surface: rgba(18,17,12,0.82);
+    --border: #2a2820;
+    --text: #e8e2d4;
+    --muted: #6b6557;
+    --accent: #c8a96e;
+    --accent-dim: #7a6440;
+    --danger: #8b4a3a;
+  }
+
+  #liquid-bg {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .container { position: relative; z-index: 1; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:#0a0908; color:var(--text); font-family:'DM Mono',monospace; font-weight:300; min-height:100vh; overflow-x:hidden; }
+  body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events:none; z-index:1000; opacity:0.4; }
+  .container { max-width:740px; margin:0 auto; padding:80px 32px; }
+  header { margin-bottom:64px; opacity:0; animation:fadeUp 0.8s ease forwards; }
+  .header-label { font-size:10px; letter-spacing:0.3em; text-transform:uppercase; color:var(--accent); margin-bottom:16px; }
+  h1 { font-family:'Cormorant Garamond',serif; font-weight:300; font-size:clamp(36px,6vw,52px); line-height:1.1; color:var(--text); margin-bottom:12px; }
+  h1 em { font-style:italic; color:var(--accent); }
+  .subtitle { font-size:12px; color:var(--muted); letter-spacing:0.05em; line-height:1.6; }
+  .subtitle-langs { display:block; margin-top:8px; }
+  .subtitle-langs span { display:block; font-size:10px; color:var(--muted); opacity:0.4; line-height:1.8; }
+
+  .section { margin-bottom:40px; opacity:0; animation:fadeUp 0.8s ease forwards; }
+  .section:nth-child(3) { animation-delay:0.1s; }
+  .section:nth-child(4) { animation-delay:0.2s; }
+  .section:nth-child(5) { animation-delay:0.3s; }
+  .section-label { font-size:10px; letter-spacing:0.25em; text-transform:uppercase; color:var(--muted); margin-bottom:20px; }
+
+  .era-group { margin-bottom:28px; }
+  .era-title { font-size:9px; letter-spacing:0.3em; text-transform:uppercase; color:var(--accent-dim); margin-bottom:12px; padding-bottom:6px; border-bottom:1px solid var(--border); }
+  .frameworks { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:10px; }
+
+  .framework-btn {
+    background:var(--surface);
+    border:1px solid var(--border);
+    color:var(--muted);
+    padding:0;
+    cursor:pointer;
+    text-align:left;
+    transition:all 0.2s ease;
+    font-family:'DM Mono',monospace;
+    font-size:11px;
+    font-weight:300;
+    overflow:hidden;
+    position:relative;
+  }
+  .framework-btn:hover { border-color:var(--accent-dim); background:#1a1914; }
+  .framework-btn.active { border-color:var(--accent); background:#1a1812; }
+
+  [data-id="socrates"] .fw-portrait { background:#E8C54722; }
+  [data-id="epictetus"] .fw-portrait { background:#7B9E8722; }
+  [data-id="marcus"] .fw-portrait { background:#9B6B9B22; }
+  [data-id="nietzsche"] .fw-portrait { background:#C4543C22; }
+  [data-id="sartre"] .fw-portrait { background:#4A7FB522; }
+  [data-id="camus"] .fw-portrait { background:#D4904A22; }
+  [data-id="arendt"] .fw-portrait { background:#5B8FA822; }
+  [data-id="simone"] .fw-portrait { background:#C4547A22; }
+  [data-id="foucault"] .fw-portrait { background:#6B6B8A22; }
+  [data-id="hooks"] .fw-portrait { background:#C4547A22; }
+  [data-id="fisher"] .fw-portrait { background:#7A6A9A22; }
+  [data-id="bauman"] .fw-portrait { background:#9A806022; }
+  [data-id="graeber"] .fw-portrait { background:#6A9A5A22; }
+  .fw-portrait {
+    width:100%;
+    aspect-ratio:1;
+    background:#111009;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+    position:relative;
+    border-bottom:1px solid var(--border);
+  }
+  .fw-portrait svg { width:100%; height:100%; }
+  .framework-btn.active .fw-portrait { border-bottom-color:var(--accent-dim); }
+
+  .framework-btn.active::after {
+    content:'';
+    position:absolute;
+    top:0; left:0; right:0;
+    height:2px;
+    background:var(--accent);
+  }
+
+  .fw-info { padding:10px 12px 12px; }
+  .fw-name { display:block; font-size:12px; color:var(--text); margin-bottom:2px; letter-spacing:0.03em; }
+  .framework-btn.active .fw-name { color:var(--accent); }
+  .fw-desc { display:block; font-size:10px; color:var(--muted); opacity:0.7; line-height:1.4; }
+
+  textarea { width:100%; background:var(--surface); border:1px solid var(--border); color:var(--text); padding:20px; font-family:'Cormorant Garamond',serif; font-size:18px; font-weight:300; line-height:1.6; resize:vertical; min-height:120px; outline:none; transition:border-color 0.2s; }
+  textarea::placeholder { color:var(--muted); font-style:italic; }
+  textarea:focus { border-color:var(--accent-dim); }
+
+  .submit-row { display:flex; align-items:center; gap:16px; margin-top:8px; }
+  .submit-btn { background:transparent; border:1px solid var(--accent); color:var(--accent); padding:12px 28px; font-family:'DM Mono',monospace; font-size:11px; letter-spacing:0.2em; text-transform:uppercase; cursor:pointer; transition:all 0.2s ease; }
+  .submit-btn:hover:not(:disabled) { background:var(--accent); color:var(--bg); }
+  .submit-btn:disabled { opacity:0.3; cursor:not-allowed; }
+  .char-count { font-size:10px; color:var(--muted); letter-spacing:0.05em; }
+
+  .response-area { margin-top:48px; border-top:1px solid var(--border); padding-top:48px; display:none; }
+  .response-area.visible { display:block; animation:fadeUp 0.6s ease forwards; }
+  .response-header { display:flex; align-items:center; gap:12px; margin-bottom:32px; }
+  .response-thinker { font-family:'Cormorant Garamond',serif; font-size:13px; font-style:italic; color:var(--accent); }
+  .response-divider { flex:1; height:1px; background:var(--border); }
+  .questions-list { list-style:none; display:flex; flex-direction:column; }
+  .question-item { padding:24px 0; border-bottom:1px solid var(--border); opacity:0; transform:translateY(8px); transition:opacity 0.4s ease,transform 0.4s ease; }
+  .question-item.visible { opacity:1; transform:translateY(0); }
+  .question-num { font-size:10px; color:var(--accent-dim); letter-spacing:0.2em; margin-bottom:8px; }
+  .question-text { font-family:'Cormorant Garamond',serif; font-size:22px; font-weight:300; line-height:1.4; color:var(--text); }
+  .question-context { font-size:11px; color:var(--muted); margin-top:8px; line-height:1.6; }
+
+  .loading { display:none; align-items:center; gap:12px; padding:32px 0; color:var(--muted); font-size:11px; letter-spacing:0.1em; }
+  .loading.visible { display:flex; }
+  .loading-dots { display:flex; gap:4px; }
+  .loading-dots span { width:4px; height:4px; border-radius:50%; background:var(--accent-dim); animation:pulse 1.2s ease infinite; }
+  .loading-dots span:nth-child(2) { animation-delay:0.2s; }
+  .loading-dots span:nth-child(3) { animation-delay:0.4s; }
+
+  .error-msg { display:none; padding:16px 20px; border:1px solid var(--danger); color:#d4847a; font-size:11px; line-height:1.6; margin-top:16px; }
+  .error-msg.visible { display:block; }
+
+  .summary-area { margin-top:40px; padding:24px; border:1px solid var(--border); background:var(--surface); display:none; }
+  .summary-area.visible { display:block; }
+  .summary-label { font-size:10px; letter-spacing:0.25em; text-transform:uppercase; color:var(--accent); margin-bottom:12px; }
+  .summary-text { font-family:'Cormorant Garamond',serif; font-size:16px; font-weight:300; font-style:italic; line-height:1.7; color:var(--muted); }
+
+  .reset-btn { background:none; border:none; color:var(--muted); font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.2em; text-transform:uppercase; cursor:pointer; margin-top:40px; padding:8px 0; text-decoration:underline; text-underline-offset:3px; transition:color 0.2s; }
+  .reset-btn:hover { color:var(--text); }
+
+  .lang-btn { background:var(--surface); border:1px solid var(--border); color:var(--muted); padding:5px 12px; font-family:'DM Mono',monospace; font-size:11px; letter-spacing:0.1em; cursor:pointer; transition:all 0.2s; }
+  .lang-btn:hover { border-color:var(--accent-dim); color:var(--text); }
+  .lang-btn.active { border-color:var(--accent); color:var(--accent); }
+  .lang-row { margin-top:12px; margin-bottom:4px; }
+  .lang-row-label { display:block; font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:var(--accent-dim); margin-bottom:8px; }
+  .lang-btns { display:flex; gap:6px; flex-wrap:wrap; }
+
+  .paywall-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:2000; align-items:center; justify-content:center; }
+  .paywall-overlay.visible { display:flex; }
+  .paywall-box { background:#161510; border:1px solid var(--accent-dim); padding:48px 40px; max-width:420px; width:90%; text-align:center; }
+  .paywall-label { font-size:10px; letter-spacing:0.3em; text-transform:uppercase; color:var(--accent); margin-bottom:16px; }
+  .paywall-title { font-family:'Cormorant Garamond',serif; font-size:28px; font-weight:300; color:var(--text); margin-bottom:12px; line-height:1.3; }
+  .paywall-sub { font-size:11px; color:var(--muted); line-height:1.7; margin-bottom:32px; }
+  .paywall-price { font-size:32px; color:var(--accent); font-family:'Cormorant Garamond',serif; margin-bottom:8px; }
+  .paywall-price span { font-size:14px; color:var(--muted); }
+  .paywall-btn { display:block; width:100%; background:var(--accent); color:var(--bg); border:none; padding:14px; font-family:'DM Mono',monospace; font-size:11px; letter-spacing:0.2em; text-transform:uppercase; cursor:pointer; margin-top:24px; transition:opacity 0.2s; }
+  .paywall-btn:hover { opacity:0.85; }
+  .paywall-close { background:none; border:none; color:var(--muted); font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.15em; cursor:pointer; margin-top:16px; text-decoration:underline; text-underline-offset:3px; }
+  .usage-bar { display:flex; align-items:center; gap:8px; margin-top:8px; }
+  .usage-dots { display:flex; gap:4px; }
+  .usage-dot { width:8px; height:8px; border-radius:50%; border:1px solid var(--accent-dim); }
+  .usage-dot.used { background:var(--accent); border-color:var(--accent); }
+  .usage-text { font-size:10px; color:var(--muted); letter-spacing:0.05em; }
+  .usage-upgrade { font-size:10px; color:var(--accent-dim); cursor:pointer; text-decoration:underline; text-underline-offset:3px; margin-left:auto; }
+  .usage-upgrade:hover { color:var(--accent); }
+
+  .mode-toggle { display:flex; gap:0; margin-bottom:40px; opacity:0; animation:fadeUp 0.8s ease 0.05s forwards; }
+  .mode-btn { flex:1; background:var(--surface); border:1px solid var(--border); color:var(--muted); padding:12px 16px; font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.2em; text-transform:uppercase; cursor:pointer; transition:all 0.2s; text-align:center; }
+  .mode-btn:first-child { border-right:none; }
+  .mode-btn.active { background:#1a1812; border-color:var(--accent); color:var(--accent); }
+  .mode-btn:hover:not(.active) { border-color:var(--accent-dim); color:var(--text); }
+  .thinker-section { transition:opacity 0.3s, transform 0.3s; }
+  .thinker-section.hidden { opacity:0; pointer-events:none; height:0; overflow:hidden; margin:0; }
+  .oracle-hint { font-size:11px; color:var(--muted); line-height:1.7; padding:16px 20px; border:1px solid var(--border); background:var(--surface); margin-bottom:40px; display:none; font-style:italic; }
+  .oracle-hint.visible { display:block; }
+  .oracle-reveal { display:none; align-items:center; gap:16px; margin-bottom:32px; }
+  .oracle-reveal.visible { display:flex; animation:fadeUp 0.5s ease forwards; }
+  .oracle-portrait { width:64px; height:64px; border:1px solid var(--accent); overflow:hidden; flex-shrink:0; }
+  .oracle-portrait svg { width:100%; height:100%; }
+  .oracle-name { font-family:'Cormorant Garamond',serif; font-size:20px; font-style:italic; color:var(--accent); }
+  .oracle-sub { font-size:10px; color:var(--muted); letter-spacing:0.1em; margin-top:2px; }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes pulse { 0%,100%{opacity:0.3;transform:scale(0.8)} 50%{opacity:1;transform:scale(1)} }
+  .books-area { display:none; margin-top:32px; padding-top:28px; border-top:1px solid var(--border); }
+  .books-area.visible { display:block; animation:fadeUp 0.5s ease forwards; }
+  .books-label { font-size:10px; letter-spacing:0.25em; text-transform:uppercase; color:var(--accent-dim); margin-bottom:16px; }
+  .book-card { display:flex; gap:14px; padding:14px 16px; background:var(--surface); border:1px solid var(--border); margin-bottom:10px; text-decoration:none; color:inherit; transition:border-color 0.2s; }
+  .book-card:hover { border-color:var(--accent-dim); }
+  .book-emoji { font-size:28px; width:44px; height:44px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .book-info { flex:1; }
+  .book-title { font-family:'Cormorant Garamond',serif; font-size:15px; font-weight:400; color:var(--text); line-height:1.3; }
+  .book-author { font-size:10px; color:var(--muted); letter-spacing:0.05em; margin-top:2px; }
+  .book-cta { font-size:10px; color:var(--accent-dim); letter-spacing:0.1em; margin-top:6px; display:inline-block; transition:color 0.2s; }
+  .book-card:hover .book-cta { color:var(--accent); }
+  .affiliate-note { font-size:9px; color:var(--muted); opacity:0.5; margin-top:8px; letter-spacing:0.05em; }
+
+  /* Legal modals */
+  .legal-footer { display:flex; gap:16px; justify-content:center; margin-top:48px; padding:24px 0; border-top:1px solid var(--border); }
+  .legal-footer a { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.15em; text-transform:uppercase; color:var(--muted); text-decoration:underline; text-underline-offset:3px; cursor:pointer; transition:color 0.2s; }
+  .legal-footer a:hover { color:var(--text); }
+  .legal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.88); z-index:2500; align-items:flex-start; justify-content:center; overflow-y:auto; padding:60px 20px; }
+  .legal-overlay.visible { display:flex; }
+  .legal-box { background:#161510; border:1px solid var(--border); padding:48px 40px; max-width:560px; width:100%; }
+  .legal-box h2 { font-family:'Cormorant Garamond',serif; font-size:24px; font-weight:300; color:var(--text); margin-bottom:24px; }
+  .legal-box h3 { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--accent); margin-top:24px; margin-bottom:8px; }
+  .legal-box p { font-family:'DM Mono',monospace; font-size:11px; font-weight:300; color:var(--muted); line-height:1.8; margin-bottom:10px; }
+  .legal-box a { color:var(--accent-dim); text-decoration:underline; text-underline-offset:2px; }
+  .legal-box a:hover { color:var(--accent); }
+  .legal-close { background:none; border:1px solid var(--border); color:var(--muted); font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.15em; padding:8px 20px; cursor:pointer; margin-top:28px; transition:border-color 0.2s, color 0.2s; }
+  .legal-close:hover { border-color:var(--accent-dim); color:var(--text); }
+  .contact-field { display:flex; flex-direction:column; gap:4px; margin-bottom:14px; }
+  .contact-field label { font-size:10px; font-family:'DM Mono',monospace; letter-spacing:0.1em; color:var(--muted); }
+  .contact-field input, .contact-field textarea { font-family:'Cormorant Garamond',serif; font-size:16px; color:var(--text); background:var(--surface); border:1px solid var(--border); padding:10px 12px; outline:none; transition:border-color 0.2s; }
+  .contact-field input:focus, .contact-field textarea:focus { border-color:var(--accent-dim); }
+  .contact-field textarea { resize:vertical; min-height:90px; }
+  .contact-submit { background:var(--accent); color:var(--bg); border:none; font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.2em; text-transform:uppercase; padding:10px 24px; cursor:pointer; transition:opacity 0.2s; }
+  .contact-submit:hover { opacity:0.85; }
+  .contact-submit:disabled { opacity:0.3; cursor:not-allowed; }
+  .contact-status { font-size:11px; color:#7B9E87; margin-top:10px; font-family:'DM Mono',monospace; display:none; }
+  .contact-status.visible { display:block; }
+  .contact-status.error { color:#d4847a; }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
