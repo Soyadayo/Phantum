@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Phantum</title>
+<title>Your Situation</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -44,7 +44,7 @@
   .section-label { font-size:10px; letter-spacing:0.25em; text-transform:uppercase; color:var(--muted); margin-bottom:20px; }
 
   .era-group { margin-bottom:28px; }
-  .era-title { font-size:9px; letter-spacing:0.3em; text-transform:uppercase; color:var(--accent-dim); margin-bottom:12px; padding-bottom:6px; border-bottom:1px solid var(--border); }
+  .era-title { font-size:9px; letter-spacing:0.3em; text-transform:uppercase; color:var(--accent-dim); margin-bottom:12px; padding-bottom:6px; border-bottom:none; }
   .frameworks { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:10px; }
 
   .framework-btn {
@@ -75,7 +75,7 @@
     position:relative;
     border-bottom:none;
   }
-  .fw-portrait img { width:100%; height:100%; object-fit:cover; display:block; }
+  .fw-portrait img { width:100%; height:100%; object-fit:cover; display:block; position:absolute; top:0; left:0; }
   .framework-btn.active .fw-portrait { border-bottom:none; }
 
   .framework-btn.active::after {
@@ -107,7 +107,7 @@
   .response-thinker { font-family:'Cormorant Garamond',serif; font-size:13px; font-style:italic; color:var(--accent); }
   .response-divider { flex:1; height:1px; background:var(--border); }
   .questions-list { list-style:none; display:flex; flex-direction:column; }
-  .question-item { padding:24px 0; border-bottom:1px solid var(--border); opacity:0; transform:translateY(8px); transition:opacity 0.4s ease,transform 0.4s ease; }
+  .question-item { padding:24px 0; border-bottom:none; opacity:0; transform:translateY(8px); transition:opacity 0.4s ease,transform 0.4s ease; }
   .question-item.visible { opacity:1; transform:translateY(0); }
   .question-num { font-size:10px; color:var(--accent-dim); letter-spacing:0.2em; margin-bottom:8px; }
   .question-text { font-family:'Cormorant Garamond',serif; font-size:22px; font-weight:300; line-height:1.4; color:var(--text); }
@@ -222,7 +222,7 @@
 
   <header>
     <a href="https://www.tacorari.eu" style="display:inline-flex;align-items:center;gap:6px;font-size:11px;letter-spacing:0.1em;color:var(--muted);text-decoration:none;margin-bottom:20px;transition:color 0.2s;" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--muted)'">← Tacorari</a>
-    <div class="header-label">Phantum</div>
+    <div class="header-label">Your Situation</div>
     <h1>Your situation.<br><em>Their wisdom.</em></h1>
     <p class="subtitle">Pick a thinker. Write what's on your mind. Get their take.<br>
     <span class="subtitle-langs">
@@ -474,7 +474,7 @@
   <div class="legal-box">
     <h2>Privacy Policy</h2>
     <h3>1. Overview</h3>
-    <p>This privacy policy explains how Phantum collects, uses, and protects your data.</p>
+    <p>This privacy policy explains how Your Situation collects, uses, and protects your data.</p>
     <h3>2. Service Provider</h3>
     <p>Soya Arakawa<br>c/o Block Services<br>Stuttgarter Str. 106<br>70736 Fellbach, Germany<br>Email: haustacorari@gmail.com</p>
     <h3>3. Data We Collect</h3>
@@ -486,7 +486,7 @@
     <h3>4. Third-Party Services</h3>
     <p><strong>Vercel</strong> &mdash; <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener">Privacy Policy</a><br><strong>Upstash</strong> &mdash; <a href="https://upstash.com/trust/privacy.html" target="_blank" rel="noopener">Privacy Policy</a><br><strong>Google Gemini API</strong> &mdash; <a href="https://ai.google.dev/gemini-api/terms" target="_blank" rel="noopener">Terms</a><br><strong>Stripe</strong> &mdash; <a href="https://stripe.com/privacy" target="_blank" rel="noopener">Privacy Policy</a><br><strong>Google Fonts</strong> &mdash; <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Privacy Policy</a><br><strong>Web3Forms</strong> &mdash; <a href="https://web3forms.com/privacy" target="_blank" rel="noopener">Privacy Policy</a></p>
     <h3>5. Cookies and Local Storage</h3>
-    <p>Phantum does not use cookies. Local storage saves your anonymous user ID and credit count. This data stays in your browser.</p>
+    <p>Your Situation does not use cookies. Local storage saves your anonymous user ID and credit count. This data stays in your browser.</p>
     <h3>6. Your Rights</h3>
     <p>Under the GDPR, you have the right to access, rectify, delete, and restrict processing of your personal data. Contact: haustacorari@gmail.com.</p>
     <h3>7. Data Retention</h3>
@@ -516,11 +516,11 @@
 
 <div class="paywall-overlay" id="paywallOverlay">
   <div class="paywall-box">
-    <div class="paywall-label">Phantum</div>
+    <div class="paywall-label">Your Situation</div>
     <div class="paywall-title">You've used your<br>free reading today.</div>
     <p class="paywall-sub">Get 10 readings to use anytime.<br>Your free daily reading resets every midnight.</p>
     <div class="paywall-price">3.00€ <span>for 10 readings</span></div>
-    <input type="email" id="paywallEmail" placeholder="your@email.com" style="width:100%;background:transparent;border:none;border-bottom:1px solid var(--border);color:var(--text);font-family:'DM Mono',monospace;font-size:12px;padding:8px 0;outline:none;margin-top:16px;" />
+    <input type="email" id="paywallEmail" placeholder="your@email.com" style="width:100%;background:transparent;border:none;border-bottom:none;color:var(--text);font-family:'DM Mono',monospace;font-size:12px;padding:8px 0;outline:none;margin-top:16px;" />
     <button class="paywall-btn" onclick="startCheckout()">Get 10 readings — 3.00€</button>
     <br>
     <button class="paywall-close" onclick="closePaywall()">Maybe later</button>
@@ -940,7 +940,7 @@ async function submitContact() {
   try {
     const res = await fetch('https://api.web3forms.com/submit', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ access_key: 'a7b20a69-0a6a-4e70-a9d4-894c6caf1826', subject: 'Phantum contact form', from_name: name, email: email, message: message })
+      body: JSON.stringify({ access_key: 'a7b20a69-0a6a-4e70-a9d4-894c6caf1826', subject: 'Your Situation contact form', from_name: name, email: email, message: message })
     });
     const data = await res.json();
     if (data.success) { status.textContent = 'Sent. Thank you.'; status.className = 'contact-status visible'; document.getElementById('contactName').value = ''; document.getElementById('contactEmail').value = ''; document.getElementById('contactMessage').value = ''; }
