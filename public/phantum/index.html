@@ -48,9 +48,11 @@
   .frameworks { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:10px; }
 
   .framework-btn {
-    background:var(--surface);
-    border:none;
-    box-shadow:inset 0 0 0 1px var(--border);
+    border: 1px solid var(--border);
+    background: var(--surface);
+    overflow: hidden;
+    position: relative;
+    border-radius: 0;
     color:var(--muted);
     padding:0;
     cursor:pointer;
@@ -59,26 +61,40 @@
     font-family:'DM Mono',monospace;
     font-size:11px;
     font-weight:300;
-    overflow:hidden;
-    position:relative;
   }
-  .framework-btn:hover { box-shadow:inset 0 0 0 1px var(--accent-dim); background:#1a1914; }
-  .framework-btn.active { box-shadow:inset 0 0 0 1px var(--accent); background:#1a1812; }
+  .framework-btn:hover { border-color:var(--accent-dim); background:#1a1914; }
+  .framework-btn.active { border-color:var(--accent); background:#1a1812; }
 
   .fw-portrait {
-    width:100%;
-    aspect-ratio:1;
-    background:#000;
-    display:block;
-    overflow:hidden;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background: #000;
+    display: block;
+    overflow: hidden;
+    position: relative;
+    border: none !important;
+    margin: 0;
+    padding: 0;
   }
-  .fw-portrait img { width:100%; height:100%; object-fit:cover; display:block; }
+  .fw-portrait img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover;
+    object-position: top center;
+    display: block !important;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border: none !important;
+    vertical-align: top;
+    image-rendering: crisp-edges;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+  }
   
-  .framework-btn.active .fw-portrait { border:none; }
+  .framework-btn.active .fw-portrait { border:none !important; }
 
-  .framework-btn.active::after {
-    display:none;
-  }
+  .framework-btn.active::after { display:none !important; content:none; }
 
   .fw-info { padding:10px 12px 12px; }
   .fw-name { display:block; font-size:12px; color:var(--text); margin-bottom:2px; letter-spacing:0.03em; }
@@ -207,6 +223,18 @@
   .contact-status.visible { display:block; }
   .contact-status.error { color:#d4847a; }
 
+
+  /* Global portrait reset */
+  .framework-btn,
+  .framework-btn * {
+    box-shadow: none !important;
+    outline: none !important;
+    border-radius: 0 !important;
+  }
+  .fw-portrait img {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+  }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
