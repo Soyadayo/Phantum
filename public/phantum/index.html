@@ -75,21 +75,18 @@
     border: none !important;
     margin: 0;
     padding: 0;
+    line-height: 0;
+    font-size: 0;
   }
   .fw-portrait img {
-    width: 100% !important;
-    height: 100% !important;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
-    object-position: top center;
-    display: block !important;
+    object-position: center;
+    display: block;
     position: absolute;
     top: 0;
     left: 0;
-    border: none !important;
-    vertical-align: top;
-    image-rendering: crisp-edges;
-    -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
   }
   
   .framework-btn.active .fw-portrait { border:none !important; }
@@ -272,9 +269,7 @@
       <div class="era-title">Ancient</div>
       <div class="frameworks">
         <button class="framework-btn" data-id="socrates" onclick="selectFramework(this)">
-          <div class="fw-portrait">
-            <img src="/phantum/Socrates.jpg" alt="socrates">
-          </div>
+          <div class="fw-portrait"><img src="/phantum/Socrates.jpg" alt="socrates"></div>
           <div class="fw-info">
             <span class="fw-name">Socrates</span>
             <span class="fw-desc">Questioning & ignorance</span>
@@ -282,9 +277,7 @@
         </button>
 
         <button class="framework-btn" data-id="epictetus" onclick="selectFramework(this)">
-          <div class="fw-portrait">
-            <img src="/phantum/Epictetus.jpg" alt="epictetus">
-          </div>
+          <div class="fw-portrait"><img src="/phantum/Epictetus.jpg" alt="epictetus"></div>
           <div class="fw-info">
             <span class="fw-name">Epictetus</span>
             <span class="fw-desc">Control & acceptance</span>
@@ -292,9 +285,7 @@
         </button>
 
         <button class="framework-btn" data-id="marcus" onclick="selectFramework(this)">
-          <div class="fw-portrait">
-            <img src="/phantum/Marcus_Aurelius.jpg" alt="marcus">
-          </div>
+          <div class="fw-portrait"><img src="/phantum/Marcus_Aurelius.jpg" alt="marcus"></div>
           <div class="fw-info">
             <span class="fw-name">Marcus Aurelius</span>
             <span class="fw-desc">Duty & impermanence</span>
@@ -307,9 +298,7 @@
       <div class="era-title">Modern</div>
       <div class="frameworks">
         <button class="framework-btn" data-id="nietzsche" onclick="selectFramework(this)">
-          <div class="fw-portrait">
-            <img src="/phantum/Nietzsche.jpg" alt="nietzsche">
-          </div>
+          <div class="fw-portrait"><img src="/phantum/Nietzsche.jpg" alt="nietzsche"></div>
           <div class="fw-info">
             <span class="fw-name">Nietzsche</span>
             <span class="fw-desc">Will & self-overcoming</span>
@@ -317,9 +306,7 @@
         </button>
 
         <button class="framework-btn" data-id="sartre" onclick="selectFramework(this)">
-          <div class="fw-portrait">
-            <img src="/phantum/Sartre.jpg" alt="sartre">
-          </div>
+          <div class="fw-portrait"><img src="/phantum/Sartre.jpg" alt="sartre"></div>
           <div class="fw-info">
             <span class="fw-name">Sartre</span>
             <span class="fw-desc">Radical freedom</span>
@@ -327,9 +314,7 @@
         </button>
 
         <button class="framework-btn" data-id="camus" onclick="selectFramework(this)">
-          <div class="fw-portrait">
-            <img src="/phantum/Camus.jpg" alt="camus">
-          </div>
+          <div class="fw-portrait"><img src="/phantum/Camus.jpg" alt="camus"></div>
           <div class="fw-info">
             <span class="fw-name">Camus</span>
             <span class="fw-desc">Absurdity & revolt</span>
@@ -337,9 +322,7 @@
         </button>
 
         <button class="framework-btn" data-id="arendt" onclick="selectFramework(this)">
-          <div class="fw-portrait">
-            <img src="/phantum/Hannah_Arendt.jpg" alt="arendt">
-          </div>
+          <div class="fw-portrait"><img src="/phantum/Hannah_Arendt.jpg" alt="arendt"></div>
           <div class="fw-info">
             <span class="fw-name">Hannah Arendt</span>
             <span class="fw-desc">Action & plurality</span>
@@ -347,9 +330,7 @@
         </button>
 
         <button class="framework-btn" data-id="simone" onclick="selectFramework(this)">
-          <div class="fw-portrait">
-            <img src="/phantum/Simone_de_Beauvoir.jpg" alt="simone">
-          </div>
+          <div class="fw-portrait"><img src="/phantum/Simone_de_Beauvoir.jpg" alt="simone"></div>
           <div class="fw-info">
             <span class="fw-name">Simone de Beauvoir</span>
             <span class="fw-desc">Ambiguity & ethics</span>
@@ -362,9 +343,7 @@
       <div class="era-title">Contemporary</div>
       <div class="frameworks">
         <button class="framework-btn" data-id="foucault" onclick="selectFramework(this)">
-          <div class="fw-portrait">
-            <img src="/phantum/Foucault.jpg" alt="foucault">
-          </div>
+          <div class="fw-portrait"><img src="/phantum/Foucault.jpg" alt="foucault"></div>
           <div class="fw-info">
             <span class="fw-name">Foucault</span>
             <span class="fw-desc">Power & structure</span>
@@ -372,9 +351,7 @@
         </button>
 
         <button class="framework-btn" data-id="hooks" onclick="selectFramework(this)">
-          <div class="fw-portrait">
-            <img src="/phantum/bell_hooks.jpg" alt="hooks">
-          </div>
+          <div class="fw-portrait"><img src="/phantum/bell_hooks.jpg" alt="hooks"></div>
           <div class="fw-info">
             <span class="fw-name">bell hooks</span>
             <span class="fw-desc">Love & liberation</span>
@@ -382,9 +359,7 @@
         </button>
 
         <button class="framework-btn" data-id="fisher" onclick="selectFramework(this)">
-          <div class="fw-portrait">
-            <img src="/phantum/Mark_Fisher.jpg" alt="fisher">
-          </div>
+          <div class="fw-portrait"><img src="/phantum/Mark_Fisher.jpg" alt="fisher"></div>
           <div class="fw-info">
             <span class="fw-name">Mark Fisher</span>
             <span class="fw-desc">Capitalist realism</span>
@@ -392,9 +367,7 @@
         </button>
 
         <button class="framework-btn" data-id="bauman" onclick="selectFramework(this)">
-          <div class="fw-portrait">
-            <img src="/phantum/Zygmunt_Bauman.jpg" alt="bauman">
-          </div>
+          <div class="fw-portrait"><img src="/phantum/Zygmunt_Bauman.jpg" alt="bauman"></div>
           <div class="fw-info">
             <span class="fw-name">Zygmunt Bauman</span>
             <span class="fw-desc">Liquid modernity</span>
@@ -402,9 +375,7 @@
         </button>
 
         <button class="framework-btn" data-id="graeber" onclick="selectFramework(this)">
-          <div class="fw-portrait">
-            <img src="/phantum/David_Graeber.jpg" alt="graeber">
-          </div>
+          <div class="fw-portrait"><img src="/phantum/David_Graeber.jpg" alt="graeber"></div>
           <div class="fw-info">
             <span class="fw-name">David Graeber</span>
             <span class="fw-desc">Debt & freedom</span>
