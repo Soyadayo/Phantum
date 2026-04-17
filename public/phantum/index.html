@@ -49,7 +49,8 @@
 
   .framework-btn {
     background:var(--surface);
-    border:1px solid var(--border);
+    border:none;
+    box-shadow:inset 0 0 0 1px var(--border);
     color:var(--muted);
     padding:0;
     cursor:pointer;
@@ -61,8 +62,8 @@
     overflow:hidden;
     position:relative;
   }
-  .framework-btn:hover { border-color:var(--accent-dim); background:#1a1914; }
-  .framework-btn.active { border-color:var(--accent); background:#1a1812; }
+  .framework-btn:hover { box-shadow:inset 0 0 0 1px var(--accent-dim); background:#1a1914; }
+  .framework-btn.active { box-shadow:inset 0 0 0 1px var(--accent); background:#1a1812; }
 
   .fw-portrait {
     width:100%;
@@ -70,12 +71,8 @@
     background:#000;
     display:block;
     overflow:hidden;
-    position:relative;
-    border:none;
-    margin:-1px;
-    width:calc(100% + 2px);
   }
-  .fw-portrait img { width:100%; height:100%; object-fit:cover; object-position:top center; display:block; position:absolute; top:0; left:0; border:none; vertical-align:top; }
+  .fw-portrait img { width:100%; height:100%; object-fit:cover; display:block; }
   
   .framework-btn.active .fw-portrait { border:none; }
 
