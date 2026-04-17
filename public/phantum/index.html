@@ -71,18 +71,16 @@
     display:block;
     overflow:hidden;
     position:relative;
-    border-bottom:none;
+    border:none;
+    margin:-1px -1px 0 -1px;
+    width:calc(100% + 2px);
   }
-  .fw-portrait img { width:100%; height:100%; object-fit:cover; display:block; position:absolute; top:0; left:0; }
+  .fw-portrait img { width:100%; height:100%; object-fit:cover; object-position:top center; display:block; position:absolute; top:0; left:0; border:none; vertical-align:top; }
   
-  .framework-btn.active .fw-portrait { border-bottom:none; }
+  .framework-btn.active .fw-portrait { border:none; }
 
   .framework-btn.active::after {
-    content:'';
-    position:absolute;
-    top:0; left:0; right:0;
-    height:2px;
-    background:var(--accent);
+    display:none;
   }
 
   .fw-info { padding:10px 12px 12px; }
@@ -220,7 +218,7 @@
 <div class="container">
 
   <header>
-    <a href="https://www.tacorari.eu" style="display:inline-flex;align-items:center;gap:6px;font-size:11px;letter-spacing:0.1em;color:var(--muted);text-decoration:none;margin-bottom:20px;transition:color 0.2s;" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--muted)'">← Tacorari</a>
+    <a href="https://www.tacorari.eu" style="display:inline-flex;align-items:center;gap:6px;font-size:11px;letter-spacing:0.1em;color:var(--muted);text-decoration:none;margin-bottom:20px;transition:color 0.2s;" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--muted)'">← Haus Tacorari</a>
     <div class="header-label">Your Situation</div>
     <h1>Your situation.<br><em>Their wisdom.</em></h1>
     <p class="subtitle">Pick a thinker. Write what's on your mind. Get their take.<br>
