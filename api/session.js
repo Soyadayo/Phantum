@@ -19,7 +19,7 @@ export default async function handler(req, res) {
 
     const product = session.metadata?.product || 'phantum';
     const isTgap = product === 'tgap';
-    const creditsToAdd = isTgap ? 5 : 10;
+    const creditsToAdd = 10;
     const keyPrefix = isTgap ? 'tgap' : 'phantum';
 
     const userId = session.metadata?.userId || session.customer || session.id;

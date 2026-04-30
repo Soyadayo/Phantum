@@ -4,12 +4,10 @@ export default async function handler(req, res) {
   const { email, userId, product } = req.body;
   const isTgap = product === 'tgap';
 
-  const priceId = isTgap
-    ? process.env.STRIPE_PRICE_ID_TGAP
-    : process.env.STRIPE_PRICE_ID;
+  const priceId = process.env.STRIPE_PRICE_ID;
 
   if (!priceId) {
-    return res.status(500).json({ error: `Stripe price not configured for product: ${product || 'phantum'}` });
+    return res.status(500).json({ error: 'Stripe price not configured' });
   }
 
   const baseUrl = isTgap
