@@ -292,7 +292,7 @@
 
   <div class="mode-toggle">
     <button class="mode-btn active" id="modeChoose" onclick="setMode('choose')" data-i18n="modeChoose">Choose your thinker</button>
-    <button class="mode-btn" id="modeOracle" onclick="setMode('oracle')" data-i18n="modeOracle">Let them find you</button>
+    <button class="mode-btn" id="modeOracle" onclick="setMode('oracle')" data-i18n="modeOracle">Choose for me</button>
     <button class="mode-btn" id="modeLibrary" onclick="setMode('library')" data-i18n="modeLibrary">Reading list</button>
   </div>
 
@@ -439,7 +439,7 @@
       </div>
     </div>
     <div class="submit-row">
-      <button class="submit-btn" id="submitBtn" onclick="runSession()" disabled data-i18n="submitBtn">Read it</button>
+      <button class="submit-btn" id="submitBtn" onclick="runSession()" disabled data-i18n="submitBtn">Ask</button>
       <span class="char-count" id="charCount">0 / 500</span>
     </div>
     <div class="error-msg" id="errorMsg"></div>
@@ -573,7 +573,7 @@ const TRANSLATIONS = {
     h1: 'Your situation.<br><em>Their wisdom.</em>',
     subtitle: "Pick a thinker. Write what's on your mind. Get their take.",
     modeChoose: 'Choose your thinker',
-    modeOracle: 'Let them find you',
+    modeOracle: 'Choose for me',
     modeLibrary: 'Reading list',
     oracleHint: "Write what's on your mind. The right thinker will come to you.",
     sectionLabel1: '01 — Choose your thinker',
@@ -581,7 +581,7 @@ const TRANSLATIONS = {
     sectionLabel2: '02 — Describe your situation',
     placeholder: 'A decision, a doubt, a situation. Write freely.',
     langRowLabel: 'Response language',
-    submitBtn: 'Read it',
+    submitBtn: 'Ask',
     resetBtn: 'Start a new session',
     summaryLabel: 'The core of it',
     booksLabel: 'Read their words',
@@ -603,7 +603,7 @@ const TRANSLATIONS = {
     h1: 'あなたの状況に、<br><em>彼らの知恵を。</em>',
     subtitle: '思想家を選んで、今思うことを書く。答えが返ってくる。',
     modeChoose: '思想家を選ぶ',
-    modeOracle: '思想家に選ばれる',
+    modeOracle: 'おまかせ',
     modeLibrary: '文献リスト',
     oracleHint: '今思うことを書いてください。あなたにふさわしい思想家が現れます。',
     sectionLabel1: '01 — 思想家を選ぶ',
@@ -611,7 +611,7 @@ const TRANSLATIONS = {
     sectionLabel2: '02 — あなたの状況を書く',
     placeholder: '決断、迷い、状況。自由に書いてください。',
     langRowLabel: '回答言語',
-    submitBtn: '読む',
+    submitBtn: '問う',
     resetBtn: '新しいセッションを始める',
     summaryLabel: '核心',
     booksLabel: '彼らの言葉を読む',
@@ -633,7 +633,7 @@ const TRANSLATIONS = {
     h1: 'Deine Situation.<br><em>Ihre Weisheit.</em>',
     subtitle: 'Wähle einen Denker. Schreibe, was dich bewegt. Erhalte ihre Perspektive.',
     modeChoose: 'Denker wählen',
-    modeOracle: 'Vom Denker gefunden werden',
+    modeOracle: 'Für mich wählen',
     modeLibrary: 'Leseliste',
     oracleHint: 'Schreibe, was dir auf dem Herzen liegt. Der richtige Denker wird zu dir kommen.',
     sectionLabel1: '01 — Denker wählen',
@@ -641,7 +641,7 @@ const TRANSLATIONS = {
     sectionLabel2: '02 — Deine Situation beschreiben',
     placeholder: 'Eine Entscheidung, ein Zweifel, eine Situation. Schreib frei.',
     langRowLabel: 'Antwortsprache',
-    submitBtn: 'Lesen',
+    submitBtn: 'Fragen',
     resetBtn: 'Neue Sitzung beginnen',
     summaryLabel: 'Der Kern der Sache',
     booksLabel: 'Ihre Worte lesen',
@@ -663,7 +663,7 @@ const TRANSLATIONS = {
     h1: 'Ta situation.<br><em>Leur sagesse.</em>',
     subtitle: 'Choisis un penseur. Écris ce qui te préoccupe. Reçois leur réponse.',
     modeChoose: 'Choisir ton penseur',
-    modeOracle: 'Laisser le penseur te trouver',
+    modeOracle: 'Choisir pour moi',
     modeLibrary: 'Liste de lecture',
     oracleHint: "Écris ce qui t'occupe l'esprit. Le bon penseur viendra à toi.",
     sectionLabel1: '01 — Choisir ton penseur',
@@ -671,7 +671,7 @@ const TRANSLATIONS = {
     sectionLabel2: '02 — Décris ta situation',
     placeholder: 'Une décision, un doute, une situation. Écris librement.',
     langRowLabel: 'Langue de réponse',
-    submitBtn: 'Lire',
+    submitBtn: 'Consulter',
     resetBtn: 'Commencer une nouvelle session',
     summaryLabel: "L'essentiel",
     booksLabel: 'Lire leurs mots',
@@ -693,7 +693,7 @@ const TRANSLATIONS = {
     h1: 'Tu situación.<br><em>Su sabiduría.</em>',
     subtitle: 'Elige un pensador. Escribe lo que te preocupa. Recibe su perspectiva.',
     modeChoose: 'Elegir tu pensador',
-    modeOracle: 'Dejar que te encuentren',
+    modeOracle: 'Elige por mí',
     modeLibrary: 'Lista de lectura',
     oracleHint: 'Escribe lo que tienes en mente. El pensador adecuado vendrá a ti.',
     sectionLabel1: '01 — Elige tu pensador',
@@ -701,7 +701,7 @@ const TRANSLATIONS = {
     sectionLabel2: '02 — Describe tu situación',
     placeholder: 'Una decisión, una duda, una situación. Escribe libremente.',
     langRowLabel: 'Idioma de respuesta',
-    submitBtn: 'Leer',
+    submitBtn: 'Consultar',
     resetBtn: 'Comenzar una nueva sesión',
     summaryLabel: 'Lo esencial',
     booksLabel: 'Leer sus palabras',
