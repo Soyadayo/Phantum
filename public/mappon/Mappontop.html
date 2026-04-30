@@ -223,8 +223,23 @@ footer a { color: #aaa; text-decoration: underline; text-underline-offset: 3px; 
 </main>
 
 <footer>
-  <a href="https://www.tacorari.eu">Tacorari</a> · Haus Tacorari · Krefeld, Germany
+  <div style="margin-bottom:10px;">
+    <a href="https://www.tacorari.eu">Tacorari</a> · Haus Tacorari · Krefeld, Germany
+  </div>
+  <div style="display:flex;gap:16px;justify-content:center;">
+    <a href="#" onclick="openLegal('contact');return false;">Contact</a>
+    <a href="#" onclick="openLegal('legal');return false;">Impressum</a>
+    <a href="#" onclick="openLegal('privacy');return false;">Privacy</a>
+  </div>
 </footer>
+
+<!-- Legal overlay -->
+<div id="tg-overlay" onclick="if(event.target===this)closeLegal()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:2000;align-items:flex-start;justify-content:center;overflow-y:auto;padding:60px 20px;">
+  <div style="background:#fff;border:1px solid #e5e5e0;border-radius:8px;padding:48px 40px;max-width:560px;width:100%;position:relative;">
+    <div id="tg-modal-content"></div>
+    <button onclick="closeLegal()" style="margin-top:28px;background:none;border:1px solid #ccc;color:#999;font-family:'DM Sans',sans-serif;font-size:13px;padding:8px 20px;border-radius:4px;cursor:pointer;">Close</button>
+  </div>
+</div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 <script>
@@ -394,6 +409,62 @@ document.addEventListener('click', e => {
     sugBox.style.display = 'none';
   }
 });
+
+// Legal modals
+const LEGAL_CONTENT = {
+  contact: `<h2 style="font-family:'Source Serif 4',serif;font-size:24px;font-weight:400;margin-bottom:16px;">Contact</h2>
+    <p style="font-size:15px;color:#555;line-height:1.7;margin-bottom:14px;">Questions, feedback, or just want to say hello.</p>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-top:16px;">
+      <div><label style="font-size:12px;font-family:'DM Sans',sans-serif;color:#999;display:block;margin-bottom:4px;">Name</label><input id="tg-name" type="text" placeholder="Your name" style="width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:4px;font-size:15px;font-family:'Source Serif 4',serif;outline:none;"></div>
+      <div><label style="font-size:12px;font-family:'DM Sans',sans-serif;color:#999;display:block;margin-bottom:4px;">Email</label><input id="tg-email" type="email" placeholder="your@email.com" style="width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:4px;font-size:15px;font-family:'Source Serif 4',serif;outline:none;"></div>
+      <div><label style="font-size:12px;font-family:'DM Sans',sans-serif;color:#999;display:block;margin-bottom:4px;">Message</label><textarea id="tg-msg" placeholder="What's on your mind?" style="width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:4px;font-size:15px;font-family:'Source Serif 4',serif;resize:vertical;min-height:90px;outline:none;"></textarea></div>
+      <button onclick="submitContact()" style="background:#1a1a1a;color:#fff;border:none;padding:10px 24px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;border-radius:4px;cursor:pointer;">Send</button>
+      <div id="tg-contact-status" style="font-size:13px;font-family:'DM Sans',sans-serif;display:none;"></div>
+    </div>`,
+  legal: `<h2 style="font-family:'Source Serif 4',serif;font-size:24px;font-weight:400;margin-bottom:20px;">Impressum</h2>
+    <p style="font-size:13px;font-family:'DM Sans',sans-serif;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Service Provider</p>
+    <p style="font-size:15px;color:#444;line-height:1.7;margin-bottom:16px;">Soya Arakawa<br>c/o Block Services<br>Stuttgarter Str. 106<br>70736 Fellbach, Germany</p>
+    <p style="font-size:13px;font-family:'DM Sans',sans-serif;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Contact</p>
+    <p style="font-size:15px;color:#444;line-height:1.7;margin-bottom:16px;">Email: haustacorari@gmail.com</p>
+    <p style="font-size:13px;font-family:'DM Sans',sans-serif;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Tax Information</p>
+    <p style="font-size:15px;color:#444;line-height:1.7;margin-bottom:16px;">Tax number: 117/5007/3459<br>VAT not charged per §19 UStG (Kleinunternehmerregelung).</p>
+    <p style="font-size:13px;font-family:'DM Sans',sans-serif;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Responsible for Content</p>
+    <p style="font-size:15px;color:#444;line-height:1.7;">Soya Arakawa (address as above), per §18 Abs. 2 MStV.</p>`,
+  privacy: `<h2 style="font-family:'Source Serif 4',serif;font-size:24px;font-weight:400;margin-bottom:20px;">Privacy Policy</h2>
+    <p style="font-size:13px;font-family:'DM Sans',sans-serif;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Service Provider</p>
+    <p style="font-size:15px;color:#444;line-height:1.7;margin-bottom:16px;">Soya Arakawa · haustacorari@gmail.com</p>
+    <p style="font-size:13px;font-family:'DM Sans',sans-serif;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Data We Collect</p>
+    <p style="font-size:15px;color:#444;line-height:1.7;margin-bottom:16px;"><strong>IP address.</strong> Used temporarily for rate limiting. Not used for tracking.<br><strong>URLs submitted.</strong> Sent to our AI for processing. Not stored on our servers.</p>
+    <p style="font-size:13px;font-family:'DM Sans',sans-serif;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Third-Party Services</p>
+    <p style="font-size:15px;color:#444;line-height:1.7;margin-bottom:16px;">Vercel (hosting) · OpenWeatherMap (weather data) · Wikipedia API · Google Fonts</p>
+    <p style="font-size:13px;font-family:'DM Sans',sans-serif;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Your Rights (GDPR)</p>
+    <p style="font-size:15px;color:#444;line-height:1.7;">You have the right to access, rectify, and delete your personal data. Contact: haustacorari@gmail.com</p>`,
+};
+
+function openLegal(id) {
+  const overlay = document.getElementById('tg-overlay');
+  document.getElementById('tg-modal-content').innerHTML = LEGAL_CONTENT[id] || '';
+  overlay.style.display = 'flex';
+}
+function closeLegal() {
+  document.getElementById('tg-overlay').style.display = 'none';
+}
+async function submitContact() {
+  const name = document.getElementById('tg-name').value.trim();
+  const email = document.getElementById('tg-email').value.trim();
+  const msg = document.getElementById('tg-msg').value.trim();
+  const status = document.getElementById('tg-contact-status');
+  if (!name || !email || !msg) { status.textContent = 'Please fill in all fields.'; status.style.color='#b91c1c'; status.style.display='block'; return; }
+  try {
+    const res = await fetch('https://api.web3forms.com/submit', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ access_key:'a7b20a69-0a6a-4e70-a9d4-894c6caf1826', subject:'Mappon contact', from_name:name, email, message:msg })
+    });
+    const data = await res.json();
+    if (data.success) { status.textContent = 'Sent. Thank you.'; status.style.color='#16a34a'; status.style.display='block'; }
+    else throw new Error();
+  } catch { status.textContent = 'Something went wrong. Email haustacorari@gmail.com directly.'; status.style.color='#b91c1c'; status.style.display='block'; }
+}
 
 // Space = new random city (when not typing)
 document.addEventListener('keydown', e => {
