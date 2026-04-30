@@ -500,7 +500,7 @@ if (!userId) {
   localStorage.setItem('tgap_user_id', userId);
 }
 let paidChecks = parseInt(localStorage.getItem('tgap_credits') || '0', 10);
-let freeChecksLeft = 2;
+let freeChecksLeft = 3;
 
 function showPaywall() { document.getElementById('paywallOverlay').classList.add('visible'); }
 function closePaywall() { document.getElementById('paywallOverlay').classList.remove('visible'); }
@@ -692,6 +692,9 @@ async function doSearch(forceKey) {
 
     if (data.error === 'FREE_LIMIT_REACHED') {
       show("landing");
+      freeChecksLeft = 0;
+      btn.disabled = true;
+      document.getElementById("limit-msg").style.display = "block";
       showPaywall();
       return;
     }
@@ -699,6 +702,10 @@ async function doSearch(forceKey) {
 
     if (data.freeRemaining !== null && data.freeRemaining !== undefined) {
       freeChecksLeft = data.freeRemaining;
+    }
+    if (data.creditsRemaining !== null && data.creditsRemaining !== undefined) {
+      paidChecks = data.creditsRemaining;
+      localStorage.setItem('tgap_credits', data.creditsRemaining);
     }
 
     renderResults(data.result);
@@ -824,9 +831,14 @@ function renderResults(data) {
   }
 
   // CTA
-  const checksText = freeChecksLeft > 0
-    ? `You have <strong>${freeChecksLeft}</strong> free ${freeChecksLeft === 1 ? 'check' : 'checks'} remaining this month.`
-    : 'You have used all your free checks this month. More available next month.';
+  let checksText;
+  if (paidChecks > 0) {
+    checksText = `You have <strong>${paidChecks}</strong> paid ${paidChecks === 1 ? 'check' : 'checks'} remaining.`;
+  } else if (freeChecksLeft > 0) {
+    checksText = `You have <strong>${freeChecksLeft}</strong> free ${freeChecksLeft === 1 ? 'check' : 'checks'} remaining this month.`;
+  } else {
+    checksText = 'You have used all your free checks this month. More available next month.';
+  }
   html += `
     <div class="cta-box">
       <div class="cta-title">Make this a habit.</div>

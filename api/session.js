@@ -22,20 +22,40 @@ export default async function handler(req, res) {
     const creditsToAdd = isTgap ? 5 : 10;
     const keyPrefix = isTgap ? 'tgap' : 'phantum';
 
-    const userId = session.customer || session.id;
+    const userId = session.metadata?.userId || session.customer || session.id;
     const creditKey = `${keyPrefix}:credits:user:${userId}`;
+    const processedKey = `${keyPrefix}:processed:session:${session_id}`;
 
-    const existRes = await fetch(`${REDIS_URL}/get/${encodeURIComponent(creditKey)}`, {
+    // Idempotency check — avoid double-crediting on repeated calls
+    const alreadyProcessed = await fetch(`${REDIS_URL}/get/${encodeURIComponent(processedKey)}`, {
       headers: { Authorization: `Bearer ${REDIS_TOKEN}` }
-    });
-    const existData = await existRes.json();
-    const existing = parseInt(existData.result || '0', 10);
+    }).then(r => r.json()).then(d => d.result);
 
-    await fetch(`${REDIS_URL}/set/${encodeURIComponent(creditKey)}/${existing + creditsToAdd}`, {
-      headers: { Authorization: `Bearer ${REDIS_TOKEN}` }
-    });
+    let totalCredits;
+    if (alreadyProcessed) {
+      const cur = await fetch(`${REDIS_URL}/get/${encodeURIComponent(creditKey)}`, {
+        headers: { Authorization: `Bearer ${REDIS_TOKEN}` }
+      }).then(r => r.json()).then(d => parseInt(d.result || '0', 10));
+      totalCredits = cur;
+    } else {
+      const existRes = await fetch(`${REDIS_URL}/get/${encodeURIComponent(creditKey)}`, {
+        headers: { Authorization: `Bearer ${REDIS_TOKEN}` }
+      });
+      const existData = await existRes.json();
+      const existing = parseInt(existData.result || '0', 10);
+      totalCredits = existing + creditsToAdd;
 
-    res.status(200).json({ success: true, userId, credits: existing + creditsToAdd, product });
+      await Promise.all([
+        fetch(`${REDIS_URL}/set/${encodeURIComponent(creditKey)}/${totalCredits}`, {
+          headers: { Authorization: `Bearer ${REDIS_TOKEN}` }
+        }),
+        fetch(`${REDIS_URL}/set/${encodeURIComponent(processedKey)}/1`, {
+          headers: { Authorization: `Bearer ${REDIS_TOKEN}` }
+        }),
+      ]);
+    }
+
+    res.status(200).json({ success: true, userId, credits: totalCredits, product });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
