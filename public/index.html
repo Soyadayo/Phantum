@@ -1,184 +1,402 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Haus Tacorari</title>
-<meta name="description" content="Haus Tacorari — tools for seeing what isn't shown. A philosophical oracle, news translation analysis, and world city explorer.">
-<link rel="canonical" href="https://www.tacorari.eu/">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://www.tacorari.eu/">
-<meta property="og:site_name" content="Haus Tacorari">
-<meta property="og:title" content="Haus Tacorari">
-<meta property="og:description" content="Tools for seeing what isn't shown. A philosophical oracle, news translation analysis, and world city explorer.">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Haus Tacorari">
-<meta name="twitter:description" content="Tools for seeing what isn't shown. A philosophical oracle, news translation analysis, and world city explorer.">
-<script type="application/ld+json">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Haus Tacorari</title>
+  <meta name="description"
+    content="Haus Tacorari — tools for seeing what isn't shown. A philosophical oracle, news translation analysis, and world city explorer.">
+  <link rel="canonical" href="https://www.tacorari.eu/">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.tacorari.eu/">
+  <meta property="og:site_name" content="Haus Tacorari">
+  <meta property="og:title" content="Haus Tacorari">
+  <meta property="og:description"
+    content="Tools for seeing what isn't shown. A philosophical oracle, news translation analysis, and world city explorer.">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Haus Tacorari">
+  <meta name="twitter:description"
+    content="Tools for seeing what isn't shown. A philosophical oracle, news translation analysis, and world city explorer.">
+  <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"WebSite","name":"Haus Tacorari","url":"https://www.tacorari.eu","description":"Tools for seeing what isn't shown."}
 </script>
-<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-<style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    min-height: 100vh;
-    background: #faf9f6;
-    font-family: 'Source Serif 4', Georgia, serif;
-    color: #1a1a1a;
-  }
-  .wrap { max-width: 600px; margin: 0 auto; padding: 0 24px; }
-  header { padding-top: 48px; }
-  header h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.01em; line-height: 1.1; }
-  .rule { width: 40px; height: 2px; background: #1a1a1a; margin: 14px 0; }
-  header p {
-    font-size: 18px; line-height: 1.6; color: #555;
-    font-weight: 300; font-style: italic;
-  }
-  main { padding: 44px 0; }
-  .cards { display: flex; flex-direction: column; gap: 20px; }
+  <link
+    href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=DM+Sans:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-  .card {
-    background: #fff;
-    border: 1px solid #e5e5e0;
-    border-radius: 6px;
-    padding: 28px 28px 24px;
-    cursor: pointer;
-    transition: border-color 0.25s ease, box-shadow 0.25s ease;
-    text-decoration: none;
-    color: inherit;
-    display: block;
-  }
-  .card:hover { border-color: var(--accent); box-shadow: 0 2px 20px color-mix(in srgb, var(--accent) 8%, transparent); }
-  .card-inner { display: flex; align-items: flex-start; gap: 18px; }
-  .card-icon { flex-shrink: 0; margin-top: 2px; opacity: 0.7; transition: opacity 0.25s; }
-  .card:hover .card-icon { opacity: 1; }
-  .card-body { flex: 1; }
+    body {
+      min-height: 100vh;
+      background: #faf9f6;
+      font-family: 'Source Serif 4', Georgia, serif;
+      color: #1a1a1a;
+    }
 
-  .card-title-row { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; flex-wrap: wrap; }
-  .card-name { font-size: 22px; font-weight: 600; }
-  .badge {
-    font-size: 11px; font-family: 'DM Sans', sans-serif;
-    font-weight: 600; text-transform: uppercase;
-    letter-spacing: 0.08em; padding: 2px 8px;
-    border-radius: 3px;
-  }
-  .badge-live { color: #16a34a; background: #f0fdf4; border: 1px solid #bbf7d0; }
-  .badge-soon { color: #999; background: #f5f5f0; border: 1px solid #e5e5e0; }
+    .wrap {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
 
-  .card-tagline {
-    font-size: 15px; color: #888; font-style: italic; margin-bottom: 10px;
-  }
-  .card-desc { font-size: 16px; line-height: 1.6; color: #444; }
-  .card-link {
-    margin-top: 16px; display: flex; align-items: center; gap: 6px;
-  }
-  .card-link-text {
-    font-size: 14px; font-family: 'DM Sans', sans-serif;
-    font-weight: 600; color: #999; transition: color 0.25s;
-  }
-  .card:hover .card-link-text { color: var(--accent); }
-  .card-link-arrow {
-    font-size: 16px; color: #ccc; transition: color 0.25s, transform 0.25s;
-    display: inline-block;
-  }
-  .card:hover .card-link-arrow { color: var(--accent); transform: translateX(4px); }
+    header {
+      padding-top: 48px;
+    }
 
-  .future {
-    margin-top: 20px; padding: 20px 28px;
-    border: 1px dashed #ddd; border-radius: 6px;
-    text-align: center;
-    font-size: 14px; color: #bbb;
-    font-family: 'DM Sans', sans-serif;
-  }
+    header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      line-height: 1.1;
+    }
 
-  footer {
-    margin-top: 48px; padding: 20px 0 48px;
-    border-top: 1px solid #e5e5e0;
-    display: flex; justify-content: space-between;
-    align-items: center; flex-wrap: wrap; gap: 8px;
-    font-size: 13px; font-family: 'DM Sans', sans-serif; color: #bbb;
-  }
-  .footer-links { display: flex; gap: 16px; }
-  .footer-links a {
-    color: #bbb; text-decoration: none; cursor: pointer;
-    transition: color 0.2s;
-  }
-  .footer-links a:hover { color: #666; }
+    .rule {
+      width: 40px;
+      height: 2px;
+      background: #1a1a1a;
+      margin: 14px 0;
+    }
 
-  /* Legal / Privacy / Contact modals */
-  .modal-overlay {
-    display: none; position: fixed; inset: 0;
-    background: rgba(0,0,0,0.5);
-    z-index: 1000;
-    align-items: flex-start; justify-content: center;
-    overflow-y: auto; padding: 48px 20px;
-  }
-  .modal-overlay.visible { display: flex; }
-  .modal-box {
-    background: #faf9f6; border: 1px solid #e5e5e0;
-    border-radius: 6px;
-    padding: 40px 36px; max-width: 560px; width: 100%;
-  }
-  .modal-box h2 {
-    font-size: 22px; font-weight: 600; margin-bottom: 20px;
-  }
-  .modal-box h3 {
-    font-size: 13px; font-family: 'DM Sans', sans-serif;
-    font-weight: 600; text-transform: uppercase;
-    letter-spacing: 0.06em; color: #999;
-    margin-top: 24px; margin-bottom: 8px;
-  }
-  .modal-box p {
-    font-size: 15px; line-height: 1.7; color: #555; margin-bottom: 8px;
-  }
-  .modal-box a { color: #8b5cf6; text-decoration: underline; text-underline-offset: 2px; }
-  .modal-box a:hover { color: #6d28d9; }
-  .modal-close {
-    background: none; border: 1px solid #e5e5e0; border-radius: 4px;
-    color: #999; font-family: 'DM Sans', sans-serif;
-    font-size: 13px; font-weight: 500;
-    padding: 8px 20px; cursor: pointer; margin-top: 28px;
-    transition: border-color 0.2s, color 0.2s;
-  }
-  .modal-close:hover { border-color: #999; color: #333; }
+    header p {
+      font-size: 18px;
+      line-height: 1.6;
+      color: #555;
+      font-weight: 300;
+      font-style: italic;
+    }
 
-  /* Contact form */
-  .contact-field {
-    display: flex; flex-direction: column; gap: 4px;
-    margin-bottom: 16px;
-  }
-  .contact-field label {
-    font-size: 13px; font-family: 'DM Sans', sans-serif;
-    font-weight: 500; color: #999;
-  }
-  .contact-field input,
-  .contact-field textarea {
-    font-family: 'Source Serif 4', Georgia, serif;
-    font-size: 15px; color: #1a1a1a;
-    background: #fff; border: 1px solid #e5e5e0; border-radius: 4px;
-    padding: 10px 12px; outline: none;
-    transition: border-color 0.2s;
-  }
-  .contact-field input:focus,
-  .contact-field textarea:focus { border-color: #8b5cf6; }
-  .contact-field textarea { resize: vertical; min-height: 100px; }
-  .contact-submit {
-    background: #1a1a1a; color: #faf9f6; border: none; border-radius: 4px;
-    font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600;
-    letter-spacing: 0.04em; text-transform: uppercase;
-    padding: 10px 24px; cursor: pointer;
-    transition: opacity 0.2s;
-  }
-  .contact-submit:hover { opacity: 0.8; }
-  .contact-submit:disabled { opacity: 0.4; cursor: not-allowed; }
-  .contact-status {
-    font-size: 14px; color: #16a34a; margin-top: 12px;
-    font-family: 'DM Sans', sans-serif; display: none;
-  }
-  .contact-status.visible { display: block; }
-  .contact-status.error { color: #b91c1c; }
-</style>
+    main {
+      padding: 44px 0;
+    }
+
+    .cards {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .card {
+      background: #fff;
+      border: 1px solid #e5e5e0;
+      border-radius: 6px;
+      padding: 28px 28px 24px;
+      cursor: pointer;
+      transition: border-color 0.25s ease, box-shadow 0.25s ease;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+
+    .card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 2px 20px color-mix(in srgb, var(--accent) 8%, transparent);
+    }
+
+    .card-inner {
+      display: flex;
+      align-items: flex-start;
+      gap: 18px;
+    }
+
+    .card-icon {
+      flex-shrink: 0;
+      margin-top: 2px;
+      opacity: 0.7;
+      transition: opacity 0.25s;
+    }
+
+    .card:hover .card-icon {
+      opacity: 1;
+    }
+
+    .card-body {
+      flex: 1;
+    }
+
+    .card-title-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 4px;
+      flex-wrap: wrap;
+    }
+
+    .card-name {
+      font-size: 22px;
+      font-weight: 600;
+    }
+
+    .badge {
+      font-size: 11px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 2px 8px;
+      border-radius: 3px;
+    }
+
+    .badge-live {
+      color: #16a34a;
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+    }
+
+    .badge-soon {
+      color: #999;
+      background: #f5f5f0;
+      border: 1px solid #e5e5e0;
+    }
+
+    .card-tagline {
+      font-size: 15px;
+      color: #888;
+      font-style: italic;
+      margin-bottom: 10px;
+    }
+
+    .card-desc {
+      font-size: 16px;
+      line-height: 1.6;
+      color: #444;
+    }
+
+    .card-link {
+      margin-top: 16px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .card-link-text {
+      font-size: 14px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 600;
+      color: #999;
+      transition: color 0.25s;
+    }
+
+    .card:hover .card-link-text {
+      color: var(--accent);
+    }
+
+    .card-link-arrow {
+      font-size: 16px;
+      color: #ccc;
+      transition: color 0.25s, transform 0.25s;
+      display: inline-block;
+    }
+
+    .card:hover .card-link-arrow {
+      color: var(--accent);
+      transform: translateX(4px);
+    }
+
+    .future {
+      margin-top: 20px;
+      padding: 20px 28px;
+      border: 1px dashed #ddd;
+      border-radius: 6px;
+      text-align: center;
+      font-size: 14px;
+      color: #bbb;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    footer {
+      margin-top: 48px;
+      padding: 20px 0 48px;
+      border-top: 1px solid #e5e5e0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 13px;
+      font-family: 'DM Sans', sans-serif;
+      color: #bbb;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 16px;
+    }
+
+    .footer-links a {
+      color: #bbb;
+      text-decoration: none;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover {
+      color: #666;
+    }
+
+    /* Legal / Privacy / Contact modals */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      align-items: flex-start;
+      justify-content: center;
+      overflow-y: auto;
+      padding: 48px 20px;
+    }
+
+    .modal-overlay.visible {
+      display: flex;
+    }
+
+    .modal-box {
+      background: #faf9f6;
+      border: 1px solid #e5e5e0;
+      border-radius: 6px;
+      padding: 40px 36px;
+      max-width: 560px;
+      width: 100%;
+    }
+
+    .modal-box h2 {
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+
+    .modal-box h3 {
+      font-size: 13px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #999;
+      margin-top: 24px;
+      margin-bottom: 8px;
+    }
+
+    .modal-box p {
+      font-size: 15px;
+      line-height: 1.7;
+      color: #555;
+      margin-bottom: 8px;
+    }
+
+    .modal-box a {
+      color: #8b5cf6;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .modal-box a:hover {
+      color: #6d28d9;
+    }
+
+    .modal-close {
+      background: none;
+      border: 1px solid #e5e5e0;
+      border-radius: 4px;
+      color: #999;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 8px 20px;
+      cursor: pointer;
+      margin-top: 28px;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .modal-close:hover {
+      border-color: #999;
+      color: #333;
+    }
+
+    /* Contact form */
+    .contact-field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 16px;
+    }
+
+    .contact-field label {
+      font-size: 13px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      color: #999;
+    }
+
+    .contact-field input,
+    .contact-field textarea {
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-size: 15px;
+      color: #1a1a1a;
+      background: #fff;
+      border: 1px solid #e5e5e0;
+      border-radius: 4px;
+      padding: 10px 12px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .contact-field input:focus,
+    .contact-field textarea:focus {
+      border-color: #8b5cf6;
+    }
+
+    .contact-field textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .contact-submit {
+      background: #1a1a1a;
+      color: #faf9f6;
+      border: none;
+      border-radius: 4px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 10px 24px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .contact-submit:hover {
+      opacity: 0.8;
+    }
+
+    .contact-submit:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .contact-status {
+      font-size: 14px;
+      color: #16a34a;
+      margin-top: 12px;
+      font-family: 'DM Sans', sans-serif;
+      display: none;
+    }
+
+    .contact-status.visible {
+      display: block;
+    }
+
+    .contact-status.error {
+      color: #b91c1c;
+    }
+  </style>
 </head>
+
 <body>
   <header class="wrap">
     <h1>Haus Tacorari</h1>
@@ -194,12 +412,12 @@
         <div class="card-inner">
           <div class="card-icon">
             <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-              <circle cx="16" cy="16" r="14" stroke="#8b5cf6" stroke-width="1.5"/>
-              <circle cx="16" cy="16" r="6" stroke="#8b5cf6" stroke-width="1.5"/>
-              <line x1="16" y1="2" x2="16" y2="10" stroke="#8b5cf6" stroke-width="1.5"/>
-              <line x1="16" y1="22" x2="16" y2="30" stroke="#8b5cf6" stroke-width="1.5"/>
-              <line x1="2" y1="16" x2="10" y2="16" stroke="#8b5cf6" stroke-width="1.5"/>
-              <line x1="22" y1="16" x2="30" y2="16" stroke="#8b5cf6" stroke-width="1.5"/>
+              <circle cx="16" cy="16" r="14" stroke="#8b5cf6" stroke-width="1.5" />
+              <circle cx="16" cy="16" r="6" stroke="#8b5cf6" stroke-width="1.5" />
+              <line x1="16" y1="2" x2="16" y2="10" stroke="#8b5cf6" stroke-width="1.5" />
+              <line x1="16" y1="22" x2="16" y2="30" stroke="#8b5cf6" stroke-width="1.5" />
+              <line x1="2" y1="16" x2="10" y2="16" stroke="#8b5cf6" stroke-width="1.5" />
+              <line x1="22" y1="16" x2="30" y2="16" stroke="#8b5cf6" stroke-width="1.5" />
             </svg>
           </div>
           <div class="card-body">
@@ -208,7 +426,8 @@
               <span class="badge badge-live">Live</span>
             </div>
             <div class="card-tagline">A philosophical oracle</div>
-            <div class="card-desc">Ask a question. Get an answer drawn from Stoicism, Existentialism, Critical Theory, and contemporary thinkers. Not advice. A lens.</div>
+            <div class="card-desc">Ask a question. Get an answer drawn from Stoicism, Existentialism, Critical Theory,
+              and contemporary thinkers. Not advice. A lens.</div>
             <div class="card-link">
               <span class="card-link-text">tacorari.eu/phantum</span>
               <span class="card-link-arrow">→</span>
@@ -222,15 +441,15 @@
         <div class="card-inner">
           <div class="card-icon">
             <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-              <rect x="2" y="4" width="12" height="16" rx="1.5" stroke="#b91c1c" stroke-width="1.5"/>
-              <rect x="18" y="12" width="12" height="16" rx="1.5" stroke="#b91c1c" stroke-width="1.5"/>
-              <path d="M14 14 L18 18" stroke="#b91c1c" stroke-width="1.5"/>
-              <line x1="5" y1="9" x2="11" y2="9" stroke="#b91c1c" stroke-width="1" opacity="0.5"/>
-              <line x1="5" y1="12" x2="11" y2="12" stroke="#b91c1c" stroke-width="1" opacity="0.5"/>
-              <line x1="5" y1="15" x2="9" y2="15" stroke="#b91c1c" stroke-width="1" opacity="0.5"/>
-              <line x1="21" y1="17" x2="27" y2="17" stroke="#b91c1c" stroke-width="1" opacity="0.5"/>
-              <line x1="21" y1="20" x2="27" y2="20" stroke="#b91c1c" stroke-width="1" opacity="0.5"/>
-              <line x1="21" y1="23" x2="25" y2="23" stroke="#b91c1c" stroke-width="1" opacity="0.5"/>
+              <rect x="2" y="4" width="12" height="16" rx="1.5" stroke="#b91c1c" stroke-width="1.5" />
+              <rect x="18" y="12" width="12" height="16" rx="1.5" stroke="#b91c1c" stroke-width="1.5" />
+              <path d="M14 14 L18 18" stroke="#b91c1c" stroke-width="1.5" />
+              <line x1="5" y1="9" x2="11" y2="9" stroke="#b91c1c" stroke-width="1" opacity="0.5" />
+              <line x1="5" y1="12" x2="11" y2="12" stroke="#b91c1c" stroke-width="1" opacity="0.5" />
+              <line x1="5" y1="15" x2="9" y2="15" stroke="#b91c1c" stroke-width="1" opacity="0.5" />
+              <line x1="21" y1="17" x2="27" y2="17" stroke="#b91c1c" stroke-width="1" opacity="0.5" />
+              <line x1="21" y1="20" x2="27" y2="20" stroke="#b91c1c" stroke-width="1" opacity="0.5" />
+              <line x1="21" y1="23" x2="25" y2="23" stroke="#b91c1c" stroke-width="1" opacity="0.5" />
             </svg>
           </div>
           <div class="card-body">
@@ -239,7 +458,8 @@
               <span class="badge badge-live">Live</span>
             </div>
             <div class="card-tagline">What English news left out</div>
-            <div class="card-desc">Paste an English news article. We find the original sources in Turkish, Arabic, Japanese, Persian, Hindi, or Portuguese and show you what got lost in translation.</div>
+            <div class="card-desc">Paste an English news article. We find the original sources in Turkish, Arabic,
+              Japanese, Persian, Hindi, or Portuguese and show you what got lost in translation.</div>
             <div class="card-link">
               <span class="card-link-text">tacorari.eu/translationgap</span>
               <span class="card-link-arrow">→</span>
@@ -253,11 +473,11 @@
         <div class="card-inner">
           <div class="card-icon">
             <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-              <circle cx="16" cy="16" r="13" stroke="#0d9488" stroke-width="1.5"/>
-              <ellipse cx="16" cy="16" rx="5.5" ry="13" stroke="#0d9488" stroke-width="1.5"/>
-              <line x1="3" y1="16" x2="29" y2="16" stroke="#0d9488" stroke-width="1.5"/>
-              <path d="M5 10 Q16 13 27 10" stroke="#0d9488" stroke-width="1" opacity="0.5"/>
-              <path d="M5 22 Q16 19 27 22" stroke="#0d9488" stroke-width="1" opacity="0.5"/>
+              <circle cx="16" cy="16" r="13" stroke="#0d9488" stroke-width="1.5" />
+              <ellipse cx="16" cy="16" rx="5.5" ry="13" stroke="#0d9488" stroke-width="1.5" />
+              <line x1="3" y1="16" x2="29" y2="16" stroke="#0d9488" stroke-width="1.5" />
+              <path d="M5 10 Q16 13 27 10" stroke="#0d9488" stroke-width="1" opacity="0.5" />
+              <path d="M5 22 Q16 19 27 22" stroke="#0d9488" stroke-width="1" opacity="0.5" />
             </svg>
           </div>
           <div class="card-body">
@@ -266,7 +486,8 @@
               <span class="badge badge-live">Live</span>
             </div>
             <div class="card-tagline">Land somewhere new</div>
-            <div class="card-desc">Press a button. A random world capital appears — with its flag, weather, and a Wikipedia summary. A small geography surprise, one city at a time.</div>
+            <div class="card-desc">Press a button. A random world capital appears — with its flag, weather, and a
+              Wikipedia summary. A small geography surprise, one city at a time.</div>
             <div class="card-link">
               <span class="card-link-text">tacorari.eu/mappon</span>
               <span class="card-link-arrow">→</span>
@@ -287,243 +508,244 @@
     </div>
   </footer>
 
-<!-- ====== Legal Notice ====== -->
-<div class="modal-overlay" id="modal-legal">
-  <div class="modal-box">
-    <h2>Legal Notice</h2>
+  <!-- ====== Legal Notice ====== -->
+  <div class="modal-overlay" id="modal-legal">
+    <div class="modal-box">
+      <h2>Legal Notice</h2>
 
-    <h3>Service Provider</h3>
-    <p>
-      Soya Arakawa<br>
-      c/o Block Services<br>
-      Stuttgarter Str. 106<br>
-      70736 Fellbach, Germany
-    </p>
+      <h3>Service Provider</h3>
+      <p>
+        Soya Arakawa<br>
+        c/o Block Services<br>
+        Stuttgarter Str. 106<br>
+        70736 Fellbach, Germany
+      </p>
 
-    <h3>Contact</h3>
-    <p>
-      Email: haustacorari@gmail.com
-    </p>
+      <h3>Contact</h3>
+      <p>
+        Email: haustacorari@gmail.com
+      </p>
 
-    <h3>Tax Information</h3>
-    <p>
-      Tax number (Steuernummer): 117/5007/3459<br>
-      VAT is not charged in accordance with §19 UStG (Kleinunternehmerregelung).
-    </p>
+      <h3>Tax Information</h3>
+      <p>
+        Tax number (Steuernummer): 117/5007/3459<br>
+        VAT is not charged in accordance with §19 UStG (Kleinunternehmerregelung).
+      </p>
 
-    <h3>Responsible for Content</h3>
-    <p>
-      Soya Arakawa (address as above)<br>
-      in accordance with §18 Abs. 2 MStV.
-    </p>
+      <h3>Responsible for Content</h3>
+      <p>
+        Soya Arakawa (address as above)<br>
+        in accordance with §18 Abs. 2 MStV.
+      </p>
 
-    <h3>Dispute Resolution</h3>
-    <p>
-      The European Commission provides a platform for online dispute resolution (OS):
-      <a href="https://ec.europa.eu/consumers/odr/" target="_blank" rel="noopener">ec.europa.eu/consumers/odr</a>.
-      We are not willing or obliged to participate in dispute resolution proceedings
-      before a consumer arbitration board.
-    </p>
+      <h3>Dispute Resolution</h3>
+      <p>
+        The European Commission provides a platform for online dispute resolution (OS):
+        <a href="https://ec.europa.eu/consumers/odr/" target="_blank" rel="noopener">ec.europa.eu/consumers/odr</a>.
+        We are not willing or obliged to participate in dispute resolution proceedings
+        before a consumer arbitration board.
+      </p>
 
-    <button class="modal-close" onclick="closeModal('legal')">Close</button>
-  </div>
-</div>
-
-<!-- ====== Privacy Policy ====== -->
-<div class="modal-overlay" id="modal-privacy">
-  <div class="modal-box">
-    <h2>Privacy Policy</h2>
-
-    <h3>1. Overview</h3>
-    <p>
-      This privacy policy explains how Haus Tacorari and its tools
-      (including Your Situation) collect, use, and protect your data.
-    </p>
-
-    <h3>2. Service Provider</h3>
-    <p>
-      Soya Arakawa<br>
-      c/o Block Services<br>
-      Stuttgarter Str. 106<br>
-      70736 Fellbach, Germany<br>
-      Email: haustacorari@gmail.com
-    </p>
-
-    <h3>3. Data We Collect</h3>
-    <p>
-      <strong>Usage data.</strong>
-      When you use Your Situation, a random anonymous user ID is generated and stored
-      in your browser's local storage. This ID is used solely to track your
-      reading credits. It is not linked to your name or identity.
-    </p>
-    <p>
-      <strong>IP address.</strong>
-      Your IP address is temporarily used for rate limiting (to enforce the
-      daily free reading limit). It is stored with a key that
-      expires at midnight UTC each day. We do not use IP addresses for tracking
-      or profiling.
-    </p>
-    <p>
-      <strong>Input text.</strong>
-      The text you submit for a reading is sent to Google's Gemini API for
-      processing. We do not store your input text on our servers. Google's
-      data handling is governed by their
-      <a href="https://ai.google.dev/gemini-api/terms" target="_blank" rel="noopener">Gemini API Terms of Service</a>.
-    </p>
-    <p>
-      <strong>Payment data.</strong>
-      If you purchase readings, payment is processed by Stripe. We do not
-      store your credit card details. Stripe may collect your email address,
-      payment method, and billing information. See
-      <a href="https://stripe.com/privacy" target="_blank" rel="noopener">Stripe's Privacy Policy</a>.
-    </p>
-    <p>
-      <strong>Contact form.</strong>
-      If you send us a message through the contact form, your name, email address,
-      and message are sent to us via email. We use this data only to respond to
-      your inquiry.
-    </p>
-
-    <h3>4. Third-Party Services</h3>
-    <p>
-      <strong>Vercel</strong> (hosting) —
-      <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener">Privacy Policy</a><br>
-      <strong>Upstash</strong> (database) —
-      <a href="https://upstash.com/trust/privacy.html" target="_blank" rel="noopener">Privacy Policy</a><br>
-      <strong>Google Gemini API</strong> (AI text generation) —
-      <a href="https://ai.google.dev/gemini-api/terms" target="_blank" rel="noopener">Terms</a><br>
-      <strong>Stripe</strong> (payments) —
-      <a href="https://stripe.com/privacy" target="_blank" rel="noopener">Privacy Policy</a><br>
-      <strong>Google Fonts</strong> (web fonts) —
-      <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Privacy Policy</a><br>
-      <strong>Web3Forms</strong> (contact form delivery) —
-      <a href="https://web3forms.com/privacy" target="_blank" rel="noopener">Privacy Policy</a>
-    </p>
-
-    <h3>5. Cookies and Local Storage</h3>
-    <p>
-      Haus Tacorari does not use cookies. Your Situation uses browser local storage to save
-      your anonymous user ID and paid credit count. This data stays in your
-      browser and is not transmitted to third parties.
-    </p>
-
-    <h3>6. Your Rights</h3>
-    <p>
-      Under the GDPR, you have the right to access, rectify, delete, and restrict
-      the processing of your personal data, as well as the right to data portability.
-      Since we store minimal data (an anonymous user ID and a temporarily stored IP address),
-      most of these rights are fulfilled by design. To exercise your rights or ask
-      questions, contact us at haustacorari@gmail.com.
-    </p>
-
-    <h3>7. Data Retention</h3>
-    <p>
-      Free usage counters (IP-based) expire daily at midnight UTC.
-      Paid credit balances are retained until used.
-      We do not retain your reading input text.
-    </p>
-
-    <h3>8. Changes</h3>
-    <p>
-      We may update this policy as the service evolves. The current version is
-      always available on this page.
-    </p>
-    <p>Last updated: April 10, 2026</p>
-
-    <button class="modal-close" onclick="closeModal('privacy')">Close</button>
-  </div>
-</div>
-
-<!-- ====== Contact ====== -->
-<div class="modal-overlay" id="modal-contact">
-  <div class="modal-box">
-    <h2>Contact</h2>
-    <p>Questions, feedback, or just want to say hello.</p>
-
-    <div style="margin-top: 20px;">
-      <div class="contact-field">
-        <label for="contactName">Name</label>
-        <input type="text" id="contactName" placeholder="Your name">
-      </div>
-      <div class="contact-field">
-        <label for="contactEmail">Email</label>
-        <input type="email" id="contactEmail" placeholder="your@email.com">
-      </div>
-      <div class="contact-field">
-        <label for="contactMessage">Message</label>
-        <textarea id="contactMessage" placeholder="What's on your mind?"></textarea>
-      </div>
-      <button class="contact-submit" id="contactSubmit" onclick="submitContact()">Send</button>
-      <div class="contact-status" id="contactStatus"></div>
+      <button class="modal-close" onclick="closeModal('legal')">Close</button>
     </div>
-
-    <button class="modal-close" onclick="closeModal('contact')" style="margin-top:20px;">Close</button>
   </div>
-</div>
 
-<script>
-function openModal(id) {
-  document.getElementById('modal-' + id).classList.add('visible');
-}
-function closeModal(id) {
-  document.getElementById('modal-' + id).classList.remove('visible');
-}
-// Close on overlay click
-document.querySelectorAll('.modal-overlay').forEach(el => {
-  el.addEventListener('click', e => {
-    if (e.target === el) el.classList.remove('visible');
-  });
-});
+  <!-- ====== Privacy Policy ====== -->
+  <div class="modal-overlay" id="modal-privacy">
+    <div class="modal-box">
+      <h2>Privacy Policy</h2>
 
-// Contact form via Web3Forms (free, no signup needed for basic use)
-// ★ Web3Formsのアクセスキーを取得して YOUR_WEB3FORMS_ACCESS_KEY を差し替える
-// https://web3forms.com で無料登録、haustacorari@gmail.com を入れるとキーが発行される
-async function submitContact() {
-  const name = document.getElementById('contactName').value.trim();
-  const email = document.getElementById('contactEmail').value.trim();
-  const message = document.getElementById('contactMessage').value.trim();
-  const status = document.getElementById('contactStatus');
-  const btn = document.getElementById('contactSubmit');
+      <h3>1. Overview</h3>
+      <p>
+        This privacy policy explains how Haus Tacorari and its tools
+        (including Your Situation) collect, use, and protect your data.
+      </p>
 
-  if (!name || !email || !message) {
-    status.textContent = 'Please fill in all fields.';
-    status.className = 'contact-status visible error';
-    return;
-  }
+      <h3>2. Service Provider</h3>
+      <p>
+        Soya Arakawa<br>
+        c/o Block Services<br>
+        Stuttgarter Str. 106<br>
+        70736 Fellbach, Germany<br>
+        Email: haustacorari@gmail.com
+      </p>
 
-  btn.disabled = true;
-  btn.textContent = 'Sending...';
-  status.className = 'contact-status';
+      <h3>3. Data We Collect</h3>
+      <p>
+        <strong>Usage data.</strong>
+        When you use Your Situation, a random anonymous user ID is generated and stored
+        in your browser's local storage. This ID is used solely to track your
+        reading credits. It is not linked to your name or identity.
+      </p>
+      <p>
+        <strong>IP address.</strong>
+        Your IP address is temporarily used for rate limiting (to enforce the
+        daily free reading limit). It is stored with a key that
+        expires at midnight UTC each day. We do not use IP addresses for tracking
+        or profiling.
+      </p>
+      <p>
+        <strong>Input text.</strong>
+        The text you submit for a reading is sent to Google's Gemini API for
+        processing. We do not store your input text on our servers. Google's
+        data handling is governed by their
+        <a href="https://ai.google.dev/gemini-api/terms" target="_blank" rel="noopener">Gemini API Terms of Service</a>.
+      </p>
+      <p>
+        <strong>Payment data.</strong>
+        If you purchase readings, payment is processed by Stripe. We do not
+        store your credit card details. Stripe may collect your email address,
+        payment method, and billing information. See
+        <a href="https://stripe.com/privacy" target="_blank" rel="noopener">Stripe's Privacy Policy</a>.
+      </p>
+      <p>
+        <strong>Contact form.</strong>
+        If you send us a message through the contact form, your name, email address,
+        and message are sent to us via email. We use this data only to respond to
+        your inquiry.
+      </p>
 
-  try {
-    const res = await fetch('https://api.web3forms.com/submit', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        access_key: 'a7b20a69-0a6a-4e70-a9d4-894c6caf1826',
-        subject: 'Haus Tacorari contact form',
-        from_name: name,
-        email: email,
-        message: message
-      })
-    });
-    const data = await res.json();
-    if (data.success) {
-      status.textContent = 'Sent. Thank you.';
-      status.className = 'contact-status visible';
-      document.getElementById('contactName').value = '';
-      document.getElementById('contactEmail').value = '';
-      document.getElementById('contactMessage').value = '';
-    } else {
-      throw new Error(data.message || 'Failed to send.');
+      <h3>4. Third-Party Services</h3>
+      <p>
+        <strong>Vercel</strong> (hosting) —
+        <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener">Privacy Policy</a><br>
+        <strong>Upstash</strong> (database) —
+        <a href="https://upstash.com/trust/privacy.html" target="_blank" rel="noopener">Privacy Policy</a><br>
+        <strong>Google Gemini API</strong> (AI text generation) —
+        <a href="https://ai.google.dev/gemini-api/terms" target="_blank" rel="noopener">Terms</a><br>
+        <strong>Stripe</strong> (payments) —
+        <a href="https://stripe.com/privacy" target="_blank" rel="noopener">Privacy Policy</a><br>
+        <strong>Google Fonts</strong> (web fonts) —
+        <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Privacy Policy</a><br>
+        <strong>Web3Forms</strong> (contact form delivery) —
+        <a href="https://web3forms.com/privacy" target="_blank" rel="noopener">Privacy Policy</a>
+      </p>
+
+      <h3>5. Cookies and Local Storage</h3>
+      <p>
+        Haus Tacorari does not use cookies. Your Situation uses browser local storage to save
+        your anonymous user ID and paid credit count. This data stays in your
+        browser and is not transmitted to third parties.
+      </p>
+
+      <h3>6. Your Rights</h3>
+      <p>
+        Under the GDPR, you have the right to access, rectify, delete, and restrict
+        the processing of your personal data, as well as the right to data portability.
+        Since we store minimal data (an anonymous user ID and a temporarily stored IP address),
+        most of these rights are fulfilled by design. To exercise your rights or ask
+        questions, contact us at haustacorari@gmail.com.
+      </p>
+
+      <h3>7. Data Retention</h3>
+      <p>
+        Free usage counters (IP-based) expire daily at midnight UTC.
+        Paid credit balances are retained until used.
+        We do not retain your reading input text.
+      </p>
+
+      <h3>8. Changes</h3>
+      <p>
+        We may update this policy as the service evolves. The current version is
+        always available on this page.
+      </p>
+      <p>Last updated: April 10, 2026</p>
+
+      <button class="modal-close" onclick="closeModal('privacy')">Close</button>
+    </div>
+  </div>
+
+  <!-- ====== Contact ====== -->
+  <div class="modal-overlay" id="modal-contact">
+    <div class="modal-box">
+      <h2>Contact</h2>
+      <p>Questions, feedback, or just want to say hello.</p>
+
+      <div style="margin-top: 20px;">
+        <div class="contact-field">
+          <label for="contactName">Name</label>
+          <input type="text" id="contactName" placeholder="Your name">
+        </div>
+        <div class="contact-field">
+          <label for="contactEmail">Email</label>
+          <input type="email" id="contactEmail" placeholder="your@email.com">
+        </div>
+        <div class="contact-field">
+          <label for="contactMessage">Message</label>
+          <textarea id="contactMessage" placeholder="What's on your mind?"></textarea>
+        </div>
+        <button class="contact-submit" id="contactSubmit" onclick="submitContact()">Send</button>
+        <div class="contact-status" id="contactStatus"></div>
+      </div>
+
+      <button class="modal-close" onclick="closeModal('contact')" style="margin-top:20px;">Close</button>
+    </div>
+  </div>
+
+  <script>
+    function openModal(id) {
+      document.getElementById('modal-' + id).classList.add('visible');
     }
-  } catch (err) {
-    status.textContent = 'Something went wrong. Try emailing haustacorari@gmail.com directly.';
-    status.className = 'contact-status visible error';
-  }
-  btn.disabled = false;
-  btn.textContent = 'Send';
-}
-</script>
+    function closeModal(id) {
+      document.getElementById('modal-' + id).classList.remove('visible');
+    }
+    // Close on overlay click
+    document.querySelectorAll('.modal-overlay').forEach(el => {
+      el.addEventListener('click', e => {
+        if (e.target === el) el.classList.remove('visible');
+      });
+    });
+
+    // Contact form via Web3Forms (free, no signup needed for basic use)
+    // ★ Web3Formsのアクセスキーを取得して YOUR_WEB3FORMS_ACCESS_KEY を差し替える
+    // https://web3forms.com で無料登録、haustacorari@gmail.com を入れるとキーが発行される
+    async function submitContact() {
+      const name = document.getElementById('contactName').value.trim();
+      const email = document.getElementById('contactEmail').value.trim();
+      const message = document.getElementById('contactMessage').value.trim();
+      const status = document.getElementById('contactStatus');
+      const btn = document.getElementById('contactSubmit');
+
+      if (!name || !email || !message) {
+        status.textContent = 'Please fill in all fields.';
+        status.className = 'contact-status visible error';
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Sending...';
+      status.className = 'contact-status';
+
+      try {
+        const res = await fetch('https://api.web3forms.com/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            access_key: 'a7b20a69-0a6a-4e70-a9d4-894c6caf1826',
+            subject: 'Haus Tacorari contact form',
+            from_name: name,
+            email: email,
+            message: message
+          })
+        });
+        const data = await res.json();
+        if (data.success) {
+          status.textContent = 'Sent. Thank you.';
+          status.className = 'contact-status visible';
+          document.getElementById('contactName').value = '';
+          document.getElementById('contactEmail').value = '';
+          document.getElementById('contactMessage').value = '';
+        } else {
+          throw new Error(data.message || 'Failed to send.');
+        }
+      } catch (err) {
+        status.textContent = 'Something went wrong. Try emailing haustacorari@gmail.com directly.';
+        status.className = 'contact-status visible error';
+      }
+      btn.disabled = false;
+      btn.textContent = 'Send';
+    }
+  </script>
 </body>
+
 </html>
