@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mappon · Tacorari</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  min-height: 100vh;
+  background: #faf9f6;
+  font-family: 'Source Serif 4', Georgia, serif;
+  color: #1a1a1a;
+}
+.wrap { max-width: 680px; margin: 0 auto; padding: 0 24px; }
+
+header { padding-top: 36px; }
+.back {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 13px; font-family: 'DM Sans', sans-serif;
+  color: #999; text-decoration: none; margin-bottom: 16px;
+  transition: color 0.2s;
+}
+.back:hover { color: #1a1a1a; }
+header h1 {
+  font-size: 32px; font-weight: 700; line-height: 1.15;
+  border-bottom: 3px double #1a1a1a; padding-bottom: 14px;
+}
+
+.intro {
+  font-size: 19px; line-height: 1.55; color: #555;
+  font-weight: 300; font-style: italic;
+  margin: 24px 0 28px;
+}
+
+/* Search + button */
+.search-row {
+  display: flex; gap: 10px; margin-bottom: 6px;
+}
+.search-wrap {
+  flex: 1; position: relative;
+}
+#city-input {
+  width: 100%; padding: 14px 18px; font-size: 16px;
+  font-family: 'Source Serif 4', Georgia, serif;
+  border: 1px solid #ccc; border-radius: 4px;
+  background: #fff; color: #1a1a1a; outline: none;
+  transition: border-color 0.2s;
+}
+#city-input:focus { border-color: #1a1a1a; }
+#random-btn {
+  padding: 14px 22px; font-size: 15px;
+  font-family: 'DM Sans', sans-serif; font-weight: 600;
+  background: #1a1a1a; color: #faf9f6;
+  border: none; border-radius: 4px; cursor: pointer;
+  transition: opacity 0.2s; white-space: nowrap;
+}
+#random-btn:hover { opacity: 0.82; }
+.key-hint {
+  font-size: 11px; font-family: 'DM Sans', sans-serif;
+  color: #ccc; text-align: right; margin-bottom: 24px;
+}
+kbd {
+  display: inline-block; padding: 1px 6px;
+  border: 1px solid #ddd; border-radius: 3px;
+  font-size: 11px; background: #f5f5f0; color: #aaa;
+}
+
+/* Suggestions dropdown */
+#suggestions {
+  display: none; position: absolute; top: calc(100% + 4px); left: 0;
+  width: 100%; background: #fff;
+  border: 1px solid #e5e5e0; border-radius: 4px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  z-index: 200; max-height: 240px; overflow-y: auto;
+}
+.sug-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 16px; cursor: pointer;
+  border-bottom: 1px solid #f5f5f0;
+  transition: background 0.15s;
+}
+.sug-item:last-child { border-bottom: none; }
+.sug-item:hover { background: #faf9f6; }
+.sug-flag { font-size: 20px; flex-shrink: 0; }
+.sug-city { font-size: 15px; font-weight: 600; }
+.sug-country { font-size: 13px; font-family: 'DM Sans', sans-serif; color: #999; }
+
+/* Map */
+#map {
+  width: 100%; height: 52vh; min-height: 300px;
+  border-radius: 6px; border: 1px solid #e5e5e0;
+  margin-bottom: 20px; z-index: 0;
+}
+
+/* City card */
+.card {
+  background: #fff; border: 1px solid #e5e5e0;
+  border-radius: 6px; padding: 24px 28px; margin-bottom: 16px;
+}
+.card.hidden { display: none; }
+
+.city-flag { font-size: 52px; display: block; margin-bottom: 12px; line-height: 1; }
+.city-name { font-size: 30px; font-weight: 700; line-height: 1.15; margin-bottom: 4px; }
+.city-country { font-size: 16px; font-family: 'DM Sans', sans-serif; color: #777; margin-bottom: 18px; }
+.city-coords {
+  font-size: 13px; font-family: 'DM Sans', sans-serif;
+  color: #aaa; margin-bottom: 18px;
+}
+.city-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.btn-dark {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 10px 20px; font-size: 14px;
+  font-family: 'DM Sans', sans-serif; font-weight: 600;
+  background: #1a1a1a; color: #faf9f6;
+  border: none; border-radius: 4px; cursor: pointer;
+  text-decoration: none; transition: opacity 0.2s;
+}
+.btn-dark:hover { opacity: 0.82; }
+.btn-outline {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 10px 20px; font-size: 14px;
+  font-family: 'DM Sans', sans-serif; font-weight: 600;
+  color: #1a1a1a; border: 1px solid #ccc;
+  border-radius: 4px; cursor: pointer;
+  text-decoration: none; background: transparent;
+  transition: border-color 0.2s;
+}
+.btn-outline:hover { border-color: #1a1a1a; }
+
+/* Section cards */
+.section-label {
+  font-size: 12px; font-family: 'DM Sans', sans-serif;
+  font-weight: 700; color: #bbb; text-transform: uppercase;
+  letter-spacing: 0.08em; margin-bottom: 16px;
+}
+
+/* Weather grid */
+.weather-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 16px; margin-bottom: 14px;
+}
+.w-val { font-size: 24px; font-weight: 700; line-height: 1.1; }
+.w-key {
+  font-size: 11px; font-family: 'DM Sans', sans-serif;
+  color: #aaa; text-transform: uppercase;
+  letter-spacing: 0.06em; margin-top: 3px;
+}
+.weather-meta {
+  font-size: 13px; font-family: 'DM Sans', sans-serif;
+  color: #aaa; display: flex; align-items: center; gap: 6px;
+}
+.weather-meta img { width: 24px; height: 24px; }
+
+/* Wiki */
+.wiki-text { font-size: 16px; line-height: 1.75; color: #444; }
+.wiki-link {
+  display: inline-block; margin-top: 14px;
+  font-size: 13px; font-family: 'DM Sans', sans-serif;
+  font-weight: 600; color: #aaa; text-decoration: none;
+  transition: color 0.2s;
+}
+.wiki-link:hover { color: #1a1a1a; }
+
+/* Spinner */
+.spinner {
+  width: 20px; height: 20px; border-radius: 50%;
+  border: 2px solid #e5e5e0; border-top-color: #1a1a1a;
+  animation: spin 0.7s linear infinite;
+  margin: 4px 0;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.muted { font-size: 14px; font-family: 'DM Sans', sans-serif; color: #bbb; }
+
+footer {
+  max-width: 680px; margin: 16px auto 0;
+  padding: 20px 24px 40px;
+  border-top: 1px solid #e5e5e0;
+  text-align: center;
+  font-size: 13px; font-family: 'DM Sans', sans-serif; color: #bbb;
+}
+footer a { color: #aaa; text-decoration: underline; text-underline-offset: 3px; }
+</style>
+</head>
+<body>
+
+<header class="wrap">
+  <a href="/" class="back">← Tacorari</a>
+  <h1>Mappon</h1>
+</header>
+
+<main class="wrap" style="padding-top: 22px; padding-bottom: 32px;">
+
+  <p class="intro">Press a button. Land somewhere new.</p>
+
+  <div class="search-row">
+    <div class="search-wrap">
+      <input type="text" id="city-input" placeholder="Search capitals..." autocomplete="off" spellcheck="false">
+      <div id="suggestions"></div>
+    </div>
+    <button id="random-btn" onclick="pickRandom()">Random city</button>
+  </div>
+  <div class="key-hint">or press <kbd>Space</kbd></div>
+
+  <div id="map"></div>
+
+  <div id="city-card" class="card hidden"></div>
+
+  <div id="weather-card" class="card hidden">
+    <div class="section-label">Weather right now</div>
+    <div id="weather-body"><div class="spinner"></div></div>
+  </div>
+
+  <div id="wiki-card" class="card hidden">
+    <div class="section-label">About this place</div>
+    <div id="wiki-body"><div class="spinner"></div></div>
+  </div>
+
+</main>
+
+<footer>
+  <a href="https://www.tacorari.eu">Tacorari</a> · Haus Tacorari · Krefeld, Germany
+</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+<script>
+const WEATHER_KEY = '733f811ffacc68efe08bb31549727912';
+
+let mapObj, marker, capitals = [];
+const weatherCache = {}, wikiCache = {};
+
+function flagEmoji(iso2) {
+  if (!iso2 || iso2.length !== 2) return '🌍';
+  try {
+    return iso2.toUpperCase().split('').map(c =>
+      String.fromCodePoint(0x1F1E6 + c.charCodeAt(0) - 65)
+    ).join('');
+  } catch { return '🌍'; }
+}
+
+function initMap() {
+  mapObj = L.map('map', { zoomControl: true }).setView([20, 10], 2);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> © <a href="https://carto.com/">CARTO</a>',
+    subdomains: 'abcd', maxZoom: 19
+  }).addTo(mapObj);
+}
+
+async function loadCapitals() {
+  try {
+    const res = await fetch('/mappon/capitals.geojson');
+    const data = await res.json();
+    capitals = data.features.filter(f =>
+      f.properties?.city &&
+      Array.isArray(f.geometry?.coordinates) &&
+      f.geometry.coordinates.length === 2
+    );
+  } catch (e) {
+    console.error('Failed to load capitals.geojson:', e);
+  }
+}
+
+function pickRandom() {
+  if (!capitals.length) return;
+  showCity(capitals[Math.floor(Math.random() * capitals.length)]);
+}
+
+function showCity(feature) {
+  const { city, country, iso2 } = feature.properties;
+  const [lon, lat] = feature.geometry.coordinates;
+  const flag = flagEmoji(iso2);
+
+  mapObj.setView([lat, lon], 11);
+  if (marker) mapObj.removeLayer(marker);
+  marker = L.marker([lat, lon])
+    .addTo(mapObj)
+    .bindPopup(`<b>${flag} ${city}</b><br><span style="font-size:12px;color:#888;">${country}</span>`)
+    .openPopup();
+
+  document.getElementById('city-card').innerHTML = `
+    <span class="city-flag">${flag}</span>
+    <div class="city-name">${city}</div>
+    <div class="city-country">${country}</div>
+    <div class="city-coords">${Math.abs(lat).toFixed(4)}° ${lat >= 0 ? 'N' : 'S'}, ${Math.abs(lon).toFixed(4)}° ${lon >= 0 ? 'E' : 'W'}</div>
+    <div class="city-actions">
+      <button class="btn-dark" onclick="pickRandom()">Another city →</button>
+      <a class="btn-outline" href="https://www.google.com/maps/search/?api=1&query=${lat},${lon}" target="_blank" rel="noopener">Google Maps ↗</a>
+    </div>
+  `;
+  document.getElementById('city-card').classList.remove('hidden');
+  document.getElementById('weather-card').classList.remove('hidden');
+  document.getElementById('wiki-card').classList.remove('hidden');
+  document.getElementById('weather-body').innerHTML = '<div class="spinner"></div>';
+  document.getElementById('wiki-body').innerHTML = '<div class="spinner"></div>';
+
+  fetchWeather(lat, lon);
+  fetchWiki(city, country);
+
+  document.getElementById('map').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+async function fetchWeather(lat, lon) {
+  const key = `${lat.toFixed(2)},${lon.toFixed(2)}`;
+  const el = document.getElementById('weather-body');
+  try {
+    if (!weatherCache[key]) {
+      const r = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${WEATHER_KEY}&units=metric`);
+      weatherCache[key] = await r.json();
+    }
+    const d = weatherCache[key];
+    if (d.cod && d.cod !== 200) throw new Error(d.message);
+
+    const local = new Date(Date.now() + (new Date().getTimezoneOffset() * 60 + d.timezone) * 1000);
+    const timeStr = local.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+    const dateStr = local.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+    const icon = d.weather[0]?.icon;
+    const desc = d.weather[0]?.description.replace(/\b\w/g, c => c.toUpperCase()) || '';
+
+    el.innerHTML = `
+      <div class="weather-grid">
+        <div><div class="w-val">${Math.round(d.main.temp)}°C</div><div class="w-key">Temperature</div></div>
+        <div><div class="w-val">${Math.round(d.main.feels_like)}°C</div><div class="w-key">Feels like</div></div>
+        <div><div class="w-val">${d.main.humidity}%</div><div class="w-key">Humidity</div></div>
+        <div><div class="w-val">${d.wind?.speed ?? '—'} m/s</div><div class="w-key">Wind</div></div>
+      </div>
+      <div class="weather-meta">
+        ${icon ? `<img src="https://openweathermap.org/img/wn/${icon}.png" alt="">` : ''}
+        ${desc} · ${dateStr}, ${timeStr} local
+      </div>
+    `;
+  } catch {
+    el.innerHTML = '<p class="muted">Weather unavailable.</p>';
+  }
+}
+
+async function fetchWiki(city, country) {
+  const el = document.getElementById('wiki-body');
+  const cacheKey = city.toLowerCase();
+  if (wikiCache[cacheKey]) { el.innerHTML = wikiCache[cacheKey]; return; }
+  try {
+    let data = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(city)}`).then(r => r.json());
+    if (!data.extract || data.type === 'disambiguation') {
+      data = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(city + ', ' + country)}`).then(r => r.json());
+    }
+    if (!data.extract) throw new Error('no extract');
+    const html = `
+      <p class="wiki-text">${data.extract}</p>
+      <a class="wiki-link" href="https://en.wikipedia.org/wiki/${encodeURIComponent(data.title || city)}" target="_blank" rel="noopener">Read more on Wikipedia →</a>
+    `;
+    wikiCache[cacheKey] = html;
+    el.innerHTML = html;
+  } catch {
+    el.innerHTML = `<p class="muted">No Wikipedia summary found for ${city}.</p>`;
+  }
+}
+
+// Search
+const input = document.getElementById('city-input');
+const sugBox = document.getElementById('suggestions');
+
+input.addEventListener('input', () => {
+  const q = input.value.trim().toLowerCase();
+  if (!q) { sugBox.style.display = 'none'; return; }
+  const hits = capitals.filter(f =>
+    f.properties.city.toLowerCase().includes(q) ||
+    (f.properties.country || '').toLowerCase().includes(q)
+  ).slice(0, 7);
+  if (!hits.length) { sugBox.style.display = 'none'; return; }
+  sugBox.innerHTML = hits.map(f => {
+    const flag = flagEmoji(f.properties.iso2);
+    const idx = capitals.indexOf(f);
+    return `<div class="sug-item" onclick="selectCapital(${idx})">
+      <span class="sug-flag">${flag}</span>
+      <span class="sug-city">${f.properties.city}</span>
+      <span class="sug-country">${f.properties.country}</span>
+    </div>`;
+  }).join('');
+  sugBox.style.display = 'block';
+});
+
+function selectCapital(idx) {
+  const f = capitals[idx];
+  showCity(f);
+  input.value = f.properties.city;
+  sugBox.style.display = 'none';
+}
+
+document.addEventListener('click', e => {
+  if (!input.contains(e.target) && !sugBox.contains(e.target)) {
+    sugBox.style.display = 'none';
+  }
+});
+
+// Space = new random city (when not typing)
+document.addEventListener('keydown', e => {
+  if (e.code === 'Space' && document.activeElement.tagName !== 'INPUT') {
+    e.preventDefault();
+    pickRandom();
+  }
+});
+
+(async () => {
+  initMap();
+  await loadCapitals();
+  pickRandom();
+})();
+</script>
+</body>
+</html>
