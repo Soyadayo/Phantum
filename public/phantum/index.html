@@ -45,7 +45,7 @@
 
   .era-group { margin-bottom:28px; }
   .era-title { font-size:9px; letter-spacing:0.3em; text-transform:uppercase; color:var(--accent-dim); margin-bottom:12px; padding-bottom:6px; border-bottom:none; }
-  .frameworks { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:10px; }
+  .frameworks { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; }
 
   .framework-btn {
     border: 1px solid var(--border);
@@ -61,6 +61,8 @@
     font-family:'DM Mono',monospace;
     font-size:11px;
     font-weight:300;
+    flex: 0 0 calc(33.333% - 7px);
+    min-width: 140px;
   }
   .framework-btn:hover { border-color:var(--accent-dim); background:#1a1914; }
   .framework-btn.active { border-color:var(--accent); background:#1a1812; }
@@ -82,7 +84,7 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center;
+    object-position: center 15%;
     display: block;
     position: absolute;
     top: 0;
@@ -166,7 +168,7 @@
 
   .mode-toggle { display:flex; gap:0; margin-bottom:40px; opacity:0; animation:fadeUp 0.8s ease 0.05s forwards; }
   .mode-btn { flex:1; background:var(--surface); border:1px solid var(--border); color:var(--muted); padding:12px 16px; font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.2em; text-transform:uppercase; cursor:pointer; transition:all 0.2s; text-align:center; }
-  .mode-btn:first-child { border-right:none; }
+  .mode-btn:not(:last-child) { border-right:none; }
   .mode-btn.active { background:#1a1812; border-color:var(--accent); color:var(--accent); }
   .mode-btn:hover:not(.active) { border-color:var(--accent-dim); color:var(--text); }
   .thinker-section { transition:opacity 0.3s, transform 0.3s; }
@@ -193,6 +195,28 @@
   .book-cta { font-size:10px; color:var(--accent-dim); letter-spacing:0.1em; margin-top:6px; display:inline-block; transition:color 0.2s; }
   .book-card:hover .book-cta { color:var(--accent); }
   .affiliate-note { font-size:9px; color:var(--muted); opacity:0.5; margin-top:8px; letter-spacing:0.05em; }
+
+  /* Library / Reading list */
+  .library-section { display:none; }
+  .library-section.visible { display:block; animation:fadeUp 0.4s ease forwards; }
+  .lib-era-group { margin-bottom:28px; }
+  .lib-era-title { font-size:9px; letter-spacing:0.3em; text-transform:uppercase; color:var(--accent-dim); margin-bottom:12px; }
+  .lib-philosopher { border:1px solid var(--border); background:var(--surface); margin-bottom:8px; }
+  .lib-phil-header { display:flex; gap:12px; align-items:center; padding:14px 16px; border-bottom:1px solid var(--border); }
+  .lib-portrait { width:48px; height:48px; overflow:hidden; flex-shrink:0; }
+  .lib-portrait img { width:100%; height:100%; object-fit:cover; display:block; }
+  .lib-phil-name { font-size:12px; color:var(--text); letter-spacing:0.02em; }
+  .lib-phil-desc { font-size:10px; color:var(--muted); opacity:0.7; margin-top:2px; }
+  .lib-book { display:flex; align-items:center; gap:14px; padding:12px 16px; text-decoration:none; color:inherit; transition:background 0.15s; }
+  .lib-book + .lib-book { border-top:1px solid var(--border); }
+  .lib-book:hover { background:#1a1914; }
+  .lib-book-emoji { font-size:20px; width:28px; text-align:center; flex-shrink:0; }
+  .lib-book-info { flex:1; min-width:0; }
+  .lib-book-title { font-family:'Cormorant Garamond',serif; font-size:15px; color:var(--text); line-height:1.3; }
+  .lib-book-author { font-size:10px; color:var(--muted); margin-top:2px; letter-spacing:0.03em; }
+  .lib-book-cta { font-size:10px; color:var(--accent-dim); letter-spacing:0.1em; white-space:nowrap; flex-shrink:0; transition:color 0.2s; }
+  .lib-book:hover .lib-book-cta { color:var(--accent); }
+  .lib-affiliate { font-size:9px; color:var(--muted); opacity:0.4; margin-top:12px; letter-spacing:0.05em; }
 
   /* Legal modals */
   .legal-footer { display:flex; gap:16px; justify-content:center; margin-top:48px; padding:24px 0; border-top:1px solid var(--border); }
@@ -241,10 +265,10 @@
 
   <header>
     <a href="https://www.tacorari.eu" style="display:inline-flex;align-items:center;gap:6px;font-size:11px;letter-spacing:0.1em;color:var(--muted);text-decoration:none;margin-bottom:20px;transition:color 0.2s;" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--muted)'">← Haus Tacorari</a>
-    <div class="header-label">Your Situation</div>
-    <h1>Your situation.<br><em>Their wisdom.</em></h1>
-    <p class="subtitle">Pick a thinker. Write what's on your mind. Get their take.<br>
-    <span class="subtitle-langs">
+    <div class="header-label" data-i18n="headerLabel">Your Situation</div>
+    <h1 id="mainHeading">Your situation.<br><em>Their wisdom.</em></h1>
+    <p class="subtitle"><span id="subtitleText">Pick a thinker. Write what's on your mind. Get their take.</span><br>
+    <span class="subtitle-langs" id="subtitleLangs">
       <span>思想家を選んで今思うことを書く。答えが返ってくる。</span>
       <span>Einen Denker wählen. Schreiben. Antwort erhalten.</span>
       <span>Choisissez. Écrivez. Recevez.</span>
@@ -254,25 +278,26 @@
   </header>
 
   <div class="mode-toggle">
-    <button class="mode-btn active" id="modeChoose" onclick="setMode('choose')">Choose your thinker</button>
-    <button class="mode-btn" id="modeOracle" onclick="setMode('oracle')">Let them find you</button>
+    <button class="mode-btn active" id="modeChoose" onclick="setMode('choose')" data-i18n="modeChoose">Choose your thinker</button>
+    <button class="mode-btn" id="modeOracle" onclick="setMode('oracle')" data-i18n="modeOracle">Let them find you</button>
+    <button class="mode-btn" id="modeLibrary" onclick="setMode('library')" data-i18n="modeLibrary">Reading list</button>
   </div>
 
-  <div class="oracle-hint" id="oracleHint">
+  <div class="oracle-hint" id="oracleHint" data-i18n="oracleHint">
     Write what's on your mind. The right thinker will come to you.
   </div>
 
   <div class="section thinker-section" id="thinkerSection">
-    <div class="section-label">01 — Choose your thinker</div>
+    <div class="section-label" data-i18n="sectionLabel1">01 — Choose your thinker</div>
 
     <div class="era-group">
-      <div class="era-title">Ancient</div>
+      <div class="era-title" data-i18n="eraAncient">Ancient</div>
       <div class="frameworks">
         <button class="framework-btn" data-id="socrates" onclick="selectFramework(this)">
           <div class="fw-portrait"><img src="/phantum/Socrates.jpg" alt="socrates"></div>
           <div class="fw-info">
             <span class="fw-name">Socrates</span>
-            <span class="fw-desc">Questioning & ignorance</span>
+            <span class="fw-desc" data-philid="socrates">Questioning & ignorance</span>
           </div>
         </button>
 
@@ -280,7 +305,7 @@
           <div class="fw-portrait"><img src="/phantum/Epictetus.jpg" alt="epictetus"></div>
           <div class="fw-info">
             <span class="fw-name">Epictetus</span>
-            <span class="fw-desc">Control & acceptance</span>
+            <span class="fw-desc" data-philid="epictetus">Control & acceptance</span>
           </div>
         </button>
 
@@ -288,20 +313,20 @@
           <div class="fw-portrait"><img src="/phantum/Marcus_Aurelius.jpg" alt="marcus"></div>
           <div class="fw-info">
             <span class="fw-name">Marcus Aurelius</span>
-            <span class="fw-desc">Duty & impermanence</span>
+            <span class="fw-desc" data-philid="marcus">Duty & impermanence</span>
           </div>
         </button>
       </div>
     </div>
 
     <div class="era-group">
-      <div class="era-title">Modern</div>
+      <div class="era-title" data-i18n="eraModern">Modern</div>
       <div class="frameworks">
         <button class="framework-btn" data-id="nietzsche" onclick="selectFramework(this)">
           <div class="fw-portrait"><img src="/phantum/Nietzsche.jpg" alt="nietzsche"></div>
           <div class="fw-info">
             <span class="fw-name">Nietzsche</span>
-            <span class="fw-desc">Will & self-overcoming</span>
+            <span class="fw-desc" data-philid="nietzsche">Will & self-overcoming</span>
           </div>
         </button>
 
@@ -309,7 +334,7 @@
           <div class="fw-portrait"><img src="/phantum/Sartre.jpg" alt="sartre"></div>
           <div class="fw-info">
             <span class="fw-name">Sartre</span>
-            <span class="fw-desc">Radical freedom</span>
+            <span class="fw-desc" data-philid="sartre">Radical freedom</span>
           </div>
         </button>
 
@@ -317,7 +342,7 @@
           <div class="fw-portrait"><img src="/phantum/Camus.jpg" alt="camus"></div>
           <div class="fw-info">
             <span class="fw-name">Camus</span>
-            <span class="fw-desc">Absurdity & revolt</span>
+            <span class="fw-desc" data-philid="camus">Absurdity & revolt</span>
           </div>
         </button>
 
@@ -325,7 +350,7 @@
           <div class="fw-portrait"><img src="/phantum/Hannah_Arendt.jpg" alt="arendt"></div>
           <div class="fw-info">
             <span class="fw-name">Hannah Arendt</span>
-            <span class="fw-desc">Action & plurality</span>
+            <span class="fw-desc" data-philid="arendt">Action & plurality</span>
           </div>
         </button>
 
@@ -333,20 +358,20 @@
           <div class="fw-portrait"><img src="/phantum/Simone_de_Beauvoir.jpg" alt="simone"></div>
           <div class="fw-info">
             <span class="fw-name">Simone de Beauvoir</span>
-            <span class="fw-desc">Ambiguity & ethics</span>
+            <span class="fw-desc" data-philid="simone">Ambiguity & ethics</span>
           </div>
         </button>
       </div>
     </div>
 
     <div class="era-group">
-      <div class="era-title">Contemporary</div>
+      <div class="era-title" data-i18n="eraContemporary">Contemporary</div>
       <div class="frameworks">
         <button class="framework-btn" data-id="foucault" onclick="selectFramework(this)">
           <div class="fw-portrait"><img src="/phantum/Foucault.jpg" alt="foucault"></div>
           <div class="fw-info">
             <span class="fw-name">Foucault</span>
-            <span class="fw-desc">Power & structure</span>
+            <span class="fw-desc" data-philid="foucault">Power & structure</span>
           </div>
         </button>
 
@@ -354,23 +379,23 @@
           <div class="fw-portrait"><img src="/phantum/bell_hooks.jpg" alt="hooks"></div>
           <div class="fw-info">
             <span class="fw-name">bell hooks</span>
-            <span class="fw-desc">Love & liberation</span>
+            <span class="fw-desc" data-philid="hooks">Love & liberation</span>
           </div>
         </button>
 
         <button class="framework-btn" data-id="fisher" onclick="selectFramework(this)">
-          <div class="fw-portrait"><img src="/phantum/Mark_Fisher.jpg" alt="fisher"></div>
+          <div class="fw-portrait"><img src="/phantum/Mark_Fisher.jpg" alt="fisher" style="object-position: center 35%"></div>
           <div class="fw-info">
             <span class="fw-name">Mark Fisher</span>
-            <span class="fw-desc">Capitalist realism</span>
+            <span class="fw-desc" data-philid="fisher">Capitalist realism</span>
           </div>
         </button>
 
         <button class="framework-btn" data-id="bauman" onclick="selectFramework(this)">
-          <div class="fw-portrait"><img src="/phantum/Zygmunt_Bauman.jpg" alt="bauman"></div>
+          <div class="fw-portrait"><img src="/phantum/Zygmunt_Bauman.jpg" alt="bauman" style="object-position: center 50%"></div>
           <div class="fw-info">
             <span class="fw-name">Zygmunt Bauman</span>
-            <span class="fw-desc">Liquid modernity</span>
+            <span class="fw-desc" data-philid="bauman">Liquid modernity</span>
           </div>
         </button>
 
@@ -378,18 +403,20 @@
           <div class="fw-portrait"><img src="/phantum/David_Graeber.jpg" alt="graeber"></div>
           <div class="fw-info">
             <span class="fw-name">David Graeber</span>
-            <span class="fw-desc">Debt & freedom</span>
+            <span class="fw-desc" data-philid="graeber">Debt & freedom</span>
           </div>
         </button>
       </div>
     </div>
   </div>
 
-  <div class="section">
-    <div class="section-label">02 — Describe your decision</div>
-    <textarea id="decisionInput" maxlength="500" placeholder="Write in any language — what's on your mind?" oninput="updateCount()"></textarea>
+  <div class="library-section" id="librarySection"></div>
+
+  <div class="section" id="inputSection">
+    <div class="section-label" data-i18n="sectionLabel2">02 — Describe your situation</div>
+    <textarea id="decisionInput" maxlength="500" placeholder="Write in any language — what's on your mind?" data-i18n-placeholder="placeholder" oninput="updateCount()"></textarea>
     <div class="lang-row">
-      <span class="lang-row-label">Response language</span>
+      <span class="lang-row-label" data-i18n="langRowLabel">Response language</span>
       <div class="lang-btns">
         <button class="lang-btn active" data-lang="en" onclick="selectLang(this)">EN</button>
         <button class="lang-btn" data-lang="ja" onclick="selectLang(this)">日本語</button>
@@ -399,7 +426,7 @@
       </div>
     </div>
     <div class="submit-row">
-      <button class="submit-btn" id="submitBtn" onclick="runSession()" disabled>Read it</button>
+      <button class="submit-btn" id="submitBtn" onclick="runSession()" disabled data-i18n="submitBtn">Read it</button>
       <span class="char-count" id="charCount">0 / 500</span>
     </div>
     <div class="error-msg" id="errorMsg"></div>
@@ -425,11 +452,11 @@
     </div>
     <ul class="questions-list" id="questionsList"></ul>
     <div class="summary-area" id="summaryArea">
-      <div class="summary-label">The core of it</div>
+      <div class="summary-label" data-i18n="summaryLabel">The core of it</div>
       <p class="summary-text" id="summaryText"></p>
     </div>
     <div class="books-area" id="booksArea"></div>
-    <button class="reset-btn" onclick="resetSession()">Start a new session</button>
+    <button class="reset-btn" onclick="resetSession()" data-i18n="resetBtn">Start a new session</button>
   </div>
 
 </div>
@@ -522,6 +549,178 @@
 
 <script>
 
+const TRANSLATIONS = {
+  en: {
+    headerLabel: 'Your Situation',
+    h1: 'Your situation.<br><em>Their wisdom.</em>',
+    subtitle: "Pick a thinker. Write what's on your mind. Get their take.",
+    modeChoose: 'Choose your thinker',
+    modeOracle: 'Let them find you',
+    modeLibrary: 'Reading list',
+    oracleHint: "Write what's on your mind. The right thinker will come to you.",
+    sectionLabel1: '01 — Choose your thinker',
+    eraAncient: 'Ancient', eraModern: 'Modern', eraContemporary: 'Contemporary',
+    sectionLabel2: '02 — Describe your situation',
+    placeholder: "Write in any language — what's on your mind?",
+    langRowLabel: 'Response language',
+    submitBtn: 'Read it',
+    resetBtn: 'Start a new session',
+    summaryLabel: 'The core of it',
+    booksLabel: 'Read their words',
+    bookCta: 'View on Amazon →',
+    affiliateNote: 'Affiliate links',
+    loadingOracle: 'finding your thinker',
+    loadingReading: 'reading your situation',
+    loadingPhrases: ['thinking','reading between the lines','questioning the question','finding the tension'],
+    philDescs: {
+      socrates:'Questioning & ignorance', epictetus:'Control & acceptance', marcus:'Duty & impermanence',
+      nietzsche:'Will & self-overcoming', sartre:'Radical freedom', camus:'Absurdity & revolt',
+      arendt:'Action & plurality', simone:'Ambiguity & ethics', foucault:'Power & structure',
+      hooks:'Love & liberation', fisher:'Capitalist realism', bauman:'Liquid modernity', graeber:'Debt & freedom',
+    }
+  },
+  ja: {
+    headerLabel: 'あなたの状況',
+    h1: 'あなたの状況に、<br><em>彼らの知恵を。</em>',
+    subtitle: '思想家を選んで、今思うことを書く。答えが返ってくる。',
+    modeChoose: '思想家を選ぶ',
+    modeOracle: '思想家に選ばれる',
+    modeLibrary: '文献リスト',
+    oracleHint: '今思うことを書いてください。あなたにふさわしい思想家が現れます。',
+    sectionLabel1: '01 — 思想家を選ぶ',
+    eraAncient: '古代', eraModern: '近代', eraContemporary: '現代',
+    sectionLabel2: '02 — あなたの状況を書く',
+    placeholder: 'どんな言語でも書いてください — 今、何が頭にありますか？',
+    langRowLabel: '回答言語',
+    submitBtn: '読む',
+    resetBtn: '新しいセッションを始める',
+    summaryLabel: '核心',
+    booksLabel: '彼らの言葉を読む',
+    bookCta: 'Amazonで見る →',
+    affiliateNote: 'アフィリエイトリンク',
+    loadingOracle: '思想家を探しています',
+    loadingReading: '状況を読んでいます',
+    loadingPhrases: ['考えています','行間を読んでいます','問いを問い直しています','本質を探しています'],
+    philDescs: {
+      socrates:'問いと無知', epictetus:'制御と受容', marcus:'義務と無常',
+      nietzsche:'意志と自己超克', sartre:'根源的自由', camus:'不条理と反抗',
+      arendt:'行為と多元性', simone:'曖昧さと倫理', foucault:'権力と構造',
+      hooks:'愛と解放', fisher:'資本主義リアリズム', bauman:'液状近代', graeber:'負債と自由',
+    }
+  },
+  de: {
+    headerLabel: 'Deine Situation',
+    h1: 'Deine Situation.<br><em>Ihre Weisheit.</em>',
+    subtitle: 'Wähle einen Denker. Schreibe, was dich bewegt. Erhalte ihre Perspektive.',
+    modeChoose: 'Denker wählen',
+    modeOracle: 'Vom Denker gefunden werden',
+    modeLibrary: 'Leseliste',
+    oracleHint: 'Schreibe, was dir auf dem Herzen liegt. Der richtige Denker wird zu dir kommen.',
+    sectionLabel1: '01 — Denker wählen',
+    eraAncient: 'Antike', eraModern: 'Modern', eraContemporary: 'Zeitgenössisch',
+    sectionLabel2: '02 — Deine Situation beschreiben',
+    placeholder: 'In beliebiger Sprache — was beschäftigt dich?',
+    langRowLabel: 'Antwortsprache',
+    submitBtn: 'Lesen',
+    resetBtn: 'Neue Sitzung beginnen',
+    summaryLabel: 'Der Kern der Sache',
+    booksLabel: 'Ihre Worte lesen',
+    bookCta: 'Auf Amazon ansehen →',
+    affiliateNote: 'Affiliate-Links',
+    loadingOracle: 'sucht deinen Denker',
+    loadingReading: 'liest deine Situation',
+    loadingPhrases: ['denkt nach','liest zwischen den Zeilen','hinterfragt die Frage','sucht die Spannung'],
+    philDescs: {
+      socrates:'Fragen & Unwissenheit', epictetus:'Kontrolle & Akzeptanz', marcus:'Pflicht & Vergänglichkeit',
+      nietzsche:'Wille & Selbstüberwindung', sartre:'Radikale Freiheit', camus:'Absurdität & Revolte',
+      arendt:'Handeln & Pluralität', simone:'Ambiguität & Ethik', foucault:'Macht & Struktur',
+      hooks:'Liebe & Befreiung', fisher:'Kapitalistischer Realismus', bauman:'Flüssige Moderne', graeber:'Schulden & Freiheit',
+    }
+  },
+  fr: {
+    headerLabel: 'Ta Situation',
+    h1: 'Ta situation.<br><em>Leur sagesse.</em>',
+    subtitle: 'Choisis un penseur. Écris ce qui te préoccupe. Reçois leur réponse.',
+    modeChoose: 'Choisir ton penseur',
+    modeOracle: 'Laisser le penseur te trouver',
+    modeLibrary: 'Liste de lecture',
+    oracleHint: "Écris ce qui t'occupe l'esprit. Le bon penseur viendra à toi.",
+    sectionLabel1: '01 — Choisir ton penseur',
+    eraAncient: 'Antiquité', eraModern: 'Moderne', eraContemporary: 'Contemporain',
+    sectionLabel2: '02 — Décris ta situation',
+    placeholder: "Dans n'importe quelle langue — qu'est-ce qui te préoccupe ?",
+    langRowLabel: 'Langue de réponse',
+    submitBtn: 'Lire',
+    resetBtn: 'Commencer une nouvelle session',
+    summaryLabel: "L'essentiel",
+    booksLabel: 'Lire leurs mots',
+    bookCta: 'Voir sur Amazon →',
+    affiliateNote: 'Liens affiliés',
+    loadingOracle: 'cherche ton penseur',
+    loadingReading: 'lit ta situation',
+    loadingPhrases: ['réfléchit','lit entre les lignes','questionne la question','trouve la tension'],
+    philDescs: {
+      socrates:'Questionnement & ignorance', epictetus:'Contrôle & acceptation', marcus:'Devoir & impermanence',
+      nietzsche:'Volonté & dépassement de soi', sartre:'Liberté radicale', camus:'Absurde & révolte',
+      arendt:'Action & pluralité', simone:'Ambiguïté & éthique', foucault:'Pouvoir & structure',
+      hooks:'Amour & libération', fisher:'Réalisme capitaliste', bauman:'Modernité liquide', graeber:'Dette & liberté',
+    }
+  },
+  es: {
+    headerLabel: 'Tu Situación',
+    h1: 'Tu situación.<br><em>Su sabiduría.</em>',
+    subtitle: 'Elige un pensador. Escribe lo que te preocupa. Recibe su perspectiva.',
+    modeChoose: 'Elegir tu pensador',
+    modeOracle: 'Dejar que te encuentren',
+    modeLibrary: 'Lista de lectura',
+    oracleHint: 'Escribe lo que tienes en mente. El pensador adecuado vendrá a ti.',
+    sectionLabel1: '01 — Elige tu pensador',
+    eraAncient: 'Antigüedad', eraModern: 'Moderno', eraContemporary: 'Contemporáneo',
+    sectionLabel2: '02 — Describe tu situación',
+    placeholder: '¿En cualquier idioma — qué te ronda por la cabeza?',
+    langRowLabel: 'Idioma de respuesta',
+    submitBtn: 'Leer',
+    resetBtn: 'Comenzar una nueva sesión',
+    summaryLabel: 'Lo esencial',
+    booksLabel: 'Leer sus palabras',
+    bookCta: 'Ver en Amazon →',
+    affiliateNote: 'Enlaces de afiliados',
+    loadingOracle: 'buscando tu pensador',
+    loadingReading: 'leyendo tu situación',
+    loadingPhrases: ['pensando','leyendo entre líneas','cuestionando la pregunta','encontrando la tensión'],
+    philDescs: {
+      socrates:'Cuestionamiento & ignorancia', epictetus:'Control & aceptación', marcus:'Deber & impermanencia',
+      nietzsche:'Voluntad & superación', sartre:'Libertad radical', camus:'Absurdo & revuelta',
+      arendt:'Acción & pluralidad', simone:'Ambigüedad & ética', foucault:'Poder & estructura',
+      hooks:'Amor & liberación', fisher:'Realismo capitalista', bauman:'Modernidad líquida', graeber:'Deuda & libertad',
+    }
+  },
+};
+
+function applyTranslation(lang) {
+  const t = TRANSLATIONS[lang] || TRANSLATIONS.en;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    if (t[key] !== undefined) el.textContent = t[key];
+  });
+  const heading = document.getElementById('mainHeading');
+  if (heading) heading.innerHTML = t.h1;
+  const subtitleText = document.getElementById('subtitleText');
+  if (subtitleText) subtitleText.textContent = t.subtitle;
+  const subtitleLangs = document.getElementById('subtitleLangs');
+  if (subtitleLangs) subtitleLangs.style.display = lang === 'en' ? '' : 'none';
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.dataset.i18nPlaceholder;
+    if (t[key] !== undefined) el.placeholder = t[key];
+  });
+  document.querySelectorAll('[data-philid]').forEach(el => {
+    const id = el.dataset.philid;
+    if (t.philDescs && t.philDescs[id]) el.textContent = t.philDescs[id];
+  });
+  if (t.loadingPhrases) loadingPhrases = t.loadingPhrases;
+  if (currentMode === 'library') renderLibrary();
+}
+
 const FRAMEWORKS = {
   socrates: { name:"Socrates", prompt:`You have just examined their soul through the elenctic method and seen what they cannot see themselves. You speak from the irony of knowing your own ignorance. Reference the unexamined life, what they think they know but do not, and what wisdom is truly demanding of them right now. Speak in first person as Socrates. You are giving a direct reading — like an oracle or tarot — to someone who has come to you with a decision or struggle. Write 4-6 sentences of flowing prose. Do NOT ask questions. Do NOT use bullet points or lists. Speak with authority, depth, and your unique philosophical voice. End with one sharp unforgettable sentence that cuts to the heart of their situation. Respond ONLY in JSON with no preamble: {"thinker":"Socrates","reading":"...","tension":"..."}` },
   epictetus: { name:"Epictetus", prompt:`You were a slave who found absolute freedom through philosophy. Speak from hard-won experience about what is and is not in their control. Be direct, even blunt. Name the fear they are hiding behind reason. Speak in first person as Epictetus. You are giving a direct reading — like an oracle or tarot — to someone who has come to you with a decision or struggle. Write 4-6 sentences of flowing prose. Do NOT ask questions. Do NOT use bullet points or lists. Speak with authority, depth, and your unique philosophical voice. End with one sharp unforgettable sentence that cuts to the heart of their situation. Respond ONLY in JSON with no preamble: {"thinker":"Epictetus","reading":"...","tension":"..."}` },
@@ -599,6 +798,7 @@ function selectLang(btn) {
   document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   selectedLang = btn.dataset.lang;
+  applyTranslation(selectedLang);
 }
 
 function selectFramework(btn) {
@@ -620,7 +820,7 @@ function updateSubmitState() {
   document.getElementById('submitBtn').disabled = !ready;
 }
 
-const loadingPhrases = ['thinking','reading between the lines','questioning the question','finding the tension'];
+let loadingPhrases = ['thinking','reading between the lines','questioning the question','finding the tension'];
 
 // --- Helper: extract text from Gemini parts, filtering out thoughtSignature etc. ---
 function extractGeminiText(data) {
@@ -645,7 +845,7 @@ async function runSession() {
     document.getElementById('oracleReveal').classList.remove('visible');
     const loading = document.getElementById('loading');
     loading.classList.add('visible');
-    document.getElementById('loadingText').textContent = 'finding your thinker';
+    document.getElementById('loadingText').textContent = (TRANSLATIONS[selectedLang] || TRANSLATIONS.en).loadingOracle;
     try {
       fwKey = await runOracleSession(input);
       if (!fwKey) return;
@@ -656,7 +856,7 @@ async function runSession() {
       document.getElementById('errorMsg').classList.add('visible');
       return;
     }
-    document.getElementById('loadingText').textContent = 'reading your situation';
+    document.getElementById('loadingText').textContent = (TRANSLATIONS[selectedLang] || TRANSLATIONS.en).loadingReading;
   }
 
   const fw = FRAMEWORKS[fwKey];
@@ -741,18 +941,19 @@ function renderResponse(data) {
   const books = fwKey && BOOKS[fwKey];
   const booksEl = document.getElementById('booksArea');
   if (books && books.length) {
-    let bhtml = '<div class="books-label">Read their words</div>';
+    const tl = TRANSLATIONS[selectedLang] || TRANSLATIONS.en;
+    let bhtml = `<div class="books-label">${tl.booksLabel}</div>`;
     books.forEach(b => {
       bhtml += `<a class="book-card" href="${b.url}" target="_blank" rel="noopener noreferrer">
         <div class="book-emoji">${b.emoji}</div>
         <div class="book-info">
           <div class="book-title">${b.title}</div>
           <div class="book-author">${b.author}</div>
-          <span class="book-cta">View on Amazon →</span>
+          <span class="book-cta">${tl.bookCta}</span>
         </div>
       </a>`;
     });
-    bhtml += '<div class="affiliate-note">Affiliate links</div>';
+    bhtml += `<div class="affiliate-note">${tl.affiliateNote}</div>`;
     booksEl.innerHTML = bhtml;
     setTimeout(() => booksEl.classList.add('visible'), 700);
   } else {
@@ -767,7 +968,7 @@ function resetSession() {
   document.querySelectorAll('.framework-btn').forEach(b => b.classList.remove('active'));
   selectedFramework = null;
   document.getElementById('decisionInput').value = '';
-  document.getElementById('charCount').textContent = '0 characters';
+  document.getElementById('charCount').textContent = '0 / 500';
   document.getElementById('submitBtn').disabled = true;
   document.getElementById('responseArea').classList.remove('visible');
   document.getElementById('summaryArea').classList.remove('visible');
@@ -875,13 +1076,64 @@ const THINKER_META = {
   graeber:   { desc:'Debt & freedom' },
 };
 
+const PORTRAIT_SRCS = {
+  socrates:'/phantum/Socrates.jpg', epictetus:'/phantum/Epictetus.jpg', marcus:'/phantum/Marcus_Aurelius.jpg',
+  nietzsche:'/phantum/Nietzsche.jpg', sartre:'/phantum/Sartre.jpg', camus:'/phantum/Camus.jpg',
+  arendt:'/phantum/Hannah_Arendt.jpg', simone:'/phantum/Simone_de_Beauvoir.jpg', foucault:'/phantum/Foucault.jpg',
+  hooks:'/phantum/bell_hooks.jpg', fisher:'/phantum/Mark_Fisher.jpg', bauman:'/phantum/Zygmunt_Bauman.jpg', graeber:'/phantum/David_Graeber.jpg',
+};
+const PORTRAIT_POS = { fisher:'center 35%', bauman:'center 50%' };
+const LIB_ERAS = [
+  { key:'eraAncient',       ids:['socrates','epictetus','marcus'] },
+  { key:'eraModern',        ids:['nietzsche','sartre','camus','arendt','simone'] },
+  { key:'eraContemporary',  ids:['foucault','hooks','fisher','bauman','graeber'] },
+];
+
+function renderLibrary() {
+  const tl = TRANSLATIONS[selectedLang] || TRANSLATIONS.en;
+  let html = '';
+  LIB_ERAS.forEach(era => {
+    html += `<div class="lib-era-group"><div class="lib-era-title">${tl[era.key]}</div>`;
+    era.ids.forEach(id => {
+      const fw = FRAMEWORKS[id];
+      const books = BOOKS[id];
+      if (!fw || !books) return;
+      const desc = (tl.philDescs && tl.philDescs[id]) || '';
+      const src = PORTRAIT_SRCS[id] || '';
+      const pos = PORTRAIT_POS[id] || 'center 15%';
+      html += `<div class="lib-philosopher">
+        <div class="lib-phil-header">
+          <div class="lib-portrait"><img src="${src}" alt="${id}" style="object-position:${pos}"></div>
+          <div><div class="lib-phil-name">${fw.name}</div><div class="lib-phil-desc">${desc}</div></div>
+        </div><div class="lib-books">`;
+      books.forEach(b => {
+        html += `<a class="lib-book" href="${b.url}" target="_blank" rel="noopener noreferrer">
+          <div class="lib-book-emoji">${b.emoji}</div>
+          <div class="lib-book-info"><div class="lib-book-title">${b.title}</div><div class="lib-book-author">${b.author}</div></div>
+          <span class="lib-book-cta">${tl.bookCta}</span>
+        </a>`;
+      });
+      html += `</div></div>`;
+    });
+    html += `</div>`;
+  });
+  html += `<div class="lib-affiliate">${tl.affiliateNote}</div>`;
+  document.getElementById('librarySection').innerHTML = html;
+}
+
 function setMode(mode) {
   currentMode = mode;
   document.getElementById('modeChoose').classList.toggle('active', mode === 'choose');
   document.getElementById('modeOracle').classList.toggle('active', mode === 'oracle');
-  document.getElementById('thinkerSection').classList.toggle('hidden', mode === 'oracle');
+  document.getElementById('modeLibrary').classList.toggle('active', mode === 'library');
+  document.getElementById('thinkerSection').classList.toggle('hidden', mode !== 'choose');
   document.getElementById('oracleHint').classList.toggle('visible', mode === 'oracle');
-  if (mode === 'oracle') selectedFramework = null;
+  const inp = document.getElementById('inputSection');
+  if (inp) inp.style.display = mode === 'library' ? 'none' : '';
+  const lib = document.getElementById('librarySection');
+  if (mode === 'library') { lib.classList.add('visible'); renderLibrary(); }
+  else lib.classList.remove('visible');
+  if (mode !== 'choose') selectedFramework = null;
   updateSubmitState();
 }
 
