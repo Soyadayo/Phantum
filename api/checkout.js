@@ -1,21 +1,31 @@
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const { email, userId } = req.body;
+  const { email, userId, product } = req.body;
+  const isTgap = product === 'tgap';
+
+  const priceId = isTgap
+    ? process.env.STRIPE_PRICE_ID_TGAP
+    : process.env.STRIPE_PRICE_ID;
+
+  if (!priceId) {
+    return res.status(500).json({ error: `Stripe price not configured for product: ${product || 'phantum'}` });
+  }
+
+  const baseUrl = isTgap
+    ? (process.env.SITE_URL_TGAP || 'https://www.tacorari.eu/translationgap')
+    : (process.env.SITE_URL || 'https://www.tacorari.eu/phantum');
 
   try {
     const params = new URLSearchParams();
     params.append('mode', 'payment');
-    params.append('line_items[0][price]', process.env.STRIPE_PRICE_ID);
+    params.append('line_items[0][price]', priceId);
     params.append('line_items[0][quantity]', '1');
-    params.append('success_url', (process.env.SITE_URL || 'https://www.tacorari.eu/phantum') + '?status=success&session_id={CHECKOUT_SESSION_ID}');
-    params.append('cancel_url', process.env.SITE_URL || 'https://www.tacorari.eu/phantum');
-    if (email) {
-      params.append('customer_email', email);
-    }
-    if (userId) {
-      params.append('metadata[userId]', userId);
-    }
+    params.append('success_url', baseUrl + '?status=success&session_id={CHECKOUT_SESSION_ID}');
+    params.append('cancel_url', baseUrl);
+    if (email) params.append('customer_email', email);
+    if (userId) params.append('metadata[userId]', userId);
+    params.append('metadata[product]', product || 'phantum');
 
     const response = await fetch('https://api.stripe.com/v1/checkout/sessions', {
       method: 'POST',
@@ -27,7 +37,6 @@ export default async function handler(req, res) {
     });
 
     const session = await response.json();
-
     if (session.error) {
       console.error('Stripe error:', session.error);
       return res.status(500).json({ error: session.error.message });

@@ -305,6 +305,22 @@
   footer a { color: #999; text-decoration: underline; text-underline-offset: 3px; }
 
   .hidden { display: none; }
+
+  /* Paywall */
+  .paywall-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.55); z-index:3000; align-items:center; justify-content:center; }
+  .paywall-overlay.visible { display:flex; }
+  .paywall-box { background:#fff; border:1px solid #e5e5e0; border-radius:8px; padding:40px 36px; max-width:400px; width:90%; text-align:center; box-shadow:0 8px 40px rgba(0,0,0,0.12); }
+  .paywall-label { font-size:11px; font-family:'DM Sans',sans-serif; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:#999; margin-bottom:14px; }
+  .paywall-title { font-size:24px; font-weight:700; line-height:1.25; margin-bottom:10px; }
+  .paywall-sub { font-size:14px; color:#777; line-height:1.6; margin-bottom:20px; font-family:'DM Sans',sans-serif; }
+  .paywall-price { font-size:30px; font-weight:700; margin-bottom:4px; }
+  .paywall-price span { font-size:14px; font-weight:400; color:#999; font-family:'DM Sans',sans-serif; }
+  .paywall-input { width:100%; padding:11px 14px; border:1px solid #ddd; border-radius:4px; font-size:15px; font-family:'DM Sans',sans-serif; margin-top:16px; outline:none; transition:border-color 0.2s; }
+  .paywall-input:focus { border-color:#1a1a1a; }
+  .paywall-btn { display:block; width:100%; background:#1a1a1a; color:#fff; border:none; padding:14px; font-family:'DM Sans',sans-serif; font-size:14px; font-weight:600; border-radius:4px; cursor:pointer; margin-top:10px; transition:opacity 0.2s; }
+  .paywall-btn:hover { opacity:0.82; }
+  .paywall-btn:disabled { opacity:0.35; cursor:not-allowed; }
+  .paywall-dismiss { background:none; border:none; color:#bbb; font-family:'DM Sans',sans-serif; font-size:13px; cursor:pointer; margin-top:14px; text-decoration:underline; text-underline-offset:3px; }
 </style>
 </head>
 <body>
@@ -400,6 +416,20 @@
   </div>
 </footer>
 
+<!-- Paywall -->
+<div class="paywall-overlay" id="paywallOverlay">
+  <div class="paywall-box">
+    <div class="paywall-label">TranslationGap</div>
+    <div class="paywall-title">You've used your<br>3 free checks.</div>
+    <p class="paywall-sub">Get 5 checks to use any time.<br>Your free monthly checks reset on the 1st.</p>
+    <div class="paywall-price">€4.00 <span>for 5 checks</span></div>
+    <input class="paywall-input" type="email" id="paywallEmail" placeholder="your@email.com">
+    <button class="paywall-btn" id="paywallBtn" onclick="startTgapCheckout()">Get 5 checks — €4.00</button>
+    <br>
+    <button class="paywall-dismiss" onclick="closePaywall()">Maybe later</button>
+  </div>
+</div>
+
 <!-- Legal overlays -->
 <div id="tg-overlay" onclick="if(event.target===this)closeLegal()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:2000;align-items:flex-start;justify-content:center;overflow-y:auto;padding:60px 20px;">
   <div style="background:#fff;border:1px solid #e5e5e0;border-radius:8px;padding:48px 40px;max-width:560px;width:100%;position:relative;">
@@ -469,7 +499,53 @@ if (!userId) {
   userId = 'u_' + Math.random().toString(36).slice(2, 10);
   localStorage.setItem('tgap_user_id', userId);
 }
+let paidChecks = parseInt(localStorage.getItem('tgap_credits') || '0', 10);
 let freeChecksLeft = 2;
+
+function showPaywall() { document.getElementById('paywallOverlay').classList.add('visible'); }
+function closePaywall() { document.getElementById('paywallOverlay').classList.remove('visible'); }
+
+async function startTgapCheckout() {
+  const email = document.getElementById('paywallEmail').value.trim();
+  const btn = document.getElementById('paywallBtn');
+  btn.textContent = 'Redirecting...';
+  btn.disabled = true;
+  try {
+    const res = await fetch('/api/checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, userId, product: 'tgap' })
+    });
+    const data = await res.json();
+    if (data.url) window.location.href = data.url;
+    else throw new Error(data.error || 'Checkout failed');
+  } catch (err) {
+    btn.textContent = 'Get 5 checks — €4.00';
+    btn.disabled = false;
+    alert('Something went wrong. Please try again.');
+  }
+}
+
+// Handle Stripe success redirect
+(async () => {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('status') === 'success') {
+    const sessionId = params.get('session_id');
+    if (sessionId) {
+      try {
+        const r = await fetch('/api/session?session_id=' + sessionId);
+        const d = await r.json();
+        if (d.success && d.credits && d.product === 'tgap') {
+          paidChecks = d.credits;
+          localStorage.setItem('tgap_credits', d.credits);
+          localStorage.setItem('tgap_user_id', d.userId);
+          userId = d.userId;
+        }
+      } catch {}
+      history.replaceState({}, '', '/translationgap');
+    }
+  }
+})();
 
 const STEPS = [
   "Reading the article you pasted...",
@@ -616,7 +692,7 @@ async function doSearch(forceKey) {
 
     if (data.error === 'FREE_LIMIT_REACHED') {
       show("landing");
-      document.getElementById("limit-msg").style.display = "block";
+      showPaywall();
       return;
     }
     if (data.error) throw new Error(data.error);

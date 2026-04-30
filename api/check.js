@@ -30,25 +30,47 @@ function getMonthEnd() {
 }
 
 async function fetchArticleText(url) {
+  // 1. Jina AI Reader — handles paywalls, JS-heavy pages, and complex layouts
+  try {
+    const jinaRes = await fetch(`https://r.jina.ai/${url}`, {
+      headers: { 'Accept': 'text/plain', 'X-No-Cache': 'true' },
+      signal: AbortSignal.timeout(15000),
+    });
+    if (jinaRes.ok) {
+      const text = await jinaRes.text();
+      // Jina returns an error page if it can't parse — check for real content
+      if (text && text.length > 300 && !text.startsWith('Error')) {
+        console.log('TGAP: fetched via Jina AI, chars:', text.length);
+        return text.slice(0, 8000);
+      }
+    }
+  } catch (e) {
+    console.log('TGAP: Jina AI failed:', e.message);
+  }
+
+  // 2. Direct fetch + HTML strip (fallback)
   try {
     const res = await fetch(url, {
       headers: {
         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept': 'text/html,application/xhtml+xml',
         'Accept-Language': 'en-US,en;q=0.5',
       },
       signal: AbortSignal.timeout(8000),
     });
     if (!res.ok) return '';
     const html = await res.text();
-    return html
+    const text = html
       .replace(/<script[\s\S]*?<\/script>/gi, '')
       .replace(/<style[\s\S]*?<\/style>/gi, '')
       .replace(/<[^>]+>/g, ' ')
       .replace(/\s+/g, ' ')
       .trim()
       .slice(0, 6000);
-  } catch {
+    console.log('TGAP: fetched via direct fetch, chars:', text.length);
+    return text;
+  } catch (e) {
+    console.log('TGAP: direct fetch failed:', e.message);
     return '';
   }
 }

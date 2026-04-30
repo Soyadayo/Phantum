@@ -17,22 +17,25 @@ export default async function handler(req, res) {
       return res.status(200).json({ success: false });
     }
 
-    // Add 15 credits keyed by Stripe customer ID or session ID
-    const userId = session.customer || session.id;
-    const creditKey = `phantum:credits:user:${userId}`;
+    const product = session.metadata?.product || 'phantum';
+    const isTgap = product === 'tgap';
+    const creditsToAdd = isTgap ? 5 : 10;
+    const keyPrefix = isTgap ? 'tgap' : 'phantum';
 
-    // Get existing credits and add 15
+    const userId = session.customer || session.id;
+    const creditKey = `${keyPrefix}:credits:user:${userId}`;
+
     const existRes = await fetch(`${REDIS_URL}/get/${encodeURIComponent(creditKey)}`, {
       headers: { Authorization: `Bearer ${REDIS_TOKEN}` }
     });
     const existData = await existRes.json();
     const existing = parseInt(existData.result || '0', 10);
 
-    await fetch(`${REDIS_URL}/set/${encodeURIComponent(creditKey)}/${existing + 10}`, {
+    await fetch(`${REDIS_URL}/set/${encodeURIComponent(creditKey)}/${existing + creditsToAdd}`, {
       headers: { Authorization: `Bearer ${REDIS_TOKEN}` }
     });
 
-    res.status(200).json({ success: true, userId, credits: existing + 10 });
+    res.status(200).json({ success: true, userId, credits: existing + creditsToAdd, product });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
