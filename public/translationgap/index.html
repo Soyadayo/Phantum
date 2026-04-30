@@ -344,6 +344,8 @@
       <div class="input-label">Paste an article link here</div>
       <input type="text" id="url-input" placeholder="https://nytimes.com/2026/...">
       <button id="check-btn" disabled onclick="doSearch()">Check this article</button>
+      <div id="error-msg" style="display:none;margin-top:10px;padding:12px 16px;background:#fef2f2;border:1px solid #fecaca;border-radius:4px;font-size:14px;font-family:'DM Sans',sans-serif;color:#b91c1c;"></div>
+      <div id="limit-msg" style="display:none;margin-top:10px;padding:12px 16px;background:#faf5ff;border:1px solid #e9d5ff;border-radius:4px;font-size:14px;font-family:'DM Sans',sans-serif;color:#7c3aed;">You've used all 3 free checks this month. More checks coming soon — check back next month.</div>
     </div>
 
     <div class="examples-box">
@@ -388,10 +390,87 @@
 </main>
 
 <footer>
-  <a href="https://www.tacorari.eu">Tacorari</a> · Haus Tacorari · Krefeld, Germany
+  <div style="margin-bottom:10px;">
+    <a href="https://www.tacorari.eu">Tacorari</a> · Haus Tacorari · Krefeld, Germany
+  </div>
+  <div style="display:flex;gap:16px;justify-content:center;">
+    <a href="#" onclick="openLegal('contact');return false;">Contact</a>
+    <a href="#" onclick="openLegal('legal');return false;">Impressum</a>
+    <a href="#" onclick="openLegal('privacy');return false;">Privacy</a>
+  </div>
 </footer>
 
+<!-- Legal overlays -->
+<div id="tg-overlay" onclick="if(event.target===this)closeLegal()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:2000;align-items:flex-start;justify-content:center;overflow-y:auto;padding:60px 20px;">
+  <div style="background:#fff;border:1px solid #e5e5e0;border-radius:8px;padding:48px 40px;max-width:560px;width:100%;position:relative;">
+    <div id="tg-modal-content"></div>
+    <button onclick="closeLegal()" style="margin-top:28px;background:none;border:1px solid #ccc;color:#999;font-family:'DM Sans',sans-serif;font-size:13px;padding:8px 20px;border-radius:4px;cursor:pointer;">Close</button>
+  </div>
+</div>
+
 <script>
+const LEGAL_CONTENT = {
+  contact: `<h2 style="font-family:'Source Serif 4',serif;font-size:24px;font-weight:400;margin-bottom:16px;">Contact</h2>
+    <p style="font-size:15px;color:#555;line-height:1.7;margin-bottom:14px;">Questions, feedback, or just want to say hello.</p>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-top:16px;">
+      <div><label style="font-size:12px;font-family:'DM Sans',sans-serif;color:#999;display:block;margin-bottom:4px;">Name</label><input id="tg-name" type="text" placeholder="Your name" style="width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:4px;font-size:15px;font-family:'Source Serif 4',serif;outline:none;"></div>
+      <div><label style="font-size:12px;font-family:'DM Sans',sans-serif;color:#999;display:block;margin-bottom:4px;">Email</label><input id="tg-email" type="email" placeholder="your@email.com" style="width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:4px;font-size:15px;font-family:'Source Serif 4',serif;outline:none;"></div>
+      <div><label style="font-size:12px;font-family:'DM Sans',sans-serif;color:#999;display:block;margin-bottom:4px;">Message</label><textarea id="tg-msg" placeholder="What's on your mind?" style="width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:4px;font-size:15px;font-family:'Source Serif 4',serif;resize:vertical;min-height:90px;outline:none;"></textarea></div>
+      <button onclick="submitTGContact()" style="background:#1a1a1a;color:#fff;border:none;padding:10px 24px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;border-radius:4px;cursor:pointer;">Send</button>
+      <div id="tg-contact-status" style="font-size:13px;font-family:'DM Sans',sans-serif;display:none;"></div>
+    </div>`,
+  legal: `<h2 style="font-family:'Source Serif 4',serif;font-size:24px;font-weight:400;margin-bottom:20px;">Impressum</h2>
+    <p style="font-size:13px;font-family:'DM Sans',sans-serif;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Service Provider</p>
+    <p style="font-size:15px;color:#444;line-height:1.7;margin-bottom:16px;">Soya Arakawa<br>c/o Block Services<br>Stuttgarter Str. 106<br>70736 Fellbach, Germany</p>
+    <p style="font-size:13px;font-family:'DM Sans',sans-serif;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Contact</p>
+    <p style="font-size:15px;color:#444;line-height:1.7;margin-bottom:16px;">Email: haustacorari@gmail.com</p>
+    <p style="font-size:13px;font-family:'DM Sans',sans-serif;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Tax Information</p>
+    <p style="font-size:15px;color:#444;line-height:1.7;margin-bottom:16px;">Tax number: 117/5007/3459<br>VAT not charged per §19 UStG (Kleinunternehmerregelung).</p>
+    <p style="font-size:13px;font-family:'DM Sans',sans-serif;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Responsible for Content</p>
+    <p style="font-size:15px;color:#444;line-height:1.7;">Soya Arakawa (address as above), per §18 Abs. 2 MStV.</p>`,
+  privacy: `<h2 style="font-family:'Source Serif 4',serif;font-size:24px;font-weight:400;margin-bottom:20px;">Privacy Policy</h2>
+    <p style="font-size:13px;font-family:'DM Sans',sans-serif;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Service Provider</p>
+    <p style="font-size:15px;color:#444;line-height:1.7;margin-bottom:16px;">Soya Arakawa · haustacorari@gmail.com</p>
+    <p style="font-size:13px;font-family:'DM Sans',sans-serif;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Data We Collect</p>
+    <p style="font-size:15px;color:#444;line-height:1.7;margin-bottom:16px;"><strong>URLs submitted.</strong> Sent to our AI for processing. Not stored on our servers.<br><strong>IP address.</strong> Used temporarily for rate limiting. Not used for tracking.</p>
+    <p style="font-size:13px;font-family:'DM Sans',sans-serif;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Third-Party Services</p>
+    <p style="font-size:15px;color:#444;line-height:1.7;margin-bottom:16px;">Vercel (hosting) · Upstash (rate limiting) · Google Gemini API (AI processing) · Google Fonts</p>
+    <p style="font-size:13px;font-family:'DM Sans',sans-serif;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Your Rights (GDPR)</p>
+    <p style="font-size:15px;color:#444;line-height:1.7;">You have the right to access, rectify, and delete your personal data. Contact: haustacorari@gmail.com</p>`,
+};
+
+function openLegal(id) {
+  const overlay = document.getElementById('tg-overlay');
+  document.getElementById('tg-modal-content').innerHTML = LEGAL_CONTENT[id] || '';
+  overlay.style.display = 'flex';
+}
+function closeLegal() {
+  document.getElementById('tg-overlay').style.display = 'none';
+}
+async function submitTGContact() {
+  const name = document.getElementById('tg-name').value.trim();
+  const email = document.getElementById('tg-email').value.trim();
+  const msg = document.getElementById('tg-msg').value.trim();
+  const status = document.getElementById('tg-contact-status');
+  if (!name || !email || !msg) { status.textContent = 'Please fill in all fields.'; status.style.color='#b91c1c'; status.style.display='block'; return; }
+  try {
+    const res = await fetch('https://api.web3forms.com/submit', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ access_key:'a7b20a69-0a6a-4e70-a9d4-894c6caf1826', subject:'TranslationGap contact', from_name:name, email, message:msg })
+    });
+    const data = await res.json();
+    if (data.success) { status.textContent = 'Sent. Thank you.'; status.style.color='#16a34a'; status.style.display='block'; }
+    else throw new Error();
+  } catch { status.textContent = 'Something went wrong. Email haustacorari@gmail.com directly.'; status.style.color='#b91c1c'; status.style.display='block'; }
+}
+
+let userId = localStorage.getItem('tgap_user_id');
+if (!userId) {
+  userId = 'u_' + Math.random().toString(36).slice(2, 10);
+  localStorage.setItem('tgap_user_id', userId);
+}
+let freeChecksLeft = 2;
+
 const STEPS = [
   "Reading the article you pasted...",
   "Finding the original-language sources...",
@@ -492,33 +571,70 @@ function show(id) {
 }
 
 function runExample(key) {
-  input.value = key === "nyt" ? "https://nytimes.com/turkey" : key === "reuters" ? "https://reuters.com/rapidus" : "https://apnews.com/iran";
+  const urls = { nyt: "https://nytimes.com/turkey", reuters: "https://reuters.com/rapidus", default: "https://apnews.com/iran" };
+  input.value = urls[key] || urls.default;
   doSearch(key);
 }
 
-function doSearch(forceKey) {
-  const val = input.value.toLowerCase();
-  let key = forceKey || "default";
-  if (!forceKey) {
-    if (val.includes("nyt") || val.includes("turkey")) key = "nyt";
-    else if (val.includes("reuters") || val.includes("japan") || val.includes("rapidus") || val.includes("chip")) key = "reuters";
+async function doSearch(forceKey) {
+  document.getElementById("error-msg").style.display = "none";
+  document.getElementById("limit-msg").style.display = "none";
+
+  // Example articles → use local mock data (instant, reliable demo)
+  if (forceKey) {
+    show("loading");
+    renderLoading();
+    let step = 0;
+    const iv = setInterval(() => { step++; if (step < STEPS.length) updateLoading(step); }, 1600);
+    setTimeout(() => {
+      clearInterval(iv);
+      renderResults(DATA[forceKey] || DATA.default);
+      show("results");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }, 6500);
+    return;
   }
 
+  // Real URL → call API
+  const url = input.value.trim();
   show("loading");
   renderLoading();
 
   let step = 0;
   const iv = setInterval(() => {
-    step++;
-    if (step < STEPS.length) updateLoading(step);
-  }, 1600);
+    if (step < STEPS.length - 1) { step++; updateLoading(step); }
+  }, 3500);
 
-  setTimeout(() => {
+  try {
+    const res = await fetch('/api/check', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url, userId })
+    });
+    const data = await res.json();
     clearInterval(iv);
-    renderResults(DATA[key]);
+
+    if (data.error === 'FREE_LIMIT_REACHED') {
+      show("landing");
+      document.getElementById("limit-msg").style.display = "block";
+      return;
+    }
+    if (data.error) throw new Error(data.error);
+
+    if (data.freeRemaining !== null && data.freeRemaining !== undefined) {
+      freeChecksLeft = data.freeRemaining;
+    }
+
+    renderResults(data.result);
     show("results");
     window.scrollTo({ top: 0, behavior: "smooth" });
-  }, 6500);
+  } catch (err) {
+    clearInterval(iv);
+    show("landing");
+    const errEl = document.getElementById("error-msg");
+    errEl.textContent = "Something went wrong: " + (err.message || "Please try again.");
+    errEl.style.display = "block";
+  }
 }
 
 function renderLoading() {
@@ -632,12 +748,14 @@ function renderResults(data) {
   }
 
   // CTA
+  const checksText = freeChecksLeft > 0
+    ? `You have <strong>${freeChecksLeft}</strong> free ${freeChecksLeft === 1 ? 'check' : 'checks'} remaining this month.`
+    : 'You have used all your free checks this month. More available next month.';
   html += `
     <div class="cta-box">
       <div class="cta-title">Make this a habit.</div>
-      <div class="cta-desc">You have 2 free checks remaining this month.<br>For unlimited checks, subscribe for $9.99/month.</div>
+      <div class="cta-desc">${checksText}</div>
       <div class="cta-buttons">
-        <button class="btn-primary">Subscribe</button>
         <button class="btn-secondary" onclick="resetToLanding()">Check another article</button>
       </div>
     </div>`;
