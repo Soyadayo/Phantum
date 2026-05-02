@@ -118,26 +118,32 @@ export default async function handler(req, res) {
   const ip = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || 'unknown';
   const month = new Date().toISOString().slice(0, 7);
 
-  // --- Credit check ---
+  const adminIps = (process.env.ADMIN_IPS || '').split(',').map(s => s.trim()).filter(Boolean);
+  const isAdmin = adminIps.includes(ip);
+
+  // --- Credit check (admin IP bypasses all limits) ---
   const creditKey = userId ? `tgap:credits:user:${userId}` : `tgap:credits:ip:${ip}`;
-  const credits = parseInt(await redisGet(REDIS_URL, REDIS_TOKEN, creditKey) || '0', 10);
 
   let creditsRemaining = null;
   let freeRemaining = null;
 
-  if (credits > 0) {
-    creditsRemaining = await redisDecr(REDIS_URL, REDIS_TOKEN, creditKey);
-  } else {
-    const freeKey = `tgap:free:${ip}:${month}`;
-    const freeCount = parseInt(await redisGet(REDIS_URL, REDIS_TOKEN, freeKey) || '0', 10);
-    if (freeCount >= 3) {
-      return res.status(429).json({ error: 'FREE_LIMIT_REACHED' });
+  if (!isAdmin) {
+    const credits = parseInt(await redisGet(REDIS_URL, REDIS_TOKEN, creditKey) || '0', 10);
+
+    if (credits > 0) {
+      creditsRemaining = await redisDecr(REDIS_URL, REDIS_TOKEN, creditKey);
+    } else {
+      const freeKey = `tgap:free:${ip}:${month}`;
+      const freeCount = parseInt(await redisGet(REDIS_URL, REDIS_TOKEN, freeKey) || '0', 10);
+      if (freeCount >= 3) {
+        return res.status(429).json({ error: 'FREE_LIMIT_REACHED' });
+      }
+      await redisPipeline(REDIS_URL, REDIS_TOKEN, [
+        ['INCR', freeKey],
+        ['EXPIREAT', freeKey, getMonthEnd()]
+      ]);
+      freeRemaining = Math.max(0, 2 - freeCount);
     }
-    await redisPipeline(REDIS_URL, REDIS_TOKEN, [
-      ['INCR', freeKey],
-      ['EXPIREAT', freeKey, getMonthEnd()]
-    ]);
-    freeRemaining = Math.max(0, 2 - freeCount);
   }
 
   // --- Fetch article text (best-effort) ---

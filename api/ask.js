@@ -40,6 +40,9 @@ export default async function handler(req, res) {
   const ip = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || 'unknown';
   const today = new Date().toISOString().slice(0, 10);
 
+  const adminIps = (process.env.ADMIN_IPS || '').split(',').map(s => s.trim()).filter(Boolean);
+  const isAdmin = adminIps.includes(ip);
+
   // Skip credit check for oracle selector (internal call)
   if (skipCredit) {
     try {
@@ -64,16 +67,20 @@ export default async function handler(req, res) {
     }
   }
 
-  // --- Check if user has credits or free usage available (but don't consume yet) ---
+  // --- Check credits (admin IP bypasses all limits) ---
   const creditKey = userId ? `phantum:credits:user:${userId}` : `phantum:credits:ip:${ip}`;
-  const credits = parseInt(await redisGet(REDIS_URL, REDIS_TOKEN, creditKey) || '0', 10);
-  const hasPaidCredits = credits > 0;
+  let hasPaidCredits = false;
 
-  if (!hasPaidCredits) {
-    const freeKey = `phantum:free:${ip}:${today}`;
-    const freeCount = parseInt(await redisGet(REDIS_URL, REDIS_TOKEN, freeKey) || '0', 10);
-    if (freeCount >= 1) {
-      return res.status(429).json({ error: 'FREE_LIMIT_REACHED' });
+  if (!isAdmin) {
+    const credits = parseInt(await redisGet(REDIS_URL, REDIS_TOKEN, creditKey) || '0', 10);
+    hasPaidCredits = credits > 0;
+
+    if (!hasPaidCredits) {
+      const freeKey = `phantum:free:${ip}:${today}`;
+      const freeCount = parseInt(await redisGet(REDIS_URL, REDIS_TOKEN, freeKey) || '0', 10);
+      if (freeCount >= 1) {
+        return res.status(429).json({ error: 'FREE_LIMIT_REACHED' });
+      }
     }
   }
 
@@ -105,17 +112,19 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: 'Empty response from AI. Please try again.' });
     }
 
-    // --- Gemini succeeded, NOW consume the credit ---
+    // --- Gemini succeeded, NOW consume the credit (admin skips this) ---
     let creditsRemaining = null;
 
-    if (hasPaidCredits) {
-      creditsRemaining = await redisDecr(REDIS_URL, REDIS_TOKEN, creditKey);
-    } else {
-      const freeKey = `phantum:free:${ip}:${today}`;
-      await redisPipeline(REDIS_URL, REDIS_TOKEN, [
-        ['INCR', freeKey],
-        ['EXPIREAT', freeKey, getNextMidnightUnix()]
-      ]);
+    if (!isAdmin) {
+      if (hasPaidCredits) {
+        creditsRemaining = await redisDecr(REDIS_URL, REDIS_TOKEN, creditKey);
+      } else {
+        const freeKey = `phantum:free:${ip}:${today}`;
+        await redisPipeline(REDIS_URL, REDIS_TOKEN, [
+          ['INCR', freeKey],
+          ['EXPIREAT', freeKey, getNextMidnightUnix()]
+        ]);
+      }
     }
 
     res.status(200).json({ ...data, creditsRemaining });
