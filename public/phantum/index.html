@@ -40,13 +40,16 @@
   body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events:none; z-index:1000; opacity:0.4; }
   .container { max-width:740px; margin:0 auto; padding:80px 32px; }
   header { margin-bottom:56px; opacity:0; animation:fadeUp 0.8s ease forwards; }
-  .header-label { font-size:9px; letter-spacing:0.35em; text-transform:uppercase; color:var(--accent); margin-bottom:24px; margin-top:20px; padding-top:20px; border-top:1px solid var(--border); display:flex; align-items:center; gap:14px; white-space:nowrap; }
+  .header-label { font-size:9px; letter-spacing:0.35em; text-transform:uppercase; color:var(--accent); margin-bottom:28px; margin-top:20px; padding-top:20px; border-top:1px solid var(--border); display:flex; align-items:center; gap:14px; white-space:nowrap; }
   .header-label::before, .header-label::after { content:''; height:1px; background:var(--accent-dim); flex:0 0 28px; opacity:0.6; }
-  h1 { font-family:'Cormorant Garamond',serif; font-weight:300; font-size:clamp(40px,6.5vw,58px); line-height:1.05; color:var(--text); margin-bottom:0; }
-  h1 em { font-style:italic; color:var(--accent); }
-  .header-sep { width:36px; height:1px; background:var(--accent-dim); opacity:0.5; margin:20px 0 16px; }
-  .subtitle { font-size:12px; color:var(--muted); letter-spacing:0.05em; line-height:1.6; }
-  .subtitle-cycle { display:block; margin-top:8px; font-size:10px; color:var(--muted); opacity:0.4; letter-spacing:0.03em; line-height:1.8; min-height:1.4em; transition:opacity 0.4s ease; }
+  h1 { font-family:'Cormorant Garamond',serif; font-weight:300; font-size:clamp(48px,8vw,76px); line-height:1.02; color:var(--text); margin-bottom:0; letter-spacing:-0.015em; }
+  h1 em { font-style:italic; color:var(--accent); text-shadow:0 0 60px rgba(200,169,110,0.25); }
+  .header-ornament { display:flex; align-items:center; gap:14px; margin:26px 0 20px; }
+  .header-ornament span { height:1px; flex:1; }
+  .header-ornament span:first-child { background:linear-gradient(to right,transparent,var(--accent-dim)); opacity:0.5; }
+  .header-ornament span:last-child  { background:linear-gradient(to left, transparent,var(--accent-dim)); opacity:0.5; }
+  .subtitle { font-family:'Cormorant Garamond',serif; font-size:17px; font-weight:300; font-style:italic; color:var(--muted); letter-spacing:0.01em; line-height:1.75; }
+  .subtitle-cycle { display:block; margin-top:10px; font-family:'DM Mono',monospace; font-size:10px; color:var(--muted); opacity:0.35; letter-spacing:0.04em; line-height:1.8; min-height:1.4em; transition:opacity 0.4s ease; font-style:normal; }
   .subtitle-cycle.fade { opacity:0; }
 
   .section { margin-bottom:40px; opacity:0; animation:fadeUp 0.8s ease forwards; }
@@ -385,9 +388,15 @@
       </div>
     </div>
     <div class="header-label" data-i18n="headerLabel">Your Situation</div>
-    <h1 id="mainHeading">Your situation.<br><em>Their wisdom.</em></h1>
-    <div class="header-sep"></div>
-    <p class="subtitle"><span id="subtitleText">Pick a thinker. Write what's on your mind. Get their take.</span><br>
+    <h1 id="mainHeading">Your situation.<br><em>A mind equal to it.</em></h1>
+    <div class="header-ornament">
+      <span></span>
+      <svg width="8" height="8" viewBox="0 0 10 10" fill="none" opacity="0.55">
+        <rect x="1.5" y="1.5" width="7" height="7" transform="rotate(45 5 5)" stroke="#c8a96e" stroke-width="0.8"/>
+      </svg>
+      <span></span>
+    </div>
+    <p class="subtitle"><span id="subtitleText">Not advice — a reading. One philosopher's voice, their lens, your situation.</span><br>
     <span class="subtitle-cycle" id="subtitleCycle">思想家を選んで今思うことを書く。答えが返ってくる。</span>
     </p>
     <div class="usage-bar" id="usageBar" style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border);">
@@ -703,8 +712,8 @@
 const TRANSLATIONS = {
   en: {
     headerLabel: 'Your Situation',
-    h1: 'Your situation.<br><em>Their wisdom.</em>',
-    subtitle: "Pick a thinker. Write what's on your mind. Get their take.",
+    h1: 'Your situation.<br><em>A mind equal to it.</em>',
+    subtitle: "Not advice — a reading. One philosopher's voice, their lens, your situation.",
     modeChoose: 'Choose your thinker',
     modeOracle: 'Choose for me',
     modeLibrary: 'Reading list',
@@ -734,8 +743,8 @@ const TRANSLATIONS = {
   },
   ja: {
     headerLabel: 'あなたの状況',
-    h1: 'あなたの状況に、<br><em>彼らの知恵を。</em>',
-    subtitle: '思想家を選んで、今思うことを書く。答えが返ってくる。',
+    h1: 'あなたの状況に、<br><em>それに値する思考を。</em>',
+    subtitle: 'アドバイスではない。一人の思想家の声、その視点から、あなたの状況を読み解く。',
     modeChoose: '思想家を選ぶ',
     modeOracle: 'おまかせ',
     modeLibrary: '文献リスト',
