@@ -67,28 +67,32 @@ export default async function handler(req, res) {
     }
   }
 
-  // --- Check subscription (subscribers bypass all credit limits) ---
+  // --- Check subscription + credits (all Redis calls in one try-catch) ---
   let isSubscribed = false;
-  if (userId && !isAdmin) {
-    const subVal = await redisGet(REDIS_URL, REDIS_TOKEN, `phantum:sub:user:${userId}`);
-    isSubscribed = !!subVal;
-  }
-
-  // --- Check credits (admin IP and subscribers bypass all limits) ---
   const creditKey = userId ? `phantum:credits:user:${userId}` : `phantum:credits:ip:${ip}`;
   let hasPaidCredits = false;
 
-  if (!isAdmin && !isSubscribed) {
-    const credits = parseInt(await redisGet(REDIS_URL, REDIS_TOKEN, creditKey) || '0', 10);
-    hasPaidCredits = credits > 0;
+  try {
+    if (userId && !isAdmin) {
+      const subVal = await redisGet(REDIS_URL, REDIS_TOKEN, `phantum:sub:user:${userId}`);
+      isSubscribed = !!subVal;
+    }
 
-    if (!hasPaidCredits) {
-      const freeKey = `phantum:free:${ip}:${today}`;
-      const freeCount = parseInt(await redisGet(REDIS_URL, REDIS_TOKEN, freeKey) || '0', 10);
-      if (freeCount >= 1) {
-        return res.status(429).json({ error: 'FREE_LIMIT_REACHED' });
+    if (!isAdmin && !isSubscribed) {
+      const credits = parseInt(await redisGet(REDIS_URL, REDIS_TOKEN, creditKey) || '0', 10);
+      hasPaidCredits = credits > 0;
+
+      if (!hasPaidCredits) {
+        const freeKey = `phantum:free:${ip}:${today}`;
+        const freeCount = parseInt(await redisGet(REDIS_URL, REDIS_TOKEN, freeKey) || '0', 10);
+        if (freeCount >= 1) {
+          return res.status(429).json({ error: 'FREE_LIMIT_REACHED' });
+        }
       }
     }
+  } catch (redisErr) {
+    console.error('Redis error in credit check:', redisErr.message);
+    return res.status(503).json({ error: 'Service temporarily unavailable. Please try again.' });
   }
 
   // --- Call Gemini FIRST, before consuming any credits ---
