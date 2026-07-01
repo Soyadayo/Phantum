@@ -39,10 +39,12 @@
   body { background:#0a0908; color:var(--text); font-family:'DM Mono',monospace; font-weight:300; min-height:100vh; overflow-x:hidden; }
   body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events:none; z-index:1000; opacity:0.4; }
   .container { max-width:740px; margin:0 auto; padding:80px 32px; }
-  header { margin-bottom:64px; opacity:0; animation:fadeUp 0.8s ease forwards; }
-  .header-label { font-size:10px; letter-spacing:0.3em; text-transform:uppercase; color:var(--accent); margin-bottom:16px; }
-  h1 { font-family:'Cormorant Garamond',serif; font-weight:300; font-size:clamp(36px,6vw,52px); line-height:1.1; color:var(--text); margin-bottom:12px; }
+  header { margin-bottom:56px; opacity:0; animation:fadeUp 0.8s ease forwards; }
+  .header-label { font-size:9px; letter-spacing:0.35em; text-transform:uppercase; color:var(--accent); margin-bottom:24px; margin-top:20px; padding-top:20px; border-top:1px solid var(--border); display:flex; align-items:center; gap:14px; white-space:nowrap; }
+  .header-label::before, .header-label::after { content:''; height:1px; background:var(--accent-dim); flex:0 0 28px; opacity:0.6; }
+  h1 { font-family:'Cormorant Garamond',serif; font-weight:300; font-size:clamp(40px,6.5vw,58px); line-height:1.05; color:var(--text); margin-bottom:0; }
   h1 em { font-style:italic; color:var(--accent); }
+  .header-sep { width:36px; height:1px; background:var(--accent-dim); opacity:0.5; margin:20px 0 16px; }
   .subtitle { font-size:12px; color:var(--muted); letter-spacing:0.05em; line-height:1.6; }
   .subtitle-cycle { display:block; margin-top:8px; font-size:10px; color:var(--muted); opacity:0.4; letter-spacing:0.03em; line-height:1.8; min-height:1.4em; transition:opacity 0.4s ease; }
   .subtitle-cycle.fade { opacity:0; }
@@ -75,8 +77,55 @@
     flex: 0 0 calc(33.333% - 7px);
     min-width: 140px;
   }
+  .framework-btn {
+    --glow-x: 50%; --glow-y: 50%;
+    --glow-intensity: 0; --glow-radius: 220px;
+  }
+  .framework-btn::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    padding: 1px;
+    background: radial-gradient(
+      var(--glow-radius) circle at var(--glow-x) var(--glow-y),
+      rgba(200,169,110, calc(var(--glow-intensity) * 0.75)) 0%,
+      rgba(200,169,110, calc(var(--glow-intensity) * 0.3)) 35%,
+      transparent 65%
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    pointer-events: none;
+    z-index: 1;
+  }
   .framework-btn:hover { border-color:var(--accent-dim); background:#1a1914; transform:translateY(-3px); box-shadow:0 6px 20px rgba(0,0,0,0.5), 0 0 0 1px var(--accent-dim); }
   .framework-btn.active { border-color:var(--accent); background:#1a1812; transform:translateY(-3px); box-shadow:0 6px 20px rgba(0,0,0,0.5), 0 0 0 1px var(--accent); }
+  .bento-particle {
+    position: absolute;
+    width: 3px; height: 3px;
+    border-radius: 50%;
+    background: rgba(200,169,110,0.85);
+    box-shadow: 0 0 5px rgba(200,169,110,0.5);
+    pointer-events: none;
+    z-index: 100;
+  }
+  .bento-spotlight {
+    position: fixed;
+    width: 560px; height: 560px;
+    border-radius: 50%;
+    pointer-events: none;
+    background: radial-gradient(circle,
+      rgba(200,169,110,0.09) 0%,
+      rgba(200,169,110,0.05) 20%,
+      rgba(200,169,110,0.02) 45%,
+      transparent 65%
+    );
+    z-index: 500;
+    opacity: 0;
+    transform: translate(-50%,-50%);
+    mix-blend-mode: screen;
+  }
 
   .fw-portrait {
     width: 100%;
@@ -318,6 +367,7 @@
   }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 </head>
 <body>
 <canvas id="liquid-bg"></canvas>
@@ -336,9 +386,17 @@
     </div>
     <div class="header-label" data-i18n="headerLabel">Your Situation</div>
     <h1 id="mainHeading">Your situation.<br><em>Their wisdom.</em></h1>
+    <div class="header-sep"></div>
     <p class="subtitle"><span id="subtitleText">Pick a thinker. Write what's on your mind. Get their take.</span><br>
     <span class="subtitle-cycle" id="subtitleCycle">思想家を選んで今思うことを書く。答えが返ってくる。</span>
     </p>
+    <div class="usage-bar" id="usageBar" style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border);">
+      <div class="usage-dots">
+        <div class="usage-dot"></div>
+      </div>
+      <span class="usage-text">1 free reading left today</span>
+      <span class="usage-upgrade" onclick="showPaywall()">Upgrade →</span>
+    </div>
   </header>
 
   <div class="mode-toggle">
@@ -1638,6 +1696,112 @@ async function submitLetter() {
   window.addEventListener('resize', () => {
     W = window.innerWidth; H = window.innerHeight;
     renderer.setSize(W, H);
+  });
+})();
+
+// ── MagicBento effects on thinker cards ──
+(function initBentoEffects() {
+  if (typeof gsap === 'undefined') return;
+  if (window.matchMedia('(max-width:768px)').matches) return;
+
+  const GLOW = '200, 169, 110';
+  const RADIUS = 260;
+  const PROX  = RADIUS * 0.5;
+  const FADE  = RADIUS * 0.8;
+  const N_PRT = 7;
+
+  const thinkerSection = document.getElementById('thinkerSection');
+  if (!thinkerSection) return;
+
+  // Global spotlight
+  const spotlight = document.createElement('div');
+  spotlight.className = 'bento-spotlight';
+  document.body.appendChild(spotlight);
+
+  document.addEventListener('mousemove', e => {
+    const cards = thinkerSection.querySelectorAll('.framework-btn');
+    const sr = thinkerSection.getBoundingClientRect();
+    const inside = e.clientX >= sr.left && e.clientX <= sr.right &&
+                   e.clientY >= sr.top  && e.clientY <= sr.bottom;
+
+    if (!inside) {
+      gsap.to(spotlight, { opacity: 0, duration: 0.4 });
+      cards.forEach(c => c.style.setProperty('--glow-intensity', '0'));
+      return;
+    }
+
+    gsap.to(spotlight, { left: e.clientX, top: e.clientY, duration: 0.12, ease: 'power2.out' });
+
+    let minDist = Infinity;
+    cards.forEach(c => {
+      const cr = c.getBoundingClientRect();
+      const cx = cr.left + cr.width / 2, cy = cr.top + cr.height / 2;
+      const dist = Math.max(0, Math.hypot(e.clientX - cx, e.clientY - cy) - Math.max(cr.width, cr.height) / 2);
+      minDist = Math.min(minDist, dist);
+      const glow = dist <= PROX ? 1 : dist <= FADE ? (FADE - dist) / (FADE - PROX) : 0;
+      c.style.setProperty('--glow-x', ((e.clientX - cr.left) / cr.width * 100) + '%');
+      c.style.setProperty('--glow-y', ((e.clientY - cr.top)  / cr.height * 100) + '%');
+      c.style.setProperty('--glow-intensity', glow.toFixed(3));
+      c.style.setProperty('--glow-radius', RADIUS + 'px');
+    });
+
+    const targetOp = minDist <= PROX ? 0.65
+      : minDist <= FADE ? ((FADE - minDist) / (FADE - PROX)) * 0.65 : 0;
+    gsap.to(spotlight, { opacity: targetOp, duration: targetOp > 0 ? 0.15 : 0.5 });
+  });
+
+  // Per-card particles + click ripple
+  thinkerSection.querySelectorAll('.framework-btn').forEach(card => {
+    let parts = [], tmrs = [], hovered = false;
+
+    card.addEventListener('mouseenter', () => {
+      hovered = true;
+      const { width, height } = card.getBoundingClientRect();
+      for (let i = 0; i < N_PRT; i++) {
+        const t = setTimeout(() => {
+          if (!hovered) return;
+          const p = document.createElement('div');
+          p.className = 'bento-particle';
+          p.style.left = (Math.random() * width) + 'px';
+          p.style.top  = (Math.random() * height) + 'px';
+          card.appendChild(p);
+          parts.push(p);
+          gsap.fromTo(p, { scale: 0, opacity: 0 },
+            { scale: 1, opacity: 1, duration: 0.3, ease: 'back.out(1.7)' });
+          gsap.to(p, {
+            x: (Math.random() - 0.5) * 70,
+            y: (Math.random() - 0.5) * 70,
+            rotation: Math.random() * 360,
+            duration: 1.8 + Math.random() * 2,
+            ease: 'none', repeat: -1, yoyo: true
+          });
+          gsap.to(p, { opacity: 0.15, duration: 1.2, ease: 'power2.inOut', repeat: -1, yoyo: true });
+        }, i * 90);
+        tmrs.push(t);
+      }
+    });
+
+    card.addEventListener('mouseleave', () => {
+      hovered = false;
+      tmrs.forEach(clearTimeout); tmrs = [];
+      parts.forEach(p => gsap.to(p, { scale: 0, opacity: 0, duration: 0.25,
+        ease: 'back.in(1.7)', onComplete: () => p.remove() }));
+      parts = [];
+    });
+
+    card.addEventListener('click', e => {
+      const r = card.getBoundingClientRect();
+      const x = e.clientX - r.left, y = e.clientY - r.top;
+      const d = Math.max(Math.hypot(x, y), Math.hypot(x - r.width, y),
+                         Math.hypot(x, y - r.height), Math.hypot(x - r.width, y - r.height));
+      const rip = document.createElement('div');
+      rip.style.cssText = `position:absolute;width:${d*2}px;height:${d*2}px;border-radius:50%;` +
+        `background:radial-gradient(circle,rgba(${GLOW},.32) 0%,rgba(${GLOW},.12) 35%,transparent 70%);` +
+        `left:${x-d}px;top:${y-d}px;pointer-events:none;z-index:1000;`;
+      card.appendChild(rip);
+      gsap.fromTo(rip, { scale: 0, opacity: 1 },
+        { scale: 1, opacity: 0, duration: 0.75, ease: 'power2.out', onComplete: () => rip.remove() });
+    });
   });
 })();
 </script>
