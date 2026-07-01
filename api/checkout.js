@@ -3,12 +3,13 @@ export default async function handler(req, res) {
 
   const { email, userId, product } = req.body;
   const isTgap = product === 'tgap';
+  const isSub  = product === 'phantum_sub';
 
-  const priceId = process.env.STRIPE_PRICE_ID;
+  const priceId = isSub
+    ? (process.env.STRIPE_SUB_PRICE_ID || 'price_1ToJu55l3V7sbNMWLJwDTvR3')
+    : process.env.STRIPE_PRICE_ID;
 
-  if (!priceId) {
-    return res.status(500).json({ error: 'Stripe price not configured' });
-  }
+  if (!priceId) return res.status(500).json({ error: 'Stripe price not configured' });
 
   const baseUrl = isTgap
     ? (process.env.SITE_URL_TGAP || 'https://www.tacorari.eu/translationgap')
@@ -16,7 +17,7 @@ export default async function handler(req, res) {
 
   try {
     const params = new URLSearchParams();
-    params.append('mode', 'payment');
+    params.append('mode', isSub ? 'subscription' : 'payment');
     params.append('line_items[0][price]', priceId);
     params.append('line_items[0][quantity]', '1');
     params.append('success_url', baseUrl + '?status=success&session_id={CHECKOUT_SESSION_ID}');
@@ -24,6 +25,11 @@ export default async function handler(req, res) {
     if (email) params.append('customer_email', email);
     if (userId) params.append('metadata[userId]', userId);
     params.append('metadata[product]', product || 'phantum');
+
+    // For subscriptions, also embed userId in subscription metadata for renewal webhooks
+    if (isSub && userId) {
+      params.append('subscription_data[metadata][userId]', userId);
+    }
 
     const response = await fetch('https://api.stripe.com/v1/checkout/sessions', {
       method: 'POST',

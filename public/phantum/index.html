@@ -188,6 +188,15 @@
   .paywall-btn { display:block; width:100%; background:var(--accent); color:var(--bg); border:none; padding:14px; font-family:'DM Mono',monospace; font-size:11px; letter-spacing:0.2em; text-transform:uppercase; cursor:pointer; margin-top:24px; transition:opacity 0.2s; }
   .paywall-btn:hover { opacity:0.85; }
   .paywall-close { background:none; border:none; color:var(--muted); font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.15em; cursor:pointer; margin-top:16px; text-decoration:underline; text-underline-offset:3px; }
+  .plan-options { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:20px 0 8px; }
+  .plan-opt { border:1px solid var(--border); padding:16px 14px; cursor:pointer; text-align:left; position:relative; transition:border-color 0.2s,background 0.2s; }
+  .plan-opt:hover { border-color:var(--accent-dim); }
+  .plan-opt.active { border-color:var(--accent); background:#1a1812; }
+  .plan-opt-label { font-size:9px; letter-spacing:0.15em; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+  .plan-opt-price { font-family:'Cormorant Garamond',serif; font-size:22px; color:var(--text); }
+  .plan-opt-price sub { font-size:11px; font-family:'DM Mono',monospace; color:var(--muted); vertical-align:middle; font-style:normal; }
+  .plan-opt-desc { font-size:9px; color:var(--muted); opacity:0.55; margin-top:5px; letter-spacing:0.04em; }
+  .plan-badge { position:absolute; top:-1px; right:-1px; background:var(--accent); color:var(--bg); font-size:7px; letter-spacing:0.12em; text-transform:uppercase; padding:2px 8px; font-family:'DM Mono',monospace; }
   .usage-bar { display:flex; align-items:center; gap:8px; margin-top:8px; }
   .usage-dots { display:flex; gap:4px; }
   .usage-dot { width:8px; height:8px; border-radius:50%; border:1px solid var(--accent-dim); }
@@ -610,10 +619,22 @@
   <div class="paywall-box">
     <div class="paywall-label">Your Situation</div>
     <div class="paywall-title">Some situations<br>don't wait until tomorrow.</div>
-    <p class="paywall-sub">Your free reading resets at midnight.<br>Or get 10 readings to use anytime — no expiry.</p>
-    <div class="paywall-price">€3.00 <span>· 10 readings · no expiry</span></div>
-    <input type="email" id="paywallEmail" placeholder="your@email.com" style="width:100%;background:transparent;border:none;border-bottom:1px solid var(--border);color:var(--text);font-family:'DM Mono',monospace;font-size:12px;padding:8px 0;outline:none;margin-top:16px;" />
-    <button class="paywall-btn" onclick="startCheckout()">Get 10 readings — €3.00</button>
+    <p class="paywall-sub">Your free reading resets at midnight.<br>Or continue without limits.</p>
+    <div class="plan-options">
+      <div class="plan-opt active" id="plan-once" onclick="selectPlan('once')">
+        <div class="plan-opt-label">One-time</div>
+        <div class="plan-opt-price">€3.00</div>
+        <div class="plan-opt-desc">10 readings · no expiry</div>
+      </div>
+      <div class="plan-opt" id="plan-sub" onclick="selectPlan('sub')">
+        <div class="plan-badge">Best value</div>
+        <div class="plan-opt-label">Monthly</div>
+        <div class="plan-opt-price">€4.90 <sub>/mo</sub></div>
+        <div class="plan-opt-desc">Unlimited readings</div>
+      </div>
+    </div>
+    <input type="email" id="paywallEmail" placeholder="your@email.com" style="width:100%;background:transparent;border:none;border-bottom:1px solid var(--border);color:var(--text);font-family:'DM Mono',monospace;font-size:12px;padding:8px 0;outline:none;margin-top:8px;" />
+    <button class="paywall-btn" id="paywallMainBtn" onclick="startCheckout()">Get 10 readings — €3.00</button>
     <br>
     <button class="paywall-close" onclick="closePaywall()">Wait until tomorrow</button>
   </div>
@@ -992,9 +1013,16 @@ async function runSession() {
       body:JSON.stringify({ input, systemPrompt: fw.prompt + ' ' + langInstruction, userId })
     });
     const data = await response.json();
-    if (data.error === 'FREE_LIMIT_REACHED') { showPaywall(); clearInterval(phraseInterval); loading.classList.remove('visible'); document.getElementById('submitBtn').disabled = false; return; }
+    if (data.error === 'FREE_LIMIT_REACHED') {
+      if (isSubscribed) { localStorage.removeItem('phantum_subscribed'); isSubscribed = false; }
+      showPaywall(); clearInterval(phraseInterval); loading.classList.remove('visible'); document.getElementById('submitBtn').disabled = false; return;
+    }
     if (data.error) throw new Error(data.error);
-    if (data.creditsRemaining !== null && data.creditsRemaining !== undefined) {
+    if (data.subscribed) {
+      isSubscribed = true;
+      localStorage.setItem('phantum_subscribed', 'true');
+      updateUsageBar(usageCount, 0);
+    } else if (data.creditsRemaining !== null && data.creditsRemaining !== undefined) {
       paidCredits = data.creditsRemaining;
       localStorage.setItem('phantum_credits', paidCredits);
       updateUsageBar(usageCount, paidCredits);
@@ -1107,11 +1135,19 @@ if (!userId) {
   localStorage.setItem('phantum_user_id', userId);
 }
 let paidCredits = parseInt(localStorage.getItem('phantum_credits') || '0', 10);
+let isSubscribed = localStorage.getItem('phantum_subscribed') === 'true';
 
 function updateUsageBar(count, credits) {
   const bar = document.getElementById('usageBar');
   if (!bar) return;
-  if (credits > 0) {
+  if (isSubscribed) {
+    const dots = bar.querySelectorAll('.usage-dot');
+    dots.forEach(d => d.classList.add('used'));
+    const txt = bar.querySelector('.usage-text');
+    if (txt) txt.textContent = 'Monthly · unlimited readings';
+    const upg = bar.querySelector('.usage-upgrade');
+    if (upg) upg.style.display = 'none';
+  } else if (credits > 0) {
     const dots = bar.querySelectorAll('.usage-dot');
     dots.forEach(d => d.classList.add('used'));
     const txt = bar.querySelector('.usage-text');
@@ -1136,22 +1172,33 @@ function closePaywall() {
   document.getElementById('paywallOverlay').classList.remove('visible');
 }
 
+let selectedPlan = 'once';
+
+function selectPlan(plan) {
+  selectedPlan = plan;
+  document.getElementById('plan-once').classList.toggle('active', plan === 'once');
+  document.getElementById('plan-sub').classList.toggle('active', plan === 'sub');
+  const btn = document.getElementById('paywallMainBtn');
+  btn.textContent = plan === 'sub' ? 'Subscribe — €4.90 / month' : 'Get 10 readings — €3.00';
+}
+
 async function startCheckout() {
   const email = document.getElementById('paywallEmail').value.trim();
-  const btn = document.querySelector('.paywall-btn');
+  const btn = document.getElementById('paywallMainBtn');
   btn.textContent = 'Redirecting...';
   btn.disabled = true;
   try {
+    const product = selectedPlan === 'sub' ? 'phantum_sub' : 'phantum';
     const res = await fetch('/api/checkout', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, userId })
+      body: JSON.stringify({ email, userId, product })
     });
     const data = await res.json();
     if (data.url) window.location.href = data.url;
     else throw new Error(data.error);
   } catch (err) {
-    btn.textContent = 'Get 10 readings — €3.00';
+    btn.textContent = selectedPlan === 'sub' ? 'Subscribe — €4.90 / month' : 'Get 10 readings — €3.00';
     btn.disabled = false;
     alert('Something went wrong. Please try again.');
   }
@@ -1165,14 +1212,20 @@ if (urlParams.get('status') === 'success') {
     fetch('/api/session?session_id=' + sessionId)
       .then(r => r.json())
       .then(d => {
-        if (d.success && d.credits) {
+        if (d.success && d.subscribed) {
+          isSubscribed = true;
+          localStorage.setItem('phantum_subscribed', 'true');
+          localStorage.setItem('phantum_user_id', d.userId);
+          userId = d.userId;
+          updateUsageBar(usageCount, 0);
+        } else if (d.success && d.credits) {
           paidCredits = d.credits;
           localStorage.setItem('phantum_credits', d.credits);
           localStorage.setItem('phantum_user_id', d.userId);
           userId = d.userId;
           updateUsageBar(usageCount, paidCredits);
-          history.replaceState({}, '', '/');
         }
+        history.replaceState({}, '', '/phantum');
       });
   }
 }

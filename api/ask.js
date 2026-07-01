@@ -67,11 +67,18 @@ export default async function handler(req, res) {
     }
   }
 
-  // --- Check credits (admin IP bypasses all limits) ---
+  // --- Check subscription (subscribers bypass all credit limits) ---
+  let isSubscribed = false;
+  if (userId && !isAdmin) {
+    const subVal = await redisGet(REDIS_URL, REDIS_TOKEN, `phantum:sub:user:${userId}`);
+    isSubscribed = !!subVal;
+  }
+
+  // --- Check credits (admin IP and subscribers bypass all limits) ---
   const creditKey = userId ? `phantum:credits:user:${userId}` : `phantum:credits:ip:${ip}`;
   let hasPaidCredits = false;
 
-  if (!isAdmin) {
+  if (!isAdmin && !isSubscribed) {
     const credits = parseInt(await redisGet(REDIS_URL, REDIS_TOKEN, creditKey) || '0', 10);
     hasPaidCredits = credits > 0;
 
@@ -112,10 +119,10 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: 'Empty response from AI. Please try again.' });
     }
 
-    // --- Gemini succeeded, NOW consume the credit (admin skips this) ---
+    // --- Gemini succeeded, NOW consume the credit (admin and subscribers skip this) ---
     let creditsRemaining = null;
 
-    if (!isAdmin) {
+    if (!isAdmin && !isSubscribed) {
       if (hasPaidCredits) {
         creditsRemaining = await redisDecr(REDIS_URL, REDIS_TOKEN, creditKey);
       } else {
@@ -127,7 +134,7 @@ export default async function handler(req, res) {
       }
     }
 
-    res.status(200).json({ ...data, creditsRemaining });
+    res.status(200).json({ ...data, creditsRemaining, subscribed: isSubscribed || undefined });
   } catch (err) {
     // Network error or timeout - no credit consumed
     res.status(500).json({ error: err.message });

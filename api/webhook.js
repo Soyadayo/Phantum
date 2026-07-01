@@ -52,6 +52,29 @@ async function redisSet(url, token, key, value) {
   });
 }
 
+async function redisPipeline(url, token, commands) {
+  await fetch(`${url}/pipeline`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify(commands)
+  });
+}
+
+async function stripeGet(path) {
+  const res = await fetch(`https://api.stripe.com/v1${path}`, {
+    headers: { Authorization: `Bearer ${process.env.STRIPE_SECRET_KEY}` }
+  });
+  return res.json();
+}
+
+async function setSubscription(REDIS_URL, REDIS_TOKEN, userId, customerId, periodEnd) {
+  await redisPipeline(REDIS_URL, REDIS_TOKEN, [
+    ['SET', `phantum:sub:user:${userId}`, customerId],
+    ['EXPIREAT', `phantum:sub:user:${userId}`, periodEnd],
+    ['SET', `phantum:sub:customer:${customerId}`, userId],
+  ]);
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end();
 
@@ -73,29 +96,75 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Invalid JSON' });
   }
 
+  const REDIS_URL = process.env.UPSTASH_REDIS_REST_URL;
+  const REDIS_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN;
+
+  // ── One-time payment or subscription checkout completed ──
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object;
-    if (session.payment_status !== 'paid') return res.status(200).json({ received: true });
 
-    const REDIS_URL = process.env.UPSTASH_REDIS_REST_URL;
-    const REDIS_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN;
+    if (session.mode === 'subscription') {
+      const userId = session.metadata?.userId;
+      const customerId = session.customer;
+      const subscriptionId = session.subscription;
 
-    const product = session.metadata?.product || 'phantum';
-    const isTgap = product === 'tgap';
-    const creditsToAdd = 10;
-    const keyPrefix = isTgap ? 'tgap' : 'phantum';
+      if (userId && customerId && subscriptionId) {
+        const sub = await stripeGet(`/subscriptions/${subscriptionId}`);
+        const periodEnd = sub.current_period_end;
+        if (periodEnd) {
+          await setSubscription(REDIS_URL, REDIS_TOKEN, userId, customerId, periodEnd);
+        }
+      }
+    } else {
+      // One-time payment
+      if (session.payment_status !== 'paid') return res.status(200).json({ received: true });
 
-    const userId = session.metadata?.userId || session.customer || session.id;
-    const creditKey = `${keyPrefix}:credits:user:${userId}`;
-    const processedKey = `${keyPrefix}:processed:session:${session.id}`;
+      const product = session.metadata?.product || 'phantum';
+      const isTgap = product === 'tgap';
+      const creditsToAdd = 10;
+      const keyPrefix = isTgap ? 'tgap' : 'phantum';
 
-    const alreadyProcessed = await redisGet(REDIS_URL, REDIS_TOKEN, processedKey);
-    if (!alreadyProcessed) {
-      const existing = parseInt(await redisGet(REDIS_URL, REDIS_TOKEN, creditKey) || '0', 10);
-      await Promise.all([
-        redisSet(REDIS_URL, REDIS_TOKEN, creditKey, existing + creditsToAdd),
-        redisSet(REDIS_URL, REDIS_TOKEN, processedKey, '1'),
-      ]);
+      const userId = session.metadata?.userId || session.customer || session.id;
+      const creditKey = `${keyPrefix}:credits:user:${userId}`;
+      const processedKey = `${keyPrefix}:processed:session:${session.id}`;
+
+      const alreadyProcessed = await redisGet(REDIS_URL, REDIS_TOKEN, processedKey);
+      if (!alreadyProcessed) {
+        const existing = parseInt(await redisGet(REDIS_URL, REDIS_TOKEN, creditKey) || '0', 10);
+        await Promise.all([
+          redisSet(REDIS_URL, REDIS_TOKEN, creditKey, existing + creditsToAdd),
+          redisSet(REDIS_URL, REDIS_TOKEN, processedKey, '1'),
+        ]);
+      }
+    }
+  }
+
+  // ── Subscription renewal: extend the expiry ──
+  else if (event.type === 'invoice.payment_succeeded') {
+    const invoice = event.data.object;
+    if (invoice.billing_reason === 'subscription_cycle') {
+      const customerId = invoice.customer;
+      const periodEnd = invoice.lines?.data?.[0]?.period?.end;
+      if (customerId && periodEnd) {
+        const userId = await redisGet(REDIS_URL, REDIS_TOKEN, `phantum:sub:customer:${customerId}`);
+        if (userId) {
+          await setSubscription(REDIS_URL, REDIS_TOKEN, userId, customerId, periodEnd);
+        }
+      }
+    }
+  }
+
+  // ── Subscription cancelled or expired ──
+  else if (event.type === 'customer.subscription.deleted') {
+    const subscription = event.data.object;
+    const customerId = subscription.customer;
+    if (customerId) {
+      const userId = await redisGet(REDIS_URL, REDIS_TOKEN, `phantum:sub:customer:${customerId}`);
+      if (userId) {
+        await fetch(`${REDIS_URL}/del/${encodeURIComponent(`phantum:sub:user:${userId}`)}`, {
+          headers: { Authorization: `Bearer ${REDIS_TOKEN}` }
+        });
+      }
     }
   }
 

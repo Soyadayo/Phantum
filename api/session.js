@@ -13,6 +13,13 @@ export default async function handler(req, res) {
     const session = await response.json();
     if (session.error) throw new Error(session.error.message);
 
+    // Subscription checkout: webhook handles Redis; just confirm to client
+    if (session.mode === 'subscription') {
+      const userId = session.metadata?.userId || session.customer || session.id;
+      const product = session.metadata?.product || 'phantum_sub';
+      return res.status(200).json({ success: true, userId, product, subscribed: true });
+    }
+
     if (session.payment_status !== 'paid') {
       return res.status(200).json({ success: false });
     }
