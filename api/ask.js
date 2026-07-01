@@ -132,14 +132,18 @@ export default async function handler(req, res) {
     let creditsRemaining = null;
 
     if (!isAdmin && !isSubscribed) {
-      if (hasPaidCredits) {
-        creditsRemaining = await redisDecr(REDIS_URL, REDIS_TOKEN, creditKey);
-      } else {
-        const freeKey = `phantum:free:${ip}:${today}`;
-        await redisPipeline(REDIS_URL, REDIS_TOKEN, [
-          ['INCR', freeKey],
-          ['EXPIREAT', freeKey, getNextMidnightUnix()]
-        ]);
+      try {
+        if (hasPaidCredits) {
+          creditsRemaining = await redisDecr(REDIS_URL, REDIS_TOKEN, creditKey);
+        } else {
+          const freeKey = `phantum:free:${ip}:${today}`;
+          await redisPipeline(REDIS_URL, REDIS_TOKEN, [
+            ['INCR', freeKey],
+            ['EXPIREAT', freeKey, getNextMidnightUnix()]
+          ]);
+        }
+      } catch (writeErr) {
+        console.error('[ask] credit write failed:', writeErr.message);
       }
     }
 
