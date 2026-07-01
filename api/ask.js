@@ -67,18 +67,23 @@ export default async function handler(req, res) {
     }
   }
 
-  // --- Check subscription + credits (all Redis calls in one try-catch) ---
+  // --- Check subscription (fail open: if Redis is down, treat as not subscribed) ---
   let isSubscribed = false;
+  if (userId && !isAdmin) {
+    try {
+      const subVal = await redisGet(REDIS_URL, REDIS_TOKEN, `phantum:sub:user:${userId}`);
+      isSubscribed = !!subVal;
+    } catch (err) {
+      console.error('[ask] subscription check failed:', err.message, '| REDIS_URL set:', !!REDIS_URL);
+    }
+  }
+
+  // --- Check credits ---
   const creditKey = userId ? `phantum:credits:user:${userId}` : `phantum:credits:ip:${ip}`;
   let hasPaidCredits = false;
 
-  try {
-    if (userId && !isAdmin) {
-      const subVal = await redisGet(REDIS_URL, REDIS_TOKEN, `phantum:sub:user:${userId}`);
-      isSubscribed = !!subVal;
-    }
-
-    if (!isAdmin && !isSubscribed) {
+  if (!isAdmin && !isSubscribed) {
+    try {
       const credits = parseInt(await redisGet(REDIS_URL, REDIS_TOKEN, creditKey) || '0', 10);
       hasPaidCredits = credits > 0;
 
@@ -89,10 +94,10 @@ export default async function handler(req, res) {
           return res.status(429).json({ error: 'FREE_LIMIT_REACHED' });
         }
       }
+    } catch (err) {
+      console.error('[ask] credit check failed:', err.message, '| REDIS_URL set:', !!REDIS_URL);
+      // Fail open: if Redis is unreachable, allow the request
     }
-  } catch (redisErr) {
-    console.error('Redis error in credit check:', redisErr.message);
-    return res.status(503).json({ error: 'Service temporarily unavailable. Please try again.' });
   }
 
   // --- Call Gemini FIRST, before consuming any credits ---
